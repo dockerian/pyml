@@ -1,0 +1,37 @@
+---
+  version: 1
+  disable_existing_loggers: False
+  formatters:
+    complex:
+      datefmt: "%Y-%m-%d %H:%M:%S"
+      format: "%(asctime)s [%(name)s/%(module)s #%(lineno)d] %(levelname)s: %(message)s"
+    console:
+      datefmt: "%Y-%m-%d %H:%M:%S"
+      format: "%(asctime)s [%(name)s/%(module)s #%(lineno)d] %(levelname)s: %(message)s"
+    custom:
+      (): ml.utils.logger_formatter.factory
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: custom
+      stream: ext://sys.stdout
+    file:
+      class: logging.handlers.RotatingFileHandler
+      level: DEBUG
+      formatter: complex
+      filename: __pyml__.log
+      encoding: utf8
+      backupCount: 5
+      delay: true
+      maxBytes: 10485760 # 10MB
+      mode: w
+  loggers:
+    root:
+      handlers: [console, file]
+      level: DEBUG
+    ml:
+      handlers: [console, file]
+      level: DEBUG
+      propagate: 0
+      qualname: ml

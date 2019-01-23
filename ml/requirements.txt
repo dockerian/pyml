@@ -1,0 +1,2 @@
+jsonpickle==1.1
+PyYAML==3.13

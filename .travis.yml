@@ -1,0 +1,17 @@
+language: python
+
+python:
+  - 3.6
+
+before_install:
+  - 
+
+install:
+  - make dev-setup
+
+script:
+  - make test
+
+after_success:
+  - export CODECOV_TOKEN=9e63e7b5-9bb8-4382-983b-3eff32a14688 # pyml
+  - bash <(curl -s https://codecov.io/bash) -t 9e63e7b5-9bb8-4382-983b-3eff32a14688

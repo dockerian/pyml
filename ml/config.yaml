@@ -1,0 +1,9 @@
+aws:
+  environment: test
+
+mysql:
+  database:
+  host:
+  port: 3306
+  username: admin
+  password:

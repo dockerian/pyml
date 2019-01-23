@@ -1,3 +1,11 @@
+**/.DS_Store
+**/*.bak
+**/*.log
+**/*.out
+**/*.swp
+**/*.tee
+**/*.zip
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -8,7 +16,9 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+bin/
 build/
+builds/
 develop-eggs/
 dist/
 downloads/
@@ -34,6 +44,7 @@ MANIFEST
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+log*.txt
 
 # Unit test / coverage reports
 htmlcov/
@@ -55,6 +66,10 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
+
+# Eclipse
+.project
+.pydevproject
 
 # Flask stuff:
 instance/
@@ -83,7 +98,10 @@ celerybeat-schedule
 
 # Environments
 .env
+.idea
 .venv
+.virtualenv
+.vscode
 env/
 venv/
 ENV/

@@ -1,0 +1,63 @@
+"""
+# setup module
+#
+# Author: Jason Zhu <jason_zhuyx@hotmail.com> (https://github.com/dockerian)
+#
+"""
+import os
+
+from setuptools import setup, find_packages
+
+NAME = '{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}'
+
+AUTHOR = '{{__AUTHOR_NAME__}}'
+AUTHOR_EMAIL = '{{__AUTHOR_EMAIL__}}'
+BULD_VERSION = '{{__VERSION__}}'  # in format of `<major>.<minor>.<release>`
+PROJECT_CODE_NAME = '{{__PROJECT_CODE_NAME__}}'
+PROJECT_DESCRIPTION = '{{__PROJECT_DESCRIPTION__}}'
+PROJECT_URL = '{{__PROJECT_URL__}}'
+SUBJECT = '{{__PROJECT_SUBJECT__}}'
+
+HERE = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(HERE, 'README.md')) as f:
+    README = f.read()
+
+# use project folder as BASE
+BASE = NAME if os.path.isdir(os.path.join(HERE, NAME)) else HERE
+
+# assume `requirements*.txt` under BASE
+PREQ = os.path.join(BASE, "requirements.txt")
+PREQ_DEV = os.path.join(BASE, "requirements-dev.txt")
+PREQ_DEV_LIST = [line.strip() for line in open(PREQ_DEV).readlines()]
+PREQ_LIST = [line.strip() for line in open(PREQ).readlines()] + PREQ_DEV_LIST
+
+# demonstration only
+ENTRY_POINTS = {
+  'console_scripts': [
+    'main = {}.main:main'.format(NAME)
+  ],
+  'paste.app_factory': 'main = {}.main:main'.format(NAME),
+}
+
+setup(
+    name=NAME,
+    version=BULD_VERSION,
+    description=PROJECT_DESCRIPTION,
+    long_description=README,
+    classifiers=[
+        "Codename :: {}".format(PROJECT_CODE_NAME),
+        "Programming Language :: Python :: 3",
+        "Topic :: {}".format(SUBJECT),
+    ],
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    url=PROJECT_URL,
+    entry_points=ENTRY_POINTS,
+    packages=find_packages(),
+    include_package_data=True,
+    install_requires=PREQ_LIST,
+    setup_requires=['pytest-runner'] + PREQ_LIST,
+    tests_require=PREQ_LIST,
+    test_suite=NAME,
+    zip_safe=False,
+)

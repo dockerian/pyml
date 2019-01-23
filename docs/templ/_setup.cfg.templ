@@ -1,0 +1,23 @@
+[aliases]
+test=pytest
+
+[coverage:run]
+omit =
+  .eggs/*
+  .venv/*
+  **/setup.py
+  **/tests/*
+  setup.py
+  tests/*
+  docs/*
+
+[tool:pytest]
+addopts = --cov=. --cov-report=term --cov-report=html --cov-fail-under={{__TEST_COVERAGE_THRESHOLD__}}
+python_files = tests/*.py
+norecursedirs =
+  .eggs/*
+  .venv/*
+  tests/*
+  docs/*
+pep8maxlinelength = 120
+# pep8ignore = ALL

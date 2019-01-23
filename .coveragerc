@@ -1,0 +1,15 @@
+# see https://coverage.readthedocs.io/en/latest/config.html
+
+[report]
+omit =
+  setup.py
+  __init__.py
+  .eggs/*
+  .venv/*
+  tests/*
+  docs/*
+skip_covered = False
+show_missing = True
+fail_under = 75
+precision = 2
+sort = Name

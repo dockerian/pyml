@@ -1,0 +1,41 @@
+# Tox (http://tox.testrun.org/) is a tool for running tests in multiple
+# virtual env's. This configuration file will run the test suite on all
+# supported python versions. To use it, run `pip install tox`
+# and then run `tox` from this directory.
+
+# http://tox.readthedocs.org/en/latest/examples.html
+
+[tox]
+envlist = py27,py36,pep8
+
+[testenv]
+# tox is silly ... these need to be separated by a newline ...
+whitelist_externals = bash
+                      find
+commands = find . -type f -name "*.pyc" -delete
+           nosetests -v
+           coverage erase
+           coverage run {envbindir}/nosetests
+           coverage report --omit=./.tox/*,./.venv/*,./{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}/tests/*,
+           coverage html --directory=cover --omit=./.tox/*,./.venv/*,./{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}/tests/*,
+
+deps = -rrequirements-dev.txt
+
+[testenv:nosetests]
+commands =
+  nosetests -v --detailed-errors --nocapture --with-tissue --tissue-color
+  coverage html
+cover-min-percentage=75
+cover-package={{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}
+tissue-package={{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}
+verbosity=3
+
+[testenv:pep8]
+commands = pep8 --max-line-length=120 --exclude=./.tox/*,./.venv/* --statistics .
+
+[testenv:flake8]
+exclude=./.tox/*,./.venv/*,tests
+include={{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}
+ignore=E226,E302,E41
+max-line-length=120
+max-complexity=8

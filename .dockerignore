@@ -1,0 +1,90 @@
+# see https://codefresh.io/blog/not-ignore-dockerignore/
+
+*Backup
+__pycache__
+.cache
+.coverage
+.coverage.*
+.dockerignore
+.DS_Store
+.git
+
+.Python
+.swagger-codegen
+.tox
+.vscode/**
+*,cover
+*.bak
+*.log
+*.out
+*.pyc
+*.pyd
+*.pyo
+*.tee
+
+build/**
+builds/**
+coverage.txt
+coverage.xml
+db.sqlite3
+dist/
+Dockerfile
+docker-compose.yml
+eggs/
+env
+nosetests.xml
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-delete-this-directory.txt
+pip-log.txt
+
+# PyCharm
+.idea
+
+# Python mode for VIM
+.ropeproject
+*/.ropeproject
+*/*/.ropeproject
+*/*/*/.ropeproject
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Virtual environment
+.env/
+.venv/
+venv/
+
+# Vim swap files
+*.swp
+*/*.swp
+*/*/*.swp
+*/*/*/*.swp
