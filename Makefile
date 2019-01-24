@@ -356,3 +356,24 @@ ifeq ("$(DONT_RUN_PYVENV)", "true")
 else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
 endif
+
+
+
+############################################################
+# sub-projects Makefile redirection
+############################################################
+classifier-prediction cpr:
+	@echo
+	cd ml/classifier && make prediction
+
+classifier-training ctr:
+	@echo
+	cd ml/classifier && make training
+
+digit-prediction dpr:
+	@echo
+	cd ml/digit_recognizer && make prediction
+
+digit-training dtr:
+	@echo
+	cd ml/digit_recognizer && make training
