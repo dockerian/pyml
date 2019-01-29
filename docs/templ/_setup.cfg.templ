@@ -11,6 +11,12 @@ omit =
   tests/*
   docs/*
 
+[install]
+# use empty prefix to prevent from
+# DistutilsOptionError: must supply either home or prefix/exec-prefix — not both
+# on running `pip install` with `--target` option
+# prefix=
+
 [tool:pytest]
 addopts = --cov=. --cov-report=term --cov-report=html --cov-fail-under={{__TEST_COVERAGE_THRESHOLD__}}
 python_files = tests/*.py

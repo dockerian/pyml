@@ -10,9 +10,22 @@
 ## Contents
 
 * [Design]({{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}/README.md)
+* [Documentation](docs/README.md)
+* [Prerequisites Checklist](#pre-req)
 * [Dev Setup](#dev-setup)
 * [Testing](#testing)
 
+
+
+<br/><a name="pre-req"></a>
+## Prerequisites
+
+  * Python [3](https://www.python.org/downloads/)
+  * Python 3 `pip` [version 19.0.1 and up](https://pip.pypa.io/en/stable/installing/)
+  * Python 3 built-in virtual env [`venv`](https://docs.python.org/3/library/venv.html)
+  * System tools: find, rm, tee, xargs, zip
+  * Command line JSON processor: [jq](https://stedolan.github.io/jq/download/)
+  * Docker ([optional](https://www.docker.com/))
 
 
 <br/><a name="dev-setup"></a>
@@ -21,9 +34,8 @@
   Running a `dev-setup` script to install the project and libraries.
 
   ```
-  make clean dev-setup  # this will create a python virtualenv
+  make clean setup  # this will create a python virtualenv
   ```
-
 
 
 <br/><a name="testing"></a>
@@ -48,8 +60,6 @@
 
 <p><br/></p>
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Contributors](https://img.shields.io/github/contributors/{{__GITHUB_USER_OR_ORGANIZATION__}}/{{__GITHUB_REPOSITORY_NAME__}}.svg)](https://github.com/{{__GITHUB_USER_OR_ORGANIZATION__}}/{{__GITHUB_REPOSITORY_NAME__}}/graphs/contributors)
-[![Contributors](https://img.shields.io/github/contributors/badges/shields.svg)](https://github.com/badges/shields/graphs/contributors)
 [![Code Coverage](https://codecov.io/gh/{{__GITHUB_USER_OR_ORGANIZATION__}}/{{__GITHUB_REPOSITORY_NAME__}}/branch/master/graph/badge.svg)](https://codecov.io/gh/{{__GITHUB_USER_OR_ORGANIZATION__}}/{{__GITHUB_REPOSITORY_NAME__}})
 [![Build Status](https://travis-ci.org/{{__GITHUB_USER_OR_ORGANIZATION__}}/{{__GITHUB_REPOSITORY_NAME__}}.svg?branch=master)](https://travis-ci.org/{{__GITHUB_USER_OR_ORGANIZATION__}}/{{__GITHUB_REPOSITORY_NAME__}})
+[![Contributors](https://img.shields.io/github/contributors/{{__GITHUB_USER_OR_ORGANIZATION__}}/{{__GITHUB_REPOSITORY_NAME__}}.svg)](https://github.com/{{__GITHUB_USER_OR_ORGANIZATION__}}/{{__GITHUB_REPOSITORY_NAME__}}/graphs/contributors)

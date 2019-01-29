@@ -76,7 +76,7 @@ def check_encrypted_text(setting_key, key_val):
     Check if the text is encrypted by a KMS key.
     Notes:
         * Pre-requisites: `boto3`
-        * Check key name with `password` or `api_key` (case-insensitive) only.
+        * Check `token`, `password` or `key` (case-insensitive) only.
         * Decryption requires an AWS account either in a role based security
           context, or by env/profile settings, e.g.
           - AWS_ACCESS_KEY_ID
@@ -85,20 +85,22 @@ def check_encrypted_text(setting_key, key_val):
     """
     text = str(key_val)
     skey = str(setting_key).lower()
-    aorp = 'password' in skey or 'api_key' in skey
+    aorp = 'token' in skey or 'password' in skey or 'key' in skey
     if aorp and len(text) > 128 and ' ' not in text:
-        # import boto3  # moving to top when this code is uncommented
-        # from base64 import b64decode
+        # import boto3  # moving to global when this code is uncommented
         # decrypted = boto3.client('kms').decrypt(
-        #     CiphertextBlob=b64decode(text))['Plaintext']
-        # return decrypted
+        #     CiphertextBlob=b64decode(text))
+        # # LOGGER.debug('- decrypted: %s', decrypted)
+        # decrypted_text = str(decrypted['Plaintext'], 'utf-8')
+        # # LOGGER.debug('- decrypted text: %s', decrypted_text)
+        # return decrypted_text
         return text
     return key_val
 
 
 def flatten_object(obj, result=None):
     """
-    Convert an object to a flatten dictionary
+    Convert a JSON object to a flatten dictionary.
 
     example: { "db": { "user": "bar" }} becomes {"db.user": "bar" }
     """

@@ -1,5 +1,10 @@
 FROM python:3
 
+MAINTAINER {{__AUTHOR__}} {{__AUTHOR_EMAIL__}}
+LABEL maintainer="{{__AUTHOR_EMAIL__}}"
+LABEL organization="{{__DOCKER_USER_OR_ORGNIZATION_NAME__}}"
+LABEL project="{{__PROJECT_TITLE__}}"
+
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     bash \

@@ -15,15 +15,16 @@ __CONFIG__ = None  # initialized as None
 __YFNAME__ = 'logging.yaml'
 
 
-def get_logger(name, level=logging.DEBUG):
+def get_logger(name, level=logging.INFO):
     """
     Get a logger and load logging.yaml config file if exists.
     """
     # Set a basic level of logging
-    logging.basicConfig(level=level)
+    logging.basicConfig(level=logging.INFO)
 
     load_logging_config()  # loading logging config if not loaded yet
 
+    # print('setting logger[{}] level:{}'.format(name, level))
     logger = logging.getLogger(name)
     logger.setLevel(level)
     return logger
@@ -66,6 +67,15 @@ def print_logging_config(config):
     #     __YFNAME__, json.dumps(config, sort_keys=True, indent=2)))
     # print(__80DOTS__)
     pass
+
+
+def print_info():
+    """
+    Print system and environment info.
+    """
+    import sys
+    print('System version:', sys.version.replace('\n', ' '))
+    print_pypath()
 
 
 def print_pypath():

@@ -1,6 +1,10 @@
 aws:
   environment: test
 
+debug:
+  # CRITICAL/FATAL = 50, ERROR = 40, WARNING/WARN = 30, INFO = 20, DEBUG = 10
+  level: 20
+
 mysql:
   database:
   host:

@@ -1,5 +1,10 @@
 FROM python:3
 
+MAINTAINER Jason Zhu <jason.zhuyx@gmail.com>
+LABEL maintainer="jason.zhuyx@gmail.com"
+LABEL organization="Dockerian"
+LABEL project="pyml"
+
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     bash \

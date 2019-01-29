@@ -10,7 +10,7 @@ import unittest
 
 from ml.utils.logger_formatter import factory
 from ml.utils.logger import get_logger
-from ml.utils.logger import print_pypath
+from ml.utils.logger import print_info
 from ml.utils.logger import raise_ni
 
 LOGGER = get_logger(__name__)
@@ -53,7 +53,7 @@ class LoggerTests(unittest.TestCase):
         test ml.utils.logger.get_logger
         """
         import re
-        print_pypath()
+        print_info()
         # removing prefix /^tests\./ for `python -m unitest`
         logger_name = re.sub(r'^tests\.', '', LOGGER.name)
         self.assertEqual(logger_name, 'test_utils_logger')

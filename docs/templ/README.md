@@ -205,3 +205,11 @@
   - https://realpython.com/python-continuous-integration/
   - https://docs.travis-ci.com/user/languages/python/
   - https://docs.codecov.io/docs/team-bot
+
+
+
+
+<div><br/>
+&raquo; Back to <a href="#contents">Contents</a> | <a href="../README.md">Home</a> &laquo;
+<a href="https://github.com/dockerian" style="text-decoration:none;"><img src="https://avatars3.githubusercontent.com/u/22064108?s=400&v=4" style="border:0;height:50;width:50px;vertical-align:middle" height="50" alt="Dockerian" border="0" title="Dockerian" align="right" valign="middle" /></a>
+</div>

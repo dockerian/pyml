@@ -13,19 +13,19 @@
 #     output = json
 #     region = us-west-2
 #     s3_bucket = cyber-intel
-#     [profile cyberint]
+#     [profile account1]
 #     region = us-west-2
-#     [profile atg]
+#     [profile account2]
 #     region = us-east-1
 #
 #   ~/.aws/credentials
 #     [default]
 #     aws_access_key_id = ABCDEFGHIJKLMNOPQRST
 #     aws_secret_access_key = AbCdEfGhI/KlMnOpQrStUvWxYz01234567890AbC
-#     [cyberint]
+#     [account1]
 #     aws_access_key_id = ABCDEFGHIJKLMNOPQRST
 #     aws_secret_access_key = AbCdEfGhI/KlMnOpQrStUvWxYz01234567890AbC
-#     [atg]
+#     [account2]
 #     aws_access_key_id = ABCDEFGHIJKLMNOPQXYZ
 #     aws_secret_access_key = AbCdEfGhI/KlMnOpQrStUvWxYz01234567890XyZ
 #

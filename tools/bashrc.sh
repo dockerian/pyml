@@ -123,8 +123,8 @@ alias gst='git status'
 echo "Loading bash aliases for dev ..."
 alias apache='httpd -v; sudo apachectl '
 alias exif='exiftool -sort -s'
-alias ipy='ipython'
-alias ipy3='ipython3'
+alias ipy='ipython -i --ext=autoreload -c "%autoreload 2"'
+alias ipy3='ipython3 -i --ext=autoreload -c "%autoreload 2"'
 alias goback='cd ${GOPATH}/$(cut -d/ -f2,3,4 <<< "${PWD/$GOPATH/}")'
 alias gopath='cd -P ${GOPATH} && pwd'
 alias pylib='pip show pip | grep Location | awk '\''{print substr($0, index($0,$2))}'\'''
@@ -146,6 +146,7 @@ function main() {
 
   find . -name '.DS_Store' -type f -delete 2>/dev/null &
 
+  ipy_autoreload
   fixpath
 }
 
@@ -458,6 +459,29 @@ function gbd-all() {
 ############################################################
 function goto() {
   cd $(find $GOPATH/src -type d -name "$1" 2>/dev/null | head -n 1); pwd
+}
+
+############################################################
+# function: Add config for ipython with autoreload extension
+############################################################
+function ipy_autoreload() {
+  echo ""
+  local ipy_script="
+c.InteractiveShellApp.extensions = ['autoreload']
+c.InteractiveShellApp.exec_lines = ['%autoreload 2', 'print("")']
+c.InteractiveShellApp.exec_lines.append('print(\"**ATTENTION**: %autoreload 2 enabled.\\n\")')
+"
+  local ipy_config=".ipython/profile_default/ipython_config.py"
+  if [[ ! -e "$HOME/${ipy_config}" ]]; then
+    echo "Saving to '~/${ipy_config}' ..."
+    echo "${ipy_script}" > "$HOME/${ipy_config}"
+  else
+    echo "Please configure '~/${ipy_config}' for autoreload in ipython."
+  fi
+  echo "......................................................................"
+  echo "${ipy_script}"
+  echo "......................................................................"
+  echo ""
 }
 
 ############################################################
