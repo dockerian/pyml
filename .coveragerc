@@ -6,6 +6,8 @@ omit =
   __init__.py
   .eggs/*
   .venv/*
+  ml/classifier/*
+  ml/digit_recognizer/*
   tests/*
   docs/*
 skip_covered = False
