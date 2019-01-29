@@ -42,6 +42,9 @@ COPY $PROJECT_DIR/requirements-dev.txt $SOURCE/$PROJECT/requirements-dev.txt
 COPY $PROJECT_DIR/requirements.txt $SOURCE/$PROJECT/requirements.txt
 
 # install python dependencies, and aws cli
+# note: if no intention to run venv inside docker container
+#     - uncomment lines after `# Don't need venv insider docker` in Makefile
+#     - uncomment following `pip install -r requirements*.txt`
 RUN mkdir -p $SOURCE \
  && pip install --upgrade pip \
 #&& pip install -r $SOURCE/$PROJECT/requirements-dev.txt \
