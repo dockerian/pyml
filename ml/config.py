@@ -88,10 +88,12 @@ def check_encrypted_text(setting_key, key_val):
     aorp = 'password' in skey or 'api_key' in skey
     if aorp and len(text) > 128 and ' ' not in text:
         # import boto3  # moving to top when this code is uncommented
-        # from base64 import b64decode
         # decrypted = boto3.client('kms').decrypt(
-        #     CiphertextBlob=b64decode(text))['Plaintext']
-        # return decrypted
+        #     CiphertextBlob=b64decode(text))
+        # # LOGGER.debug('- decrypted: %s', decrypted)
+        # decrypted_text = str(decrypted['Plaintext'], 'utf-8')
+        # # LOGGER.debug('- decrypted text: %s', decrypted_text)
+        # return decrypted_text
         return text
     return key_val
 

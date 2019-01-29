@@ -47,7 +47,7 @@ class ConfigTester(unittest.TestCase):
         """
         mock_client = MagicMock()
         mock_boto3.client.return_value = mock_client
-        mock_client.decrypt.return_value = {'Plaintext': self.decrypted_text}
+        mock_client.decrypt.return_value = {'Plaintext': bytes(self.decrypted_text, 'utf-8')}
         result = check_encrypted_text('password', self.encrypted_text)
         self.assertEqual(result, self.decrypted_text)
         result = check_encrypted_text('username', self.encrypted_text)
