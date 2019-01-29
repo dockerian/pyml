@@ -1,6 +1,7 @@
 # Build a New Python Project
 
 > How to initialize a new python project with venv, CI, and test coverage.
+>
 > Note:
 > - Based on general practice, the process may not be the best solution.
 > - Limited support to Python playbook, environment, IDE, CI, and frameworks.
@@ -56,8 +57,9 @@
   │   ├── main.py                   # main entrance
   │   ├── requirements-dev.txt
   │   ├── requirements.txt
-  │   └── setup.py
+  │   └── ...
   ├── setup.cfg
+  ├── setup.py
   │
   ├── tests
   │   ├── test_config.py
@@ -92,6 +94,9 @@
   * Use [regex](https://regex101.com/) ([regular expression](https://regexr.com/)) `\{\{__[A-Z_]+?__\}\}` to find all place holders.
   * Use `{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}` with "`.`",
     e.g. `ml\.` (regex) to find imports in all python files (`*.py`).
+  * Docker container may not need to run with python venv:
+    - uncomment lines after `# Don't need venv insider docker` in Makefile
+    - uncomment lines of `pip install -r requirements*.txt` in Dockerfile
 
 
 
