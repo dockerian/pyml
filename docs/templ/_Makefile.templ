@@ -146,6 +146,7 @@ ifneq ("$(VIRTUAL_ENV)", "")
 	@echo '**********************************************************************'
 else
 	@echo "--- Removing virtual env"
+	rm -rf *.tee
 	rm -Rf $(PYVENV_NAME)
 	rm -Rf .venv*
 	rm -Rf .eggs
@@ -157,8 +158,13 @@ endif
 ############################################################
 # Makefile targets for venv (virtual env)
 ############################################################
-.PHONY: dev-setup-venv
-dev-setup-venv $(PYVENV_NAME)/bin/activate: check-tools $(PIPLIST_DEV) $(PIPLIST_ALL)
+$(PYVENV_NAME).tee: $(PIPLIST_DEV) $(PIPLIST_ALL)
+	@make dev-setup-venv
+	@echo
+	@echo "- DONE: $(PYVENV_NAME)"
+
+.PHONY: dev-setup-venv dev-setup
+dev-setup-venv dev-setup: clean-cache check-tools
 	@echo
 ifneq ("$(VIRTUAL_ENV)", "")
 	@echo "--- Cleaning up pip list in $(VIRTUAL_ENV) ..."
@@ -170,29 +176,29 @@ ifneq ("$(VIRTUAL_ENV)", "")
 	@echo
 	@echo "--- Installing required dev packages ..."
 	# running setup.py in upper level of `$(PROJECT)` folder to register the package
-	pip install -r $(PIPLIST_ALL)
-	pip install -r $(PIPLIST_DEV)
+	pip install -r $(PIPLIST_ALL) | tee $(PYVENV_NAME).tee
+	pip install -r $(PIPLIST_DEV) | tee $(PYVENV_NAME).tee
 	@echo
 	pip list
 else
 	@echo "Checking python venv: $(PYVENV_NAME)"
 	@echo "----------------------------------------------------------------------"
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
+	# @touch $(PYVENV_NAME).tee
 	@echo
-	# touch $(PYVENV_NAME)/bin/activate
 endif
 	@echo
 	@echo "- DONE: $@"
 
-.PHONY: dev-setup
-dev-setup: dev-setup-venv
+.PHONY: setup test-setup
+setup test-setup: $(PYVENV_NAME).tee
 	@echo "----------------------------------------------------------------------"
 	@echo "Python environment: $(PYVENV_NAME)"
 	@echo "- Activate command: source $(PYVENV_NAME)/bin/activate"
 	@echo
 
-.PHONY: dvenv
-dvenv:
+.PHONY: venv-clean dvenv
+venv-clean dvenv:
 	@echo
 ifneq ("$(VIRTUAL_ENV)", "")
 	@echo "----------------------------------------------------------------------"
@@ -296,7 +302,7 @@ else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
 endif
 
-nosetest nosetests: clean-cache check-tools
+nosetest nosetests: clean-cache check-tools test-setup
 	@echo
 ifeq ("$(DONT_RUN_PYVENV)", "true")
 	@echo "--- Starting nose2 tests ..."
@@ -310,7 +316,7 @@ else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) dev-setup "$@"
 endif
 
-python-test unittest: clean-cache check-tools
+python-test unittest: clean-cache check-tools test-setup
 	@echo
 ifeq ("$(DONT_RUN_PYVENV)", "true")
 	@echo "--- Starting unittest discover ..."
@@ -323,11 +329,11 @@ else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) dev-setup "$@"
 endif
 
-pytest test: clean-cache check-tools test-only
+pytest test: clean-cache check-tools test-setup test-only
 	@echo
 	@echo "- DONE: $@"
 
-test-all: clean-all dev-setup test-all-only
+test-all: clean-all dev-setup-venv test-all-only
 	@echo
 	@echo "- DONE: $@"
 
