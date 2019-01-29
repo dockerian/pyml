@@ -64,26 +64,56 @@ def check_valid_md5(data):
     return bool(result)
 
 
+def del_attr(obj, attr):
+    """
+    Delete an attribute from object, or a key from dict, if exists.
+    """
+    value = None
+    if isinstance(attr, int):
+        if isinstance(obj, list) and attr < len(obj) and attr >= 0:
+            # LOGGER.debug('deleting index [%s] of %s', attr, obj)
+            value = obj[attr]
+            del obj[attr]
+    elif isinstance(attr, str):
+        if isinstance(obj, dict) and attr in obj:
+            # LOGGER.debug('deleting key [%s] of %s', attr, obj)
+            value = obj[attr]
+            del obj[attr]
+        elif hasattr(obj, attr):
+            # LOGGER.debug('deleting attr [%s] of %s', attr, obj)
+            value = getattr(obj, attr)
+            delattr(obj, attr)
+    elif isinstance(attr, list) and len(attr) > 0:
+        if len(attr) > 1:
+            prop = get_attr(obj, attr[0])
+            return del_attr(prop, attr[1:])
+        else:
+            prop = attr[0]
+            # LOGGER.debug('deleting attr [%s] of %s', prop, obj)
+            return del_attr(obj, prop)
+    else:
+        value = None
+        # LOGGER.debug('cannot delete `%s` of %s', attr, obj)
+    return value
+
+
 def get_attr(obj, *args):
     """
     Get nested attributes
     """
-    data = None
-    if obj:
-        data = obj
-        try:
-            for key in args:
-                # noinspection PyTypeChecker
-                if isinstance(key, str):
-                    data = data.get(key, None)
-                elif isinstance(key, int) and isinstance(data, list):
-                    data = data[key] if len(data) >= (key - 1) else None
-                else:
-                    data = None  # bad key type
-                if not data:
-                    return None
-        except Exception:
-            return None
+    data = obj
+    for key in args:
+        if not isinstance(data, dict) and hasattr(data, '__dict__'):
+            data = data.__dict__
+        # noinspection PyTypeChecker
+        # LOGGER.debug('getting key [%s] of %s', key, data)
+        if isinstance(key, str) and isinstance(data, dict):
+            data = data.get(key, None)
+        elif isinstance(key, int) and isinstance(data, list):
+            data = data[key] if key >= 0 and key < len(data) else None
+        else:
+            data = None  # bad key type
+    # LOGGER.debug('returning data: %s', data)
     return data
 
 

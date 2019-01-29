@@ -18,6 +18,7 @@ from logging import getLogger
 from ml.utils.extension import DictEncoder, JsonEncoder
 from ml.utils.extension import check_duplicate_key
 from ml.utils.extension import check_valid_md5
+from ml.utils.extension import del_attr
 from ml.utils.extension import get_attr
 from ml.utils.extension import get_camel_title_word
 from ml.utils.extension import get_hash
@@ -25,7 +26,30 @@ from ml.utils.extension import get_json
 from ml.utils.extension import pickle_object
 from ml.utils.extension import pickle_to_str
 
-logger = getLogger(__name__)
+LOGGER = getLogger('ml.'+__name__)
+
+
+class Bar():
+    def __init__(self):
+        class Foo():
+            def __init__(self):
+                self.test1 = {'key1': 'value.1'}
+                self.test2 = {'key2': 'value.2'}
+
+        self._foo = Foo()
+        self._foo_dict = self._foo.__dict__
+        self.list = [0, 1, 2, 3, 4, 555, 6, 7, 8, 9, 100, self._foo, 12, 13]
+        self.dict = {'a': '_aaa_', 'b': 'BB', 'c': 3.14, 'd': 'dddd', 'more': self.list.copy()}  # noqa
+        self.prop = {
+            'dict': self.dict.copy(),
+            'list': self.list.copy(),
+            'prop': self._foo,
+        }
+        self.num1 = 1
+        self.num2 = '2222'
+        self.num3 = 3.14
+        self.num4 = 4444
+        self.num9 = 999
 
 
 class EncodeTest(object):
@@ -49,6 +73,8 @@ class ExtensionTests(unittest.TestCase):
 
     def setUp(self):
         """setup for test"""
+        self.foobar = Bar()
+
         self.mock_s3 = MagicMock()
         self.mock_s3_client = MagicMock()
         self.mock_s3_bucket = MagicMock()
@@ -66,7 +92,7 @@ class ExtensionTests(unittest.TestCase):
         self.repo_path = os.path.dirname(self.test_path)
         self.proj_path = os.path.join(self.repo_path, "ml")
         self.util_path = os.path.join(self.proj_path, "utils")
-        self.hash_path = os.path.join(self.test_path, self.hash_file)
+        self.hash_path = os.path.join(self.test_path, "data", self.hash_file)
         self.salt = "363ccea406657ce5280662fad028772bbc88d9545e209f21093462c95af544c3"
         with open(self.hash_path, 'rb') as f:
             self.hash_data = json.loads(f.read())
@@ -120,6 +146,35 @@ class ExtensionTests(unittest.TestCase):
         for test in tests:
             result = check_valid_md5(test['input'])
             self.assertEqual(result, test['expected'])
+
+    def test_del_attr(self):
+        tests = [
+            {'attr': None, 'value': None},
+            {'attr': ['prop', 'does not exist'], 'value': None},
+            {'attr': ['prop', 'dict', 'more', 13], 'value': 13},
+            {'attr': ['prop', 'prop', 'test2', 'key2'], 'value': 'value.2'},
+            {'attr': 'num9', 'value': 999},
+        ]
+        num = 0
+        obj = Bar()
+        for test in tests:
+            attr = test['attr']
+            args = attr if isinstance(attr, list) else [attr]
+            value = test['value']
+            obj_dict = obj.__dict__
+            msg = 'Test #{}: getting value={}, args={}'.format('%02d' % num, value, args)
+            result1 = get_attr(obj, *args)
+            self.assertEqual(result1, value, '{} in obj:\n{}'.format(msg, obj_dict))
+
+            msg = 'Test #{}: deleting attr={}'.format('%02d' % num, attr)
+            result2 = del_attr(obj, attr)
+            self.assertEqual(result2, value, '{} in obj:\n{}'.format(msg, obj_dict))
+            # after deleted the attr
+            obj_dict = obj.__dict__
+            result3 = get_attr(obj, *args)
+            self.assertIsNone(result3, '{} in obj:\n{}'.format(msg, obj_dict))
+            num += 1
+        pass
 
     def test_dict_encoder(self):
         """
@@ -186,6 +241,34 @@ class ExtensionTests(unittest.TestCase):
         self.assertEqual(get_attr(obj, *[aaa]), None)
         self.assertEqual(get_attr(aaa, *[3]), None)
 
+    def test_get_attr_from_object(self):
+        """
+        test ml.utils.extension.get_attr (object)
+        """
+        tests = [
+            {'args': ['dict', 0], 'expected': None},
+            {'args': ['dict', 'c'], 'expected': 3.14},
+            {'args': ['dict', 'd', 'x'], 'expected': None},
+            {'args': ['prop', 'dict', 'a'], 'expected': '_aaa_'},
+            {'args': ['prop', 'dict', 'more', 5], 'expected': 555},
+            {'args': ['prop', 'dict', 'more', 11, 'test1', 'key1'], 'expected': 'value.1'},
+            {'args': ['prop', 'list', 10], 'expected': 100},
+            {'args': ['prop', 'prop', 'test2', 'key2'], 'expected': 'value.2'},
+            {'args': ['prop', 'prop', 'x'], 'expected': None},
+        ]
+        num = 0
+        obj = Bar()
+        for test in tests:
+            args = test['args']
+            expected = test['expected']
+            msg = 'Test #{}: expected={}, args={}'.format(
+                '%02d' % num, expected, args)
+            result = get_attr(obj, *args)
+            obj_dict = obj.__dict__
+            self.assertEqual(
+                result, expected, '{} in obj:\n{}'.format(msg, obj_dict))
+            num += 1
+
     def test_get_camel_title_word(self):
         """
         test ml.utils.extension.get_camel_title_word
@@ -213,16 +296,17 @@ class ExtensionTests(unittest.TestCase):
             {'input': 'It\'s good', 'output': 'ItsGood'},
             {'input': 'Yet Another TEST', 'output': 'YetAnotherTest'},
             {'input': 'M&M in CAPITALIZED', 'output': 'MMInCapitalized'},
+            {'input': 'KKK not OKAY', 'output': 'KkkNotOkay'},
             {'input': '', 'output': ''},
         ]
         for test in tests:
             expected = test['output']
-            result = get_camel_title_word(test['input'], False)
+            result = get_camel_title_word(test['input'], keep_capitals=False)
             self.assertEqual(result, expected)
 
     def test_get_hash(self):
         """
-        test hancock.utils.extension.get_hash
+        test ml.utils.extension.get_hash
         """
         for key in self.hash_data:
             result = get_hash(key, self.salt)
@@ -233,14 +317,14 @@ class ExtensionTests(unittest.TestCase):
 
     def test_get_hash_from_file(self):
         """
-        test hancock.utils.extension.get_hash from file
+        test ml.utils.extension.get_hash from file
         """
         result = get_hash(__file__, "", "<file>")
         self.assertNotEqual(result, "")
 
     def test_get_hash_from_large_file(self):
         """
-        test hancock.utils.extension.get_hash from large file
+        test ml.utils.extension.get_hash from large file
         """
         orig_func = os.path.getsize
         os.path.getsize = MagicMock(return_value=3*1024*1024*1024)
@@ -250,7 +334,7 @@ class ExtensionTests(unittest.TestCase):
 
     def test_get_hash_on_exception(self):
         """
-        test hancock.utils.extension.get_hash on exception
+        test ml.utils.extension.get_hash on exception
         """
         orig_func = os.path.getsize
         os.path.getsize = MagicMock(side_effect=Exception('x', 'msg'))
@@ -261,7 +345,7 @@ class ExtensionTests(unittest.TestCase):
 
     def test_get_json(self):
         """
-        test hancock.utils.extension.get_json
+        test ml.utils.extension.get_json
         """
         tests = [
             {
