@@ -10,6 +10,7 @@
 ## Contents
 
 * [Design](ml/README.md)
+* [Prerequisites](#pre-req)
 * [Dev Setup](#dev-setup)
 * [Testing](#testing)
 
@@ -24,6 +25,17 @@
   make clean dev-setup  # this will create a python virtualenv
   ```
 
+
+
+<br/><a name="pre-req"></a>
+## Prerequisites
+
+  * Python [3](https://www.python.org/downloads/)
+  * Python 3 `pip` [version 19.0.1 and up](https://pip.pypa.io/en/stable/installing/)
+  * Python 3 built-in virtual env [`venv`](https://docs.python.org/3/library/venv.html)
+  * System tools: find, rm, tee, xargs, zip (for building, e.g. AWS Lambda package)
+  * Command line JSON processor: [jq](https://stedolan.github.io/jq/download/)
+  * Docker ([optional](https://www.docker.com/))
 
 
 <br/><a name="testing"></a>
