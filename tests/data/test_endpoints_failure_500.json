@@ -1,0 +1,60 @@
+{
+  "failure": [
+    {
+      "_err": "response status `500` is not expected [200] from: https://abc/v0",
+      "name": "endpoint 0",
+      "path": "https://abc/v0"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: http://foobar/v1",
+      "name": "endpoint 1",
+      "path": "http://foobar/v1"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: http://foobar/v1/api/v1.0",
+      "name": "endpoint 1-0",
+      "path": "http://foobar/v1/api/v1.0"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: https://test/v2",
+      "name": "endpoint 2",
+      "path": "https://test/v2"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: https://test/v2/next/v2.0",
+      "name": "endpoint 2-0",
+      "path": "https://test/v2/next/v2.0"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: https://test/v2/next/v2.1",
+      "name": "endpoint 2-1",
+      "path": "https://test/v2/next/v2.1"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: https://test/v2/next/v2.1/apidoc/v2.1.1",
+      "name": "endpoint 2.1.0",
+      "path": "https://test/v2/next/v2.1/apidoc/v2.1.1"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: https://test/v2/next/v2.1/nested/v2.1.1",
+      "name": "endpoint 2.1.1",
+      "path": "https://test/v2/next/v2.1/nested/v2.1.1"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: https://test/v2/next/v2.1/nested/v2.1.2",
+      "name": "endpoint 2.1.2",
+      "path": "https://test/v2/next/v2.1/nested/v2.1.2"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: https://test/v2/next/v2.1/nested/v2.1.3",
+      "name": "endpoint 2.1.3",
+      "path": "https://test/v2/next/v2.1/nested/v2.1.3"
+    },
+    {
+      "_err": "response status `500` is not expected [200] from: https://xyz/v3",
+      "name": "endpoint 3",
+      "path": "https://xyz/v3"
+    }
+  ],
+  "success": []
+}

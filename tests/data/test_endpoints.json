@@ -1,0 +1,64 @@
+[{
+  "name": "endpoint 0",
+  "desc": "service abc v0.",
+  "path": "https://abc/v0/"
+}, {
+  "name": "endpoint 1",
+  "desc": "application foobar v1.",
+  "path": "http://foobar/v1",
+  "format": "html",
+  "routes": [{
+    "name": "endpoint 1-0",
+    "desc": "app service foobar api-v1.0.",
+    "path": "/api/v1.0"
+  }]
+}, {
+  "name": "endpoint 2",
+  "desc": "service test v2",
+  "path": "https://test/v2",
+  "routes": [{
+    "name": "endpoint 2-0",
+    "desc": "service test next v2.0.",
+    "path": "/next/v2.0",
+    "keys": ["dbInfo", "version"]
+  }, {
+    "name": "endpoint 2-1",
+    "desc": "service test next v2.1.",
+    "path": "/next/v2.1",
+    "format": "json",
+    "routes": [{
+      "name": "endpoint 2.1.0",
+      "desc": "service test apidoc v2.1.1.",
+      "path": "/apidoc/v2.1.1",
+      "format": "html",
+      "regex": "<h1>App Service API v\\d.+?</h1>"
+    }, {
+      "name": "endpoint 2.1.1",
+      "desc": "service test next nested v2.1.1.",
+      "path": "/nested/v2.1.1",
+      "keys": "test"
+    }, {
+      "name": "endpoint 2.1.2",
+      "desc": "service test next nested v2.1.2.",
+      "path": "/nested/v2.1.2",
+      "routes": [{
+        "name": "endpoint 2.1.2.x",
+        "desc": "app service test next nested deeper v2.1.2.x.",
+        "path": "/deeper/v2.1.x",
+        "routes": [{
+          "name": "endpoint 2.1.2.x.x",
+          "desc": "app service test next nested deeper v2.1.2.x.x.",
+          "path": "/deeper/v2.1.x.x"
+        }]
+      }]
+    }, {
+      "name": "endpoint 2.1.3",
+      "desc": "service test next nested v2.1.3.",
+      "path": "/nested/v2.1.3"
+    }]
+  }]
+}, {
+  "name": "endpoint 3",
+  "desc": "service xyz v3",
+  "path": "https://xyz/v3"
+}]
