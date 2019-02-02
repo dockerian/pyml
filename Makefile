@@ -24,6 +24,7 @@ DOCKER_TAGS := $(DOCKER_USER)/$(DOCKER_NAME)
 DOCKER_DENV := $(wildcard /.dockerenv)
 DOCKER_PATH := $(shell which docker)
 
+BUILD_ENV ?= test
 COVERAGE_DIR := htmlcov
 COVERAGE_REPORT := $(COVERAGE_DIR)/index.html
 
@@ -120,6 +121,7 @@ clean clean-cache:
 	@echo
 	@echo "--- Removing tox virtualenv"
 	rm -Rf $(PROJECT)/.tox*
+	rm -Rf .tox
 	@echo
 	@echo "--- Removing build"
 	rm -rf $(PROJECT)_build.tee
@@ -368,6 +370,23 @@ else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
 endif
 
+
+############################################################
+# build and deploy targets
+############################################################
+build: clean-cache build-only
+build-only:
+	@echo
+	BUILD_ENV=$(BUILD_ENV) USE_PYTHON3=$(USE_PYTHON3) $(MAKE_BUILD)
+	@echo
+	@echo "- DONE: $@"
+
+build-test: clean-cache build-test-only
+build-test-only:
+	@echo
+	BUILD_ENV=test USE_PYTHON3=$(USE_PYTHON3) $(MAKE_BUILD)
+	@echo
+	@echo "- DONE: $@"
 
 
 ############################################################

@@ -209,7 +209,7 @@ function check_input_codecov_token() {
 function check_input_docker_hostname() {
   local _stdin_=''
   local _valid_='false'
-  local _regex_='^[a-z][-a-z]{1,11}$'
+  local _regex_='^[a-z][-a-z]{1,15}$'
   while [[ "${_valid_}" == "false" ]]; do
     read -p "Docker host/image's name (${__DOCKER_CONTAINER_NAME__:-N/A}): " _stdin_
     if [[ "${_stdin_}" =~ ^\s*$ ]] && [[ "${__DOCKER_CONTAINER_NAME__}" =~ ${_regex_} ]]; then
@@ -845,11 +845,13 @@ function getpath() {
 
 # log_error() func: exits with non-zero code on error unless $2 specified
 function log_error() {
+  set +u
   log_trace "$1" "ERROR" $2
 }
 
 # log_trace() func: print message at level of INFO, DEBUG, WARNING, or ERROR
 function log_trace() {
+  set +u
   local err_text="${1:-Here}"
   local err_name="${2:-INFO}"
   local err_code="${3:-1}"

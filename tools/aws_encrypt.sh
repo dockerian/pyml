@@ -283,6 +283,7 @@ function list_keys() {
 
 # log_debug() func: print message as debug warning
 function log_debug() {
+  set +u
   if [[ "${DEBUG}" == "1" ]]; then
     log_trace "$1" "${2:-DEBUG}"
   fi
@@ -290,16 +291,19 @@ function log_debug() {
 
 # log_error() func: exits with non-zero code on error unless $2 specified
 function log_error() {
+  set +u
   log_trace "$1" "ERROR" $2
 }
 
 # log_fatal() func: exits with non-zero code on fatal failure unless $2 specified
 function log_fatal() {
+  set +u
   log_trace "$1" "FATAL" $2
 }
 
 # log_trace() func: print message at level of INFO, DEBUG, WARNING, or ERROR
 function log_trace() {
+  set +u
   local err_text="${1:-Here}"
   local err_name="${2:-INFO}"
   local err_code="${3:-1}"

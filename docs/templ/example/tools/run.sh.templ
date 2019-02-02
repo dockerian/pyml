@@ -23,7 +23,7 @@ script_path="$( cd "$( echo "${script_file%/*}" )" && pwd )"
 
 GITHUB_REPO="${GITHUB_REPO:-{{__GITHUB_REPOSITORY_NAME__}}}"
 GITHUB_USER="${GITHUB_USER:-{{__GITHUB_USER_OR_ORGANIZATION__}}}"
-DOCKER_USER="${DOCKER_USER:-${GITHUB_USER}}"
+DOCKER_USER="${DOCKER_USER:-{{__DOCKER_USER_OR_ORGANIZATION_NAME__}}}"
 DOCKER_NAME="${DOCKER_NAME:-{{__DOCKER_CONTAINER_NAME__}}}"
 DOCKER_IMAG="${DOCKER_USER}/${DOCKER_NAME}"
 DOCKER_PORT="${DOCKER_PORT:-8080}"
@@ -205,11 +205,13 @@ function get_os() {
 
 # log_error() func: exits with non-zero code on error unless $2 specified
 function log_error() {
+  set +u
   log_trace "$1" "ERROR" $2
 }
 
 # log_trace() func: print message at level of INFO, DEBUG, WARNING, or ERROR
 function log_trace() {
+  set +u
   local err_text="${1:-Here}"
   local err_name="${2:-INFO}"
   local err_code="${3:-1}"
