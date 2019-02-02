@@ -131,26 +131,23 @@ function check_git_commit() {
 function check_python() {
   if [[ "${USE_PYTHON3}" =~ (1|enable|on|true|yes) ]]; then
     if [[ "${DEF_VERSION:0:1}" == "3" ]]; then
-      PIP_COMMAND="pip"
+      check_python_pip_
     elif [[ "${PY3_VERSION:0:1}" == "3" ]]; then
       PYTHON_EXEC="python3"
-      PIP_COMMAND="python3 -m pip"
+      check_python_pip_ "3"
     else
       log_error "Cannot find python3."
     fi
   elif [[ "${USE_PYTHON2}" =~ (1|enable|on|true|yes) ]]; then
     if [[ "${PY2_VERSION:0:1}" == "2" ]]; then
       PYTHON_EXEC="python2"
+      check_python_pip_ "2"
     elif [[ "${DEF_VERSION:0:1}" != "2" ]]; then
       log_error "Cannot find python2."
     fi
-    if ! [[ -x "$(which pip)" ]]; then
-      log_error "Cannot find command 'pip'."
-    fi
-    PIP_COMMAND="pip"
+    check_python_pip_
   elif [[ "${DEF_VERSION:0:1}" == "3" ]]; then
-    PIP_COMMAND="python -m pip"
-    USE_PYTHON3="true"
+    check_python_pip_
   fi
 
   echo ""
@@ -160,6 +157,23 @@ function check_python() {
     if ! [[ -x "$(which pip3)" ]]; then
       log_error "Cannot find command 'pip3'."
     fi
+  fi
+}
+
+# check python pip
+function check_python_pip_() {
+  set +u
+  local _py_version_="${1}"  # should only be "", "2", or "3"
+  local _python_pip_="pip${_py_version_//2/}"
+  local _python_bin_="python${_py_version_//2/}"
+  local _python_ver_="$( ${_python_bin_} -m pip -V 2>/dev/null | awk -F '[()]' '{print $2}')"
+
+  if [[ "${_python_ver_}" != "" ]]; then
+    PIP_COMMAND="${_python_bin_} -m pip"
+  elif [[ -x "$(which ${_python_pip_})" ]]; then
+    PIP_COMMAND="${_python_pip_}"
+  else
+    log_error "Cannot find command '${_python_pip_}'."
   fi
 }
 
