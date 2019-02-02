@@ -80,8 +80,8 @@
     python module (`{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}`).
   * Add `requirements.txt` (including dependencies for production only)
     and `requirements-dev.txt` (dependencies for dev and testing).
-    See example in [docs/templ](../../docs/templ).
-  * For `Makefile`, `README.md`, and `setup.py`, find templates in `docs/templ`
+    See example in [docs/templ](../../docs/templ/example).
+  * For `Makefile`, `README.md`, and `setup.py`, find templates in `docs/templ/example`
     folder and replace any (`{{__PLACE_HOLDER__}}`) with proper text.
   * Add `setup.cfg` (and set test coverage threshold)
   * Add `utils/logging*.py`, `logging.conf` and `logging.yaml` to the project
@@ -129,7 +129,7 @@
   Also support to use `setup.py`:
 
   * [tox](http://tox.readthedocs.org/en/latest/examples.html)
-    - see `docs/templ/_tox.ini.templ`.
+    - see `docs/templ/example/.tox.ini.templ`.
 
   * [setup.py](https://docs.python.org/3/distutils/setupscript.html)
 

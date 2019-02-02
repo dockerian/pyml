@@ -21,4 +21,5 @@ else
   echo "" >> ${HOME}/.bashrc
 fi
 
+echo "    exec /usr/local/bin/gosu ${USER} '$@'"
 exec /usr/local/bin/gosu ${USER} "$@"

@@ -27,10 +27,11 @@
 #
 ##############################################################################
 set -eo pipefail
-script_file="${BASH_SOURCE[0]##*/}"
 # assuming this script is under ${script_base}/tools
-script_base="$( cd "$( echo "${BASH_SOURCE[0]%/*}/.." )" && pwd )"
-script_path="${script_base}/tools/${script_file}"
+script_file="$( readlink "${BASH_SOURCE[0]}" 2>/dev/null || echo ${BASH_SOURCE[0]} )"
+script_name="${script_file##*/}"
+script_base="$( cd "$( echo "${script_file%/*}/.." )" && pwd )"
+script_path="$( cd "$( echo "${script_file%/*}" )" && pwd )"
 
 GIT_BRANCH="${GIT_BRANCH:-master}"
 GIT_REVISION_SHA="${GIT_REVISION_SHA:-None}"

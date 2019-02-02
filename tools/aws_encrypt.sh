@@ -27,9 +27,10 @@
 #
 ##############################################################################
 # set -eo pipefail
-script_file="${BASH_SOURCE[0]##*/}"
-script_base="$( cd "$( echo "${BASH_SOURCE[0]%/*}/.." )" && pwd )"
-script_path="${script_base}/tools/${script_file}"
+script_file="$( readlink "${BASH_SOURCE[0]}" 2>/dev/null || echo ${BASH_SOURCE[0]} )"
+script_name="${script_file##*/}"
+script_base="$( cd "$( echo "${script_file%/*}/.." )" && pwd )"
+script_path="$( cd "$( echo "${script_file%/*}" )" && pwd )"
 kmskey_name="${KMS_KEY_ID:-aws-kms-key}"  # can be id, arn, alias
 kmskey_list=""
 kalias_list=""

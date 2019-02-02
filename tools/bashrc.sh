@@ -8,8 +8,10 @@ echo ""
 ########################################
 # file_name="${file##*.}"
 # file_extension="${file%.*}"
-script_file="${BASH_SOURCE[0]##*/}"
-script_path="$( cd "$( echo "${BASH_SOURCE[0]%/*}" )" && pwd )"
+script_file="$( readlink "${BASH_SOURCE[0]}" 2>/dev/null || echo ${BASH_SOURCE[0]} )"
+script_name="${script_file##*/}"
+script_base="$( cd "$( echo "${script_file%/*}/.." )" && pwd )"
+script_path="$( cd "$( echo "${script_file%/*}" )" && pwd )"
 ########################################
 
 # see:
@@ -59,6 +61,7 @@ alias llt='ls -al -rt'
 alias lg='dscl . list /groups | grep -v "_"'
 alias lgv='dscacheutil -q group' # -a name staff
 alias lsofi='lsof -i -n -P'
+alias lports='netstat -vanp tcp|grep -e pid '
 alias lu='dscl . list /users | grep -v "_"'
 alias luv='dscacheutil -q user' # -a name $USER
 alias ml="make -qp|awk -F':' '/^[a-zA-Z0-9][^\$#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}'|sort"
@@ -85,6 +88,7 @@ alias dme_disable='eval $(docker-machine env -u)'
 alias dme_enable='eval $(docker-machine env)'
 alias dmip="docker-machine ip default"
 alias dclean='docker kill $(docker ps -aq); docker rm -f -v $(docker ps -aq); docker rmi -f $(docker images -aq)'
+alias denv='env|sort|grep DOCKER'
 alias di="docker images|sort|grep -v none"
 alias dia="docker images -a"
 alias didangling="docker images -a --filter dangling=true"
@@ -127,6 +131,10 @@ alias ipy='ipython -i --ext=autoreload -c "%autoreload 2"'
 alias ipy3='ipython3 -i --ext=autoreload -c "%autoreload 2"'
 alias goback='cd ${GOPATH}/$(cut -d/ -f2,3,4 <<< "${PWD/$GOPATH/}")'
 alias gopath='cd -P ${GOPATH} && pwd'
+alias pipf='pip freeze'
+alias pipi='pip install'
+alias pipiu='pip install --upgrade'
+alias pipl='pip list'
 alias pylib='pip show pip | grep Location | awk '\''{print substr($0, index($0,$2))}'\'''
 alias pyserver='python -m SimpleHTTPServer'
 alias dvenv='deactivate'
@@ -478,9 +486,9 @@ c.InteractiveShellApp.exec_lines.append('print(\"**ATTENTION**: %autoreload 2 en
   else
     echo "Please configure '~/${ipy_config}' for autoreload in ipython."
   fi
-  echo "......................................................................"
+  echo "........................................................................"
   echo "${ipy_script}"
-  echo "......................................................................"
+  echo "........................................................................"
   echo ""
 }
 
@@ -489,6 +497,29 @@ c.InteractiveShellApp.exec_lines.append('print(\"**ATTENTION**: %autoreload 2 en
 ############################################################
 function members () {
   dscl . -list /Users | while read user; do printf "$user "; dsmemberutil checkmembership -U "$user" -G "$*"; done | grep "is a member" | cut -d " " -f 1;
+}
+
+############################################################
+# function: Print info
+############################################################
+function myinfo () {
+  printf "\n"
+  printf "CPU   : "
+  [[ -e /proc/cpuinfo ]] && cat /proc/cpuinfo 2>/dev/null | grep "model name" | head -1 | awk '{ for (i = 4; i <= NF; i++) printf "%s ", $i }'
+  [[ -x "$(which sysctl)" ]] && printf "$(sysctl -n machdep.cpu.brand_string)"
+  printf "\n"
+
+  printf "Kernel: $(uname -r) $(uname -p) $(uname -m)"
+  kded4 --version 2>/dev/null | grep "KDE Development Platform" | awk '{ printf " | KDE: %s", $4 }'
+  printf "\n"
+  printf "OS    : $(uname -s)\n"
+  # cat /etc/issue 2>/dev/null | awk '{ printf "OS    : %s %s %s %s | " , $1 , $2 , $3 , $4 }'
+  printf "Host  : $(uname -n)\n"
+  uptime | awk '{ printf "Uptime: %s %s %s", $3, $4, $5 }' | sed 's/,//g'
+  printf "\n"
+  cputemp 2>/dev/null | head -1 | awk '{ printf "%s %s %s\n", $1, $2, $3 }'
+  cputemp 2>/dev/null | tail -1 | awk '{ printf "%s %s %s\n", $1, $2, $3 }'
+  cputemp 2>/dev/null | awk '{ printf "%s %s", $1 $2 }'
 }
 
 ############################################################

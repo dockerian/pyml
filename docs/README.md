@@ -8,6 +8,8 @@
 
   * [Starter](../README.md)
   * [Python3 project templates](templ/README.md)
+  * [Agile planning stories](./stories.md)
+  * [Testing Notes](../tests/README.md)
   * [Dev Notes](../ml/README.md)
 
 

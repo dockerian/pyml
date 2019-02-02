@@ -2,13 +2,17 @@
 ############################################################
 # Run "make ${1:-test}" inside a Docker container
 #
-# Injectable environment variables:
+# Author: Jason Zhu (https://github.com/dockerian)
+#
+# Note: Injectable environment variables
+#   AWS_*       - AWS profile settings
+#   DEBUG       - debug/verbose flag, default: 0
 #   GITHUB_REPO - the github repository name (default: <repo_name>)
 #   GITHUB_USER - the github user (default: <github_orgnization_or_user>)
 #   DOCKER_USER - the docker user (default: ${GITHUB_USER})
 #   DOCKER_NAME - default: <repo_name>, as in ${DOCKER_USER}/${DOCKER_NAME}
 #   PROJECT_DIR - the base path to the project, default: ..
-#   DEBUG       - debug/verbose flag, default: 0
+#   ...         - see CMD_OPT in code
 #
 ############################################################
 set -e
@@ -17,10 +21,10 @@ script_name="${script_file##*/}"
 script_base="$( cd "$( echo "${script_file%/*}/.." )" && pwd )"
 script_path="$( cd "$( echo "${script_file%/*}" )" && pwd )"
 
-GITHUB_REPO="${GITHUB_REPO:-pyml}"
-GITHUB_USER="${GITHUB_USER:-dockerian}"
+GITHUB_REPO="${GITHUB_REPO:-{{__GITHUB_REPOSITORY_NAME__}}}"
+GITHUB_USER="${GITHUB_USER:-{{__GITHUB_USER_OR_ORGANIZATION__}}}"
 DOCKER_USER="${DOCKER_USER:-${GITHUB_USER}}"
-DOCKER_NAME="${DOCKER_NAME:-pyml}"
+DOCKER_NAME="${DOCKER_NAME:-{{__DOCKER_CONTAINER_NAME__}}}"
 DOCKER_IMAG="${DOCKER_USER}/${DOCKER_NAME}"
 DOCKER_PORT="${DOCKER_PORT:-8080}"
 DOCKER_PORT_TEST="8181"

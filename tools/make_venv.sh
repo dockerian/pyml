@@ -20,9 +20,10 @@
 # ```
 ############################################################
 set +x
-script_file="${BASH_SOURCE[0]##*/}"
-script_base="$( cd "$( echo "${BASH_SOURCE[0]%/*}/.." )" && pwd )"
-script_path="$( cd "$( echo "${BASH_SOURCE[0]%/*}" )" && pwd )"
+script_file="$( readlink "${BASH_SOURCE[0]}" 2>/dev/null || echo ${BASH_SOURCE[0]} )"
+script_name="${script_file##*/}"
+script_base="$( cd "$( echo "${script_file%/*}/.." )" && pwd )"
+script_path="$( cd "$( echo "${script_file%/*}" )" && pwd )"
 
 PYTHON_EXEC="python"
 PY_LIB_PATH="$(pip show pip | grep Location | awk '{print substr($0, index($0,$2))}')"
@@ -42,6 +43,7 @@ function main() {
   if ! [[ -e "Makefile" ]]; then
     cd -P "${script_base}" && pwd
   fi
+  echo "PWD: ${PWD}"
   echo ""
 
   # Activate venv if it has been created.
@@ -70,9 +72,9 @@ function main() {
     echo "${DELIMITER}"
 
     if [[ "${VIRTUAL_ENV}" == "${script_base}/${VENV_NAME}" ]]; then
-      pip install --upgrade pip
+      python -m pip install --upgrade pip
       echo ""
-      pip list
+      python -m pip list
       echo "${DELIMITER}"
       make $@
       EXIT_CODE=$?
@@ -141,7 +143,7 @@ function log_trace() {
   if [[ "${err_name}" == "ERROR" ]] || [[ "${err_name}" == "FATAL" ]]; then
     HAS_ERROR="true"
     echo ''
-    echo '                                                      \\\^|///   '
+    echo '                                                      \\\^|^///  '
     echo '                                                     \\  - -  // '
     echo '                                                      (  @ @  )  '
     echo '----------------------------------------------------oOOo-(_)-oOOo-----'

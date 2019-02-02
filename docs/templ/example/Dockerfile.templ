@@ -1,8 +1,8 @@
 FROM python:3
 
-MAINTAINER {{__AUTHOR__}} {{__AUTHOR_EMAIL__}}
+MAINTAINER {{__AUTHOR_NAME__}} {{__AUTHOR_EMAIL__}}
 LABEL maintainer="{{__AUTHOR_EMAIL__}}"
-LABEL organization="{{__DOCKER_USER_OR_ORGNIZATION_NAME__}}"
+LABEL organization="{{__DOCKER_USER_OR_ORGANIZATION_NAME__}}"
 LABEL project="{{__PROJECT_TITLE__}}"
 
 RUN apt-get update \
@@ -36,7 +36,14 @@ RUN apt-get update \
 #  && chmod +x /usr/local/bin/gosu \
 #  && rm /usr/local/bin/gosu.asc
 
-# COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
+# install gosu for a better su+exec command
+ARG GOSU_VERSION=1.10
+RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
+ && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
+ && chmod +x /usr/local/bin/gosu \
+ && gosu nobody true
+
+COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 ENV PROJECT={{__GITHUB_REPOSITORY_NAME__}} \
     PROJECT_DIR={{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}} \
@@ -47,9 +54,6 @@ COPY $PROJECT_DIR/requirements-dev.txt $SOURCE/$PROJECT/requirements-dev.txt
 COPY $PROJECT_DIR/requirements.txt $SOURCE/$PROJECT/requirements.txt
 
 # install python dependencies, and aws cli
-# note: if no intention to run venv inside docker container
-#     - uncomment lines after `# Don't need venv insider docker` in Makefile
-#     - uncomment following `pip install -r requirements*.txt`
 RUN mkdir -p $SOURCE \
  && pip install --upgrade pip \
 #&& pip install -r $SOURCE/$PROJECT/requirements-dev.txt \
@@ -59,6 +63,6 @@ RUN mkdir -p $SOURCE \
 WORKDIR $SOURCE/$PROJECT
 
 # ENTRYPOINT ["/bin/bash", "-c"]
-# ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["/bin/bash"]
