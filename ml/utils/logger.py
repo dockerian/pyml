@@ -24,6 +24,9 @@ def get_logger(name, level=logging.INFO):
 
     load_logging_config()  # loading logging config if not loaded yet
 
+    if not isinstance(name, str) or not name.startswith('ml'):
+        name = 'ml.{}'.format(name)
+
     # print('setting logger[{}] level:{}'.format(name, level))
     logger = logging.getLogger(name)
     logger.setLevel(level)
