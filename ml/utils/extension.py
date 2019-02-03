@@ -133,6 +133,19 @@ def get_camel_title_word(target_str, keep_capitals=True):
     return str_words.replace(' ', '')
 
 
+def get_function(obj, function_name):
+    """
+    Get function object by name.
+    """
+    func = None
+    if not isinstance(obj, object) or not isinstance(function_name, str):
+        # print('empty instance or invalid name')
+        return None
+    if obj and hasattr(obj, function_name):
+        func = getattr(obj, function_name)
+    return func if is_function(func) else None
+
+
 def get_hash(string_input="", salt="", hash_type="sha256", large_size=1024 * 1024 * 1024):
     """
     Get hash for @string_input, with @salt, by one of following hash types
@@ -182,6 +195,22 @@ def get_json(obj, indent=4):
     Get formatted JSON dump string
     """
     return json.dumps(obj, sort_keys=True, indent=indent)
+
+
+def is_function(func_var):
+    """
+    Check if a variable is a callable function object.
+    """
+    import inspect
+    import types
+    if not func_var:
+        return False
+    can_call = callable(func_var)
+    chk_type = isinstance(func_var, (
+        types.FunctionType, types.BuiltinFunctionType,
+        types.MethodType, types.BuiltinMethodType))
+    positive = inspect.isfunction(func_var)
+    return can_call or chk_type or positive
 
 
 def pickle_object(obj, *rm_keys):
