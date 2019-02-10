@@ -83,6 +83,7 @@ def print_pypath():
     Print out Python path.
     """
     import sys
+    print('System version:', sys.version.replace('\n', ' '))
     print('\nPYTHONPATH\n{}'.format(__80DOTS__))
     for pylib_path in sys.path:
         print(pylib_path)
