@@ -6,6 +6,7 @@
 """
 import json
 import logging
+import ssl
 import traceback
 import urllib.request
 import urllib.parse
@@ -13,6 +14,7 @@ import urllib.parse
 from ml.config import get_uint
 from ml.utils.logger import get_logger
 
+SSL_CONTEXT = ssl._create_unverified_context()
 DEBUG_LEVEL = DEBUG_LEVEL = get_uint('debug.level', logging.INFO)
 LOGGER = get_logger(__name__, level=DEBUG_LEVEL)
 
@@ -56,11 +58,12 @@ def check_params(params):
     return result
 
 
-def get_api_data(api_url, api_headers={}, api_data=None):
+def get_api_data(api_url, api_headers={}, api_data=None, context=SSL_CONTEXT):
     """
     @param api_url: a string represent full api URL.
-    @param api_headers: a directory of request headers.
+    @param api_headers: a directory of request headersself.
     @param api_data: a JSON data for POST request.
+    &param context: SSL certificate context.
     @return: (<api data object>, <status>).
     """
     _status = None
@@ -69,7 +72,7 @@ def get_api_data(api_url, api_headers={}, api_data=None):
     # from ml.utils.extension import pickle_to_str
     request = api_req.__dict__  # pickle_to_str(api_req)
     try:
-        with urllib.request.urlopen(api_req) as res:
+        with urllib.request.urlopen(api_req, context=context) as res:
             _status = res.status if hasattr(res, 'status') else None
             if res and res.status == 200:
                 data = res.read()

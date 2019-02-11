@@ -6,9 +6,13 @@
 @created: 2019-01-30
 
 """
+import copy
 import logging
 import re
+import threading
+import time
 
+from queue import Queue
 from urllib.parse import urlparse
 
 from ml.config import get_uint
@@ -53,28 +57,83 @@ class ServiceChecker:
         """
         self._endpoints = endpoints or []
         self._max_level = LEVEL_LIMIT if max_level < 0 or max_level > LEVEL_LIMIT else max_level
+
         self._run_level = -1
+        self._run_queue = Queue()
+        self._py_locker = threading.Lock()
+
         self._all_paths = []  # validated endpoints
         self._templates = {
             "failure": [],
             "success": [],
         }
-        self._results = self._templates.copy()
+        self._results = copy.deepcopy(self._templates)
         self._done = False
+        self._elapsed = 0
+        self._start = time.time()
+        self._end = self._start
         pass
 
-    def _check_all(self):
+    def _check_all(self, multi_threads=False):
+        """
+        Check all validated endpoints.
+        """
+        self._start = time.time()
+
+        if not multi_threads:
+            for endpoint in self._all_paths:
+                self._check_endpoint(endpoint)
+        else:
+            self._check_all_concurrent()
+
+        self._end = time.time()
+        self._elapsed = self._end - self._start
+        _tdiff = '{0:.5f}'.format(self._elapsed)
+        LOGGER.info(
+            'Execution time: %s [multi_threads=%s]',
+            _tdiff, multi_threads)
+        pass
+
+    def _check_all_concurrent(self):
+        """
+        Check all validated endpoints concurrently.
+        """
         for endpoint in self._all_paths:
-            path = endpoint.get('path')
-            _err = self._check_endpoint_result(path, **endpoint)
-            _msg = '* complete endpoint: {}'.format(_err or 'success')
-            LOGGER.debug(_msg)
-            _result = self._copy_endpoint(endpoint, _err)
-            results = self._results['failure'] if _err else self._results['success']
-            results.append(_result)
+            self._run_queue.put(endpoint)
+
+        for endpoint in self._all_paths:
+            _new_thd = threading.Thread(target=self._check_all_concurrent_queue)
+            _new_thd.daemon = True
+            _new_thd.start()
+
+        self._run_queue.join()
         pass
 
-    def _check_endpoint_result(self, url, **kwargs):
+    def _check_all_concurrent_queue(self):
+        """
+        Check concurrent queue, get each endpoint until it is empty.
+        """
+        while not self._run_queue.empty():
+            endpoint = self._run_queue.get()
+            self._check_endpoint(endpoint)
+            self._run_queue.task_done()
+
+    def _check_endpoint(self, endpoint):
+        """
+        Check single endpoint (thread-safe).
+        """
+        _name = endpoint.get('name')
+        _path = endpoint.get('path')
+
+        with self._py_locker:
+            LOGGER.debug('* checking endpoint: %s [%s]', _name, _path)
+
+        result, status = get_api_data(_path)
+
+        with self._py_locker:
+            self._check_endpoint_result(_path, result, status, **endpoint)
+
+    def _check_endpoint_result(self, url, result, status, **kwargs):
         """
         Use endpoint data (kwargs) to check availability of specific url.
 
@@ -82,17 +141,21 @@ class ServiceChecker:
         @param kwargs: endpoint configuration (dict).
         @return: None if success; otherwise, an error message (str).
         """
-        _name = kwargs.get('name')
+        _err = self._check_endpoint_result_(url, result, status, **kwargs)
+        _msg = '* complete endpoint: {}'.format(_err or 'success')
+        LOGGER.debug(_msg)
+        data = self._copy_endpoint(kwargs, _err)
+        results = self._results['failure'] if _err else self._results['success']
+        results.append(data)
+
+    def _check_endpoint_result_(self, url, result, status, **kwargs):
+        if not result:
+            return 'no response data from URL: {}'.format(url)
+
         _keys = kwargs.get('keys', [])
         _regx = kwargs.get('regx', '')
         _format = kwargs.get('format', 'json')
         _status = kwargs.get('status', 200)
-
-        LOGGER.debug('* checking endpoint: %s [%s]', _name, url)
-        result, status = get_api_data(url)
-
-        if not result:
-            return 'no response data from URL: {}'.format(url)
 
         log = 'status={}, format={}, keys={}, regx={}, type(result)={}, url={}'.format(
             _status, _format, _keys, _regx, type(result), url)
@@ -218,7 +281,7 @@ class ServiceChecker:
             data['_err'] = err
         return data
 
-    def start(self, endpoints=[]):
+    def start(self, endpoints=[], multi_threads=False):
         """
         Start to check endpoints.
         @param endpoints: new endpoints to process.
@@ -227,9 +290,10 @@ class ServiceChecker:
             self._endpoints = endpoints  # overwrite and start with new endpoints
             self._done = False
         if isinstance(self._endpoints, list) and not self._done:
-            self._results = self._templates.copy()
+            self._all_paths = []
+            self._results = copy.deepcopy(self._templates)
             self._check_services(self._endpoints)
-            self._check_all()
+            self._check_all(multi_threads)
 
         # self._done = True  # prevent from processing the endpoints again
         # returning processed results

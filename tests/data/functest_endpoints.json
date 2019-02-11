@@ -1,0 +1,28 @@
+[{
+  "name": "mockbin",
+  "desc": "mockbin request",
+  "path": "http://mockbin.com/request?foo=bar&foo=baz",
+  "keys": "headers"
+}, {
+  "name": "httpbin",
+  "desc": "httpbin test",
+  "path": "https://httpbin.org/get?foo=bar",
+  "keys": "args"
+}, {
+  "name": "assertible",
+  "desc": "assertible article",
+  "path": "https://assertible.com/blog/7-http-methods-every-web-developer-should-know-and-how-to-test-them",
+  "format": "html",
+  "regx": "7 HTTP methods every web developer should know and how to test them"
+}, {
+  "name": "github",
+  "desc": "github repository",
+  "path": "https://github.com/dockerian/pyml",
+  "format": "html",
+  "regx": "Python Machine Learning Practice"
+}, {
+  "name": "mocky.io",
+  "desc": "mocky.io hello world",
+  "path": "https://www.mocky.io/v2/5185415ba171ea3a00704eed",
+  "keys": "hello"
+}]
