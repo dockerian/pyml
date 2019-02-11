@@ -52,6 +52,17 @@ class ServiceCheckerTester(unittest.TestCase):
         """tearing down at the end of the test"""
         pass
 
+    @patch('ml.common.svc_checker.urlparse')
+    def test_check_endpoint_parse(self, mock_urlparse):
+        result = None
+        mock_urlparse.side_effect = ValueError('value error')
+        try:
+            svc = ServiceChecker([])
+            result = svc._check_endpoint_parse('test')
+        except Exception as ex:
+            self.assertIsInstance(ex, ValueError)
+        self.assertFalse(result)
+
     @patch('ml.common.svc_checker.get_api_data')
     def test_start(self, mock_get_api_data):
         _res_test = [{
@@ -80,6 +91,12 @@ class ServiceCheckerTester(unittest.TestCase):
           "path": "http://foobar/v1",
           "keys": "do_not_exist",
         }, {
+          "name": "endpoint 2-html",
+          "desc": "app endpoint v2.",
+          "path": "https://xyz/v2/",
+          "regx": "<version>",
+          "format": "html",
+        }, {
           "name": "endpoint 3-bad-url",
           "desc": "bad application foobar v3.",
           "path": "bad/foobar/v3",
@@ -103,7 +120,10 @@ class ServiceCheckerTester(unittest.TestCase):
               "path": "bad/foobar/v3"
             }
           ],
-          "success": []
+          "success": [{
+            "name": "endpoint 2-html",
+            "path": "https://xyz/v2"
+          }]
         }
 
         mock_data = {
@@ -126,6 +146,7 @@ class ServiceCheckerTester(unittest.TestCase):
             'status': 500, 'max_level': 2, 'mock_res': mock_data,
             'expected': self.test_data_failure,
         }]
+        num = 0
         for test in tests:
             status = test.get('status', 200)
             expected = test.get('expected', None)
@@ -139,6 +160,9 @@ class ServiceCheckerTester(unittest.TestCase):
             results_string = json.dumps(results, sort_keys=True, indent=2)
             str1 = 'ServiceChecker results:\n{}'.format(results_string)
             str2 = json.dumps(expected, sort_keys=True, indent=2)
-            _msg = '{}\n{}'.format(str1, str2)
-            self.assertDictEqual(results, expected, _msg)
+            _msg = 'Test #{}: {}\n{}'.format('%02d' % num, str1, str2)
+            for key in ['failure', 'success']:
+                self.assertCountEqual(
+                    results[key], expected[key], _msg)
+            num += 1
         pass
