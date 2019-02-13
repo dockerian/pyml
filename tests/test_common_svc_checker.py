@@ -3,6 +3,7 @@ test_common_svc_checker.py
 """
 import json
 import os
+import pytest
 import unittest
 
 from mock import patch
@@ -52,6 +53,17 @@ class ServiceCheckerTester(unittest.TestCase):
         """tearing down at the end of the test"""
         pass
 
+    @patch('ml.common.svc_checker.urlparse')
+    def test_check_endpoint_parse(self, mock_urlparse):
+        result = None
+        mock_urlparse.side_effect = ValueError('value error')
+        try:
+            svc = ServiceChecker([])
+            result = svc._check_endpoint_parse('test')
+        except Exception as ex:
+            self.assertIsInstance(ex, ValueError)
+        self.assertFalse(result)
+
     @patch('ml.common.svc_checker.get_api_data')
     def test_start(self, mock_get_api_data):
         _res_test = [{
@@ -80,6 +92,12 @@ class ServiceCheckerTester(unittest.TestCase):
           "path": "http://foobar/v1",
           "keys": "do_not_exist",
         }, {
+          "name": "endpoint 2-html",
+          "desc": "app endpoint v2.",
+          "path": "https://xyz/v2/",
+          "regx": "<version>",
+          "format": "html",
+        }, {
           "name": "endpoint 3-bad-url",
           "desc": "bad application foobar v3.",
           "path": "bad/foobar/v3",
@@ -103,7 +121,10 @@ class ServiceCheckerTester(unittest.TestCase):
               "path": "bad/foobar/v3"
             }
           ],
-          "success": []
+          "success": [{
+            "name": "endpoint 2-html",
+            "path": "https://xyz/v2"
+          }]
         }
 
         mock_data = {
@@ -126,6 +147,7 @@ class ServiceCheckerTester(unittest.TestCase):
             'status': 500, 'max_level': 2, 'mock_res': mock_data,
             'expected': self.test_data_failure,
         }]
+        num = 0
         for test in tests:
             status = test.get('status', 200)
             expected = test.get('expected', None)
@@ -133,12 +155,53 @@ class ServiceCheckerTester(unittest.TestCase):
             max_level = test.get('max_level', 3)
             mock_res_data = test.get('mock_res', mock_data)
             mock_get_api_data.return_value = (mock_res_data, status)
+
             checker = ServiceChecker(self.test_data, max_level=max_level)
-            checker.start(endpoints)
-            results = checker._results
-            results_string = json.dumps(results, sort_keys=True, indent=2)
-            str1 = 'ServiceChecker results:\n{}'.format(results_string)
-            str2 = json.dumps(expected, sort_keys=True, indent=2)
-            _msg = '{}\n{}'.format(str1, str2)
-            self.assertDictEqual(results, expected, _msg)
+
+            for mt in [False, True]:
+                checker.start(endpoints, multi_threads=mt)
+                results = checker._results
+                results_string = json.dumps(results, sort_keys=True, indent=2)
+                str1 = 'ServiceChecker results [multi_threads={}]:\n{}'.format(
+                    mt, results_string)
+                str2 = json.dumps(expected, sort_keys=True, indent=2)
+                _msg = 'Test #{}: {}\n{}'.format('%02d' % num, str1, str2)
+
+                for key in ['failure', 'success']:
+                    self.assertCountEqual(
+                        results[key], expected[key], _msg)
+            num += 1
+        pass
+
+    @pytest.mark.functest
+    def test_start_functest(self):
+        """
+        functional testing ml.common.svc_checker :: ServiceChecker :: start
+        """
+        test_data = []
+        test_file = os.path.join(self.data_path, 'functest_endpoints.json')
+        if os.path.isfile(test_file):
+            with open(test_file, 'rt') as fh:
+                content = fh.read()
+                # LOGGER.debug('\n- Loaded endpoints:\n%s', content)
+                test_data = json.loads(content)
+
+        svc = ServiceChecker(test_data)
+        expected = []
+        for endpoint in test_data:
+            data = svc._copy_endpoint(endpoint)
+            expected.append(data)
+
+        svc.start(test_data)
+        results = svc._results
+        self.assertEqual(results['failure'], [], 'should not have failure')
+        self.assertCountEqual(results['success'], expected)
+        e1 = svc._elapsed
+
+        svc.start(test_data, multi_threads=True)
+        results = svc._results
+        self.assertEqual(results['failure'], [], 'should not have failure')
+        self.assertCountEqual(results['success'], expected)
+        e2 = svc._elapsed
+        self.assertLess(e2, e1, 'should take less time')
         pass

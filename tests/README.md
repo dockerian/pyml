@@ -16,6 +16,20 @@
 ## Online Tutorials
 
   * [Real Python Testing](https://realpython.com/python-testing/)
+  * [Understanding GIL](http://www.dabeaz.com/python/UnderstandingGIL.pdf)
+    - Parallel execution is forbidden
+    - GIL ("global interpreter lock") ensures that only one thread runs in
+the interpreter at once
+    - Default "check" (can be changed by `sys.setcheckinterval()`) occurs every 100 "ticks" (not time-based but loosely map to interpreter instructions)
+    - Python has no thread scheduling (which is left to the host os)
+      * GIL thread signaling is the source of big overhead. And far worse on multi-core.
+      * the interpreter has no control over scheduling so it just attempts to thread switch as fast as possible with the hope that main will run.
+      * the main thread is often blocked on an uninterruptible thread-join or lock.
+    - Currently running thread
+      * Resets the tick counter
+      * Runs signal handlers if the main thread (has any pending)
+      * Releases the GIL
+      * Reacquires the GIL
 
 
 <br/><a name="free-api"></a>
