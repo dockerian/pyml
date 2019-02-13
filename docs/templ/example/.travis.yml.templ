@@ -13,5 +13,4 @@ script:
   - make test
 
 after_success:
-  - export CODECOV_TOKEN={{__CODECOV_TOKEN__}}
-  - bash <(curl -s https://codecov.io/bash) -t {{__CODECOV_TOKEN__}}
+  - codecov

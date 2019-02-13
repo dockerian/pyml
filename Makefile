@@ -27,7 +27,7 @@ DOCKER_PATH := $(shell which docker)
 COVERAGE_DIR := htmlcov
 COVERAGE_REPORT := $(COVERAGE_DIR)/index.html
 
-SYSTOOLS := find rm pip python tee xargs zip
+SYSTOOLS := find rm python tee xargs zip
 
 USE_PYTHON3 := true
 PIPLIST_ALL := $(PROJECT)/requirements.txt
@@ -39,6 +39,7 @@ UTTEST_ARGS := --buffer --catch --failfast --verbose
 # Python venv (virtual env) directory name (without full path)
 PYVENV_NAME ?= .venv
 
+MAKE_BUILD := tools/build.sh
 MAKE_VENV := tools/make_venv.sh
 MAKE_RUN := tools/run.sh
 
@@ -122,6 +123,7 @@ clean clean-cache:
 	@echo
 	@echo "--- Removing build"
 	rm -rf $(PROJECT)_build.tee
+	rm -rf build*
 	@echo
 	@echo "- DONE: $@"
 
@@ -137,7 +139,7 @@ endif
 	@echo
 ifneq ("$(VIRTUAL_ENV)", "")
 	@echo "--- Cleaning up pip list in $(VIRTUAL_ENV) ..."
-	pip freeze | grep -v '^-e' | grep -v '^#' | xargs pip uninstall -y || true
+	python -m pip freeze | grep -v '^-e' | grep -v '^#' | grep -v 'pkg-resources' | xargs pip uninstall -y || true
 	@echo ''
 	@echo '**********************************************************************'
 	@echo '* Please `deactivate` '"$(PYVENV_NAME) before cleaning all eggs and virtual env *"
@@ -166,18 +168,19 @@ dev-setup-venv dev-setup: clean-cache check-tools
 	@echo
 ifneq ("$(VIRTUAL_ENV)", "")
 	@echo "--- Cleaning up pip list in $(VIRTUAL_ENV) ..."
-	pip install --upgrade pip || true
-	pip freeze | grep -v '^-e' | grep -v '^#' | xargs pip uninstall -y || true
+	python -m pip install --upgrade pip || true
+	python -m pip freeze | grep -v '^-e' | grep -v '^#' | grep -v 'pkg-resources' | xargs pip uninstall -y || true
 	@echo
 	@echo "--- Setting up $(PROJECT) develop ..."
-	python setup.py develop
+	# disabling setup.py due to easy_install issue on ubuntu
+	# python setup.py develop
 	@echo
 	@echo "--- Installing required dev packages ..."
 	# running setup.py in upper level of `$(PROJECT)` folder to register the package
-	pip install -r $(PIPLIST_ALL) | tee $(PYVENV_NAME).tee
-	pip install -r $(PIPLIST_DEV) | tee $(PYVENV_NAME).tee
+	python -m pip install -r $(PIPLIST_ALL) | tee $(PYVENV_NAME).tee
+	python -m pip install -r $(PIPLIST_DEV) | tee $(PYVENV_NAME).tee
 	@echo
-	pip list
+	python -m pip list
 else
 	@echo "Checking python venv: $(PYVENV_NAME)"
 	@echo "----------------------------------------------------------------------"
@@ -341,7 +344,7 @@ ifeq ("$(DONT_RUN_PYVENV)", "true")
 	# @echo "--- Setup $(PROJECT) develop [$@] ..."
 	# python setup.py develop
 	# @echo
-	pip list
+	python -m pip list
 	@echo
 	@echo "--- Starting pytest for all tests ..."
 	PYTHONPATH=. pytest -c setup.cfg $(PYTEST_ARGS)
@@ -358,9 +361,15 @@ ifeq ("$(DONT_RUN_PYVENV)", "true")
 	@echo
 	@echo "--- Starting pytest for unit tests ..."
 	@echo
-	PYTHONPATH=. pytest -c setup.cfg -m "not functest" $(PYTEST_ARGS)
+	PYTHONPATH=. pytest -c setup.cfg -m 'not functest' $(PYTEST_ARGS)
 	@echo
 	@echo "- DONE: $@"
 else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
 endif
+
+
+
+############################################################
+# sub-projects Makefile redirection
+############################################################

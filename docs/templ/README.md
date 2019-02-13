@@ -5,13 +5,14 @@
 > Note:
 > - Based on general practice, the process may not be the best solution.
 > - Limited support to Python playbook, environment, IDE, CI, and frameworks.
-> - No automation or generator available yet.
+> - A code generator is available [here](../../tools/make_newpy.sh).
 
 
 <br/><a name="contents"></a>
 ## Contents
 
 * [Directory](#tree)
+* [Python project creator](#creator)
 * [Config and Logging](#config-and-logging)
 * [Testing framework](#testing)
 * [Github Badges](#badges)
@@ -72,16 +73,45 @@
   ```
 
 
+<br/><a name="creator"></a>
+## Python project creator
+
+  Based on a full [CI](https://en.wikipedia.org/wiki/Continuous_integration)-integrated
+  Python[3](https://www.python.org/) project [template](./templ), the bash
+  script [`tools/make_newpy.sh`](../../tools/make_newpy.sh) provides a code
+  generator in CLI mode to allow developer creating a new Python project with
+  pre-built `Dockerfile`, `Makefile`, `setup.py`, `config`, `logger`,
+  as well as linter, pep8, flake8, etc., and testing frameworks.
+
+  The `make_newpy.sh` supports a couple handy command line argument options:
+
+  `--help` - print usage
+
+  `--install` - add a link to system path (e.g. `/user/local/bin`):
+
+  ```
+  tools/make_newpy.sh --install /usr/local/bin/make_newpy  # default to `newpy`
+  ```
+
+  `--uninstall` - remove installed link:
+
+  ```
+  make_newpy --uninstall  # optional $2 to provide the link
+  ```
+
+
 <br/><a name="config-and-logging"></a>
 ## Config and Logging
+
+  Here is the instructions on how to use the template manually.
 
   * At the repository root, choose and create a project folder, which could be
     the same as or an alias of the repository name. This would also be the top
     python module (`{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}`).
   * Add `requirements.txt` (including dependencies for production only)
     and `requirements-dev.txt` (dependencies for dev and testing).
-    See example in [docs/templ](../../docs/templ).
-  * For `Makefile`, `README.md`, and `setup.py`, find templates in `docs/templ`
+    See example in [docs/templ](../../docs/templ/example).
+  * For `Makefile`, `README.md`, and `setup.py`, find templates in `docs/templ/example`
     folder and replace any (`{{__PLACE_HOLDER__}}`) with proper text.
   * Add `setup.cfg` (and set test coverage threshold)
   * Add `utils/logging*.py`, `logging.conf` and `logging.yaml` to the project
@@ -129,7 +159,7 @@
   Also support to use `setup.py`:
 
   * [tox](http://tox.readthedocs.org/en/latest/examples.html)
-    - see `docs/templ/_tox.ini.templ`.
+    - see `docs/templ/example/.tox.ini.templ`.
 
   * [setup.py](https://docs.python.org/3/distutils/setupscript.html)
 
