@@ -33,6 +33,7 @@ PY3_VERSION="$(python3 --version 2>&1 | grep 'Python' | awk '{print $2}')"
 USE_PYTHON2="${USE_PYTHON2:-false}"
 USE_PYTHON3="${USE_PYTHON3:-true}"
 CMD_PY_VENV="virtualenv"
+PIP_COMMAND="pip"
 
 # main function
 function main() {
@@ -72,9 +73,9 @@ function main() {
     echo "${DELIMITER}"
 
     if [[ "${VIRTUAL_ENV}" == "${script_base}/${VENV_NAME}" ]]; then
-      python -m pip install --upgrade pip
+      ${PIP_COMMAND} install --upgrade pip
       echo ""
-      python -m pip list
+      ${PIP_COMMAND} list
       echo "${DELIMITER}"
       make $@
       EXIT_CODE=$?
@@ -98,15 +99,18 @@ function check_python() {
   if [[ "${USE_PYTHON3}" =~ (1|enable|on|true|yes) ]]; then
     if [[ "${DEF_VERSION:0:1}" == "3" ]]; then
       CMD_PY_VENV="python -m venv"
+      check_python_pip_
     elif [[ "${PY3_VERSION:0:1}" == "3" ]]; then
       PYTHON_EXEC="python3"
       CMD_PY_VENV="python3 -m venv"
+      check_python_pip_ "3"
     else
       log_error "Cannot find python3."
     fi
   elif [[ "${USE_PYTHON2}" =~ (1|enable|on|true|yes) ]]; then
     if [[ "${PY2_VERSION:0:1}" == "2" ]]; then
       PYTHON_EXEC="python2"
+      check_python_pip_ "2"
     elif [[ "${DEF_VERSION:0:1}" != "2" ]]; then
       log_error "Cannot find python2."
     fi
@@ -114,7 +118,9 @@ function check_python() {
       log_error "Cannot find command 'virtualenv'."
     fi
     CMD_PY_VENV="virtualenv"
+    check_python_pip_
   elif [[ "${DEF_VERSION:0:1}" == "3" ]]; then
+    check_python_pip_
     CMD_PY_VENV="python -m venv"
     USE_PYTHON3="true"
   fi
@@ -126,6 +132,23 @@ function check_python() {
     if ! [[ -x "$(which virtualenv)" ]]; then
       log_error "Cannot find command 'virtualenv'."
     fi
+  fi
+}
+
+# check python pip
+function check_python_pip_() {
+  set +u
+  local _py_version_="${1}"  # should only be "", "2", or "3"
+  local _python_pip_="pip${_py_version_//2/}"
+  local _python_bin_="python${_py_version_//2/}"
+  local _python_ver_="$( ${_python_bin_} -m pip -V 2>/dev/null | awk -F '[()]' '{print $2}')"
+
+  if [[ "${_python_ver_}" != "" ]]; then
+    PIP_COMMAND="${_python_bin_} -m pip"
+  elif [[ -x "$(which ${_python_pip_})" ]]; then
+    PIP_COMMAND="${_python_pip_}"
+  else
+    log_error "Cannot find command '${_python_pip_}'."
   fi
 }
 
