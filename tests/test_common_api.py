@@ -1,6 +1,7 @@
 """
 test_common_api.py
 """
+import pytest
 import unittest
 
 from mock import MagicMock, patch
@@ -113,7 +114,7 @@ class CommonApiTester(unittest.TestCase):
             if isinstance(test_expected, Exception):
                 with self.assertRaises(Exception) as ctx:
                     ctx_msg = 'unable to read data from request'
-                    result, status = get_api_data(self.api_url, self.headers)
+                    result, status = get_api_data(self.api_url, self.headers, timeout=None)
                     self.assertEqual(status, test_status)
                     self.assertTrue(ctx_msg in str(ctx.exception), msg)
                     self.assertEqual(result, None, msg)
@@ -124,3 +125,19 @@ class CommonApiTester(unittest.TestCase):
                 self.assertEqual(status, test_status)
             num += 1
         pass
+
+    @pytest.mark.functest
+    def test_timeout(self):
+        tests = [{
+            'apiUrl': 'http://example.com:81',
+            'result': None,
+            'status': 408
+        }]
+        result = None
+        for test in tests:
+            apiUrl = test.get('apiUrl')
+            expected_result = test.get('result')
+            expected_status = test.get('status')
+            result, status = get_api_data(apiUrl, timeout=1)
+            self.assertEqual(result, expected_result)
+            self.assertEqual(status, expected_status)

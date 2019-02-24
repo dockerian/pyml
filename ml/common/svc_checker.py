@@ -128,7 +128,7 @@ class ServiceChecker:
         with self._py_locker:
             LOGGER.debug('* checking endpoint: %s [%s]', _name, _path)
 
-        result, status = get_api_data(_path)
+        result, status = get_api_data(_path, timeout=5)
 
         with self._py_locker:
             self._check_endpoint_result(_path, result, status, **endpoint)
@@ -141,14 +141,14 @@ class ServiceChecker:
         @param kwargs: endpoint configuration (dict).
         @return: None if success; otherwise, an error message (str).
         """
-        _err = self._check_endpoint_result_(url, result, status, **kwargs)
+        _err = self._check_endpoint_result_error(url, result, status, **kwargs)
         _msg = '* complete endpoint: {}'.format(_err or 'success')
         LOGGER.debug(_msg)
         data = self._copy_endpoint(kwargs, _err)
         results = self._results['failure'] if _err else self._results['success']
         results.append(data)
 
-    def _check_endpoint_result_(self, url, result, status, **kwargs):
+    def _check_endpoint_result_error(self, url, result, status, **kwargs):
         if not result:
             return 'no response data from URL: {}'.format(url)
 

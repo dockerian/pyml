@@ -5,7 +5,9 @@
 # date: 2019-01-28
 """
 import json
+import http
 import logging
+import socket
 import ssl
 import traceback
 import urllib.request
@@ -14,9 +16,13 @@ import urllib.parse
 from ml.config import get_uint
 from ml.utils.logger import get_logger
 
-SSL_CONTEXT = ssl._create_unverified_context()
+DEFAULT_TIMEOUT = 30
 DEBUG_LEVEL = DEBUG_LEVEL = get_uint('debug.level', logging.INFO)
 LOGGER = get_logger(__name__, level=DEBUG_LEVEL)
+SSL_CONTEXT = ssl._create_unverified_context()
+
+
+socket.setdefaulttimeout(DEFAULT_TIMEOUT)
 
 
 def build_api_url(base_url, function, **kwargs):
@@ -58,23 +64,29 @@ def check_params(params):
     return result
 
 
-def get_api_data(api_url, api_headers={}, api_data=None, context=SSL_CONTEXT):
+def get_api_data(
+        api_url, api_headers={}, api_data=None,
+        context=SSL_CONTEXT,
+        timeout=DEFAULT_TIMEOUT):
     """
     @param api_url: a string represent full api URL.
     @param api_headers: a directory of request headers.
     @param api_data: a JSON data for POST request.
     @param context: SSL certificate context.
+    @param timeout: request timeout.
     @return: (<api data object>, <status>).
     """
+    if not isinstance(timeout, int) or timeout < 1:
+        timeout = get_uint('api.timeout', DEFAULT_TIMEOUT)
     _status = None
     api_obj = None
     api_req = urllib.request.Request(api_url, headers=api_headers, data=api_data)
     # from ml.utils.extension import pickle_to_str
     request = api_req.__dict__  # pickle_to_str(api_req)
     try:
-        with urllib.request.urlopen(api_req, context=context) as res:
+        with urllib.request.urlopen(api_req, context=context, timeout=timeout) as res:
             _status = res.status if hasattr(res, 'status') else None
-            if res and res.status == 200:
+            if res and res.status == http.HTTPStatus.OK:
                 data = res.read()
                 # LOGGER.debug('- response:\n%s', res.info())
                 headers = res.headers
@@ -90,7 +102,11 @@ def get_api_data(api_url, api_headers={}, api_data=None, context=SSL_CONTEXT):
             else:
                 LOGGER.debug('- response:\n%s', res.info())
                 LOGGER.error('- status: %s, request: %s', res.status, request)
+    except urllib.error.URLError:
+        # possible timed out
+        _status = http.HTTPStatus.REQUEST_TIMEOUT
     except Exception:
+        _status = 520  # unknown error
         message = 'unable to read data from request'
         LOGGER.error('- %s: %s', message, request)
         # import sys
