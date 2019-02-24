@@ -25,8 +25,8 @@ BASE = NAME if os.path.isdir(os.path.join(HERE, NAME)) else HERE
 # assume `requirements*.txt` under BASE
 PREQ = os.path.join(BASE, "requirements.txt")
 PREQ_DEV = os.path.join(BASE, "requirements-dev.txt")
-PREQ_DEV_LIST = [line.strip() for line in open(PREQ_DEV).readlines()]
-PREQ_LIST = [line.strip() for line in open(PREQ).readlines()] + PREQ_DEV_LIST
+PREQ_DEV_LIST = [line.strip() for line in open(PREQ_DEV).readlines()] if os.path.isfile(PREQ_DEV) else []
+PREQ_LIST = [line.strip() for line in open(PREQ).readlines()] if os.path.isfile(PREQ) else [] + PREQ_DEV_LIST
 
 ENTRY_POINTS = {
   'console_scripts': [

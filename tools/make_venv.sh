@@ -30,8 +30,8 @@ PY_LIB_PATH="$(pip show pip | grep Location | awk '{print substr($0, index($0,$2
 DEF_VERSION="$(python  --version 2>&1 | grep 'Python' | awk '{print $2}')"
 PY2_VERSION="$(python2 --version 2>&1 | grep 'Python' | awk '{print $2}')"
 PY3_VERSION="$(python3 --version 2>&1 | grep 'Python' | awk '{print $2}')"
-USE_PYTHON3="${USE_PYTHON3:-false}"
 USE_PYTHON2="${USE_PYTHON2:-false}"
+USE_PYTHON3="${USE_PYTHON3:-true}"
 CMD_PY_VENV="virtualenv"
 
 # main function
@@ -131,11 +131,13 @@ function check_python() {
 
 # log_error() func: exits with non-zero code on error unless $2 specified
 function log_error() {
+  set +u
   log_trace "$1" "ERROR" $2
 }
 
 # log_trace() func: print message at level of INFO, DEBUG, WARNING, or ERROR
 function log_trace() {
+  set +u
   local err_text="${1:-Here}"
   local err_name="${2:-INFO}"
   local err_code="${3:-1}"
