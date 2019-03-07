@@ -90,14 +90,15 @@ class DrDataSvcTests(unittest.TestCase):
         obj = Parameters(self.test_path, 'file name')
         self.assertEqual(obj.base_path, self.test_path)
 
-        tests = [
-            {"grads": {"dW1": numpy.array([[1, 2], [3, 4], [5, 6]]), "db1": numpy.array([[1], [2], [3]])},
-             "learning_rate": 1,
-             "result": {"W1": numpy.array([[0, 0], [0, 0], [0, 0]]), "b1": numpy.array([[0], [0], [0]])}},
-            {"grads": {"dW1": numpy.array([[1, 2], [3, 4], [5, 6]]), "db1": numpy.array([[1], [2], [3]])},
-             "learning_rate": 2,
-             "result": {"W1": numpy.array([[-1, -2], [-3, -4], [-5, -6]]), "b1": numpy.array([[-1], [-2], [-3]])}}
-        ]
+        tests = [{
+            "grads": {"dW1": numpy.array([[1, 2], [3, 4], [5, 6]]), "db1": numpy.array([[1], [2], [3]])},
+            "learning_rate": 1,
+            "result": {"W1": numpy.array([[0, 0], [0, 0], [0, 0]]), "b1": numpy.array([[0], [0], [0]])},
+        }, {
+            "grads": {"dW1": numpy.array([[1, 2], [3, 4], [5, 6]]), "db1": numpy.array([[1], [2], [3]])},
+            "learning_rate": 2,
+            "result": {"W1": numpy.array([[-1, -2], [-3, -4], [-5, -6]]), "b1": numpy.array([[-1], [-2], [-3]])},
+        }]
         for test in tests:
             obj._parameters = {"W1": numpy.array([[1, 2], [3, 4], [5, 6]]), "b1": numpy.array([[1], [2], [3]])}
             grads = test["grads"]
@@ -120,19 +121,16 @@ class DrDataSvcTests(unittest.TestCase):
         obj = Parameters(self.test_path, 'file name')
         self.assertEqual(obj.base_path, self.test_path)
 
-        tests = [
-            {
-                "ld": [1, 2, 3],
-                "parameters": {
+        tests = [{
+            "ld": [1, 2, 3],
+            "parameters": {
                     "W1": [[2.2971712432704137], [-0.8651542170526618]],
                     "b1": [[0.], [0.]],
                     "W2": [[-0.5281717522634557, -1.0729686221561705],
                            [0.8654076293246785, -2.3015386968802827],
                            [1.74481176421648, -0.7612069008951028]],
-                    "b2": [[0.], [0.], [0.]],
-                }
-            }
-        ]
+                    "b2": [[0.], [0.], [0.]]},
+        }]
         for test in tests:
             layer_dims = test["ld"]
             expected_parameters = test["parameters"]
