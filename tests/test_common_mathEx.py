@@ -49,7 +49,7 @@ class MathExTests(unittest.TestCase):
     def test_change_to_multi_class(self):
         """
         test ml.common.mathEx.change_to_multi_class
-        :return:
+        @return:
         """
         tests = [
             {"y": [[0, 1, 2]], "result": [[1, 0, 0], [0, 1, 0], [0, 0, 1]]},
@@ -68,7 +68,7 @@ class MathExTests(unittest.TestCase):
     def test_compute_cost(self):
         """
         test ml.common.mathEx.compute_cost
-        :return:
+        @return:
         """
         tests = [{
             "al": [[0.5]], "y": [[0.6]],
@@ -98,7 +98,7 @@ class MathExTests(unittest.TestCase):
     def test_compute_cost_with_l2_regularization(self):
         """
         test ml.common.mathEx.compute_cost_with_l2_regularization
-        :return:
+        @return:
         """
         tests = [{
             "al": [[0.01, 0.1, 0.2, 0.3], [0.1, 0.2, 0.3, 0.4]],
@@ -143,7 +143,7 @@ class MathExTests(unittest.TestCase):
     def test_relu(self):
         """
         test ml.common.mathEx.relu
-        :return:
+        @return:
         """
         tests = [{
             "z": [[1], [-1], [2], [-2]],
@@ -182,7 +182,7 @@ class MathExTests(unittest.TestCase):
     def test_relu_backward(self):
         """
         test ml.common.mathEx.relu_backward
-        :return:
+        @return:
         """
         tests = [{
             "da": [[1], [2], [3], [4]],
@@ -207,7 +207,7 @@ class MathExTests(unittest.TestCase):
     def test_leaky_relu(self):
         """
         test ml.common.mathEx.leaky_relu
-        :return:
+        @return:
         """
         tests = [{
             "z": [[-1], [0], [1], [2]],
@@ -244,7 +244,7 @@ class MathExTests(unittest.TestCase):
     def test_leaky_relu_backward(self):
         """
         test ml.common.mathEx.leaky_relu_backward
-        :return:
+        @return:
         """
         tests = [{
             "da": [[1], [2], [3], [4]],
@@ -269,7 +269,7 @@ class MathExTests(unittest.TestCase):
     def test_sigmoid(self):
         """
         test ml.common.mathEx.sigmoid
-        :return:
+        @return:
         """
         tests_array = [{
             "z": [[0]],
@@ -318,7 +318,7 @@ class MathExTests(unittest.TestCase):
     def test_sigmoid_backward(self):
         """
         test ml.common.mathEx.sigmoid_backward
-        :return:
+        @return:
         """
         tests_array = [{
             "da": [[0.5]],
@@ -365,7 +365,7 @@ class MathExTests(unittest.TestCase):
     def test_l_model_forward(self):
         """
         test ml.common.l_model_forward
-        :return:
+        @return:
         """
         tests = [{
             "x": numpy.array([[1, 2], [3, 4]]),
@@ -396,7 +396,7 @@ class MathExTests(unittest.TestCase):
     def test_l_model_backward_with_l2(self):
         """
         test ml.common.mathEx.l_model_backward_with_l2
-        :return:
+        @return:
         """
         tests = [{
             "al": numpy.array([[0.5, 0.5], [0.5, 0.5]]),
@@ -436,7 +436,7 @@ class MathExTests(unittest.TestCase):
     def test_one_vs_all_prediction(self):
         """
         test ml.common.mathEx.one_vs_all_prediction
-        :return:
+        @return:
         """
         tests = [{
             "pm": [[0], [0.1], [0.2]],
