@@ -21,12 +21,14 @@ from ml.utils.extension import check_valid_md5
 from ml.utils.extension import del_attr
 from ml.utils.extension import get_attr
 from ml.utils.extension import get_camel_title_word
+from ml.utils.extension import get_function
 from ml.utils.extension import get_hash
 from ml.utils.extension import get_json
+from ml.utils.extension import is_function
 from ml.utils.extension import pickle_object
 from ml.utils.extension import pickle_to_str
 
-LOGGER = getLogger('ml.'+__name__)
+LOGGER = getLogger(__name__)
 
 
 class Bar():
@@ -50,6 +52,9 @@ class Bar():
         self.num3 = 3.14
         self.num4 = 4444
         self.num9 = 999
+
+    def func(self):
+        pass
 
 
 class EncodeTest(object):
@@ -304,6 +309,37 @@ class ExtensionTests(unittest.TestCase):
             result = get_camel_title_word(test['input'], keep_capitals=False)
             self.assertEqual(result, expected)
 
+    def test_get_function(self):
+        import inspect
+        tests = [{
+            'object': Bar(),
+            'funcname': 'func',
+            'expected': True,
+        }, {
+            'object': ExtensionTests(),
+            'funcname': inspect.stack()[0][3],  # current function name
+            'expected': True,
+        }, {
+            'object': ExtensionTests(),
+            'funcname': 'not_a_func',
+            'expected': False,
+        }, {
+            'object': ExtensionTests(),
+            'funcname': 1234567890,
+            'expected': False,
+        }, {
+            'object': None,
+            'funcname': 'not_a_func',
+            'expected': False,
+        }]
+        for test in tests:
+            obj = test.get('object')
+            name = test.get('funcname')
+            expected = test.get('expected')
+            result = get_function(obj, name)
+            msg = 'expecting {} for func name: {} - {}'.format(expected, name, result)
+            self.assertEqual(is_function(result), expected, msg)
+
     def test_get_hash(self):
         """
         test ml.utils.extension.get_hash
@@ -356,6 +392,23 @@ class ExtensionTests(unittest.TestCase):
         for test in tests:
             result = get_json(test['obj'], indent=0)
             self.assertEqual(result, test['out'])
+
+    def test_is_function(self):
+        import inspect
+        obj = ExtensionTests()
+        func = get_function(obj, inspect.stack()[0][3])  # current function name
+        tests = [{
+            'function': 'func',
+            'expected': False,
+        }, {
+            'function': func,
+            'expected': True,
+        }]
+        for test in tests:
+            func = test.get('function')
+            expected = test.get('expected')
+            msg = 'expecting {} for func: {}'.format(expected, func)
+            self.assertEqual(is_function(func), expected, msg)
 
     def test_pickle_object(self):
         """

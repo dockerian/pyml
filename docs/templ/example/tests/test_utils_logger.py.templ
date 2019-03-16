@@ -52,11 +52,12 @@ class LoggerTests(unittest.TestCase):
         """
         test {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.utils.logger.get_logger
         """
-        import re
         print_info()
+        # import re
         # removing prefix /^tests\./ for `python -m unitest`
-        logger_name = re.sub(r'^tests\.', '', LOGGER.name)
-        self.assertEqual(logger_name, 'test_utils_logger')
+        # logger_name = re.sub(r'^tests\.', '', LOGGER.name)
+        # self.assertEqual(logger_name, 'test_utils_logger')
+        self.assertEqual(LOGGER.name, '{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.tests.test_utils_logger')
         LOGGER.debug('LOGGER name: %s', LOGGER.name)
         LOGGER.warning('LOGGER warning ...')
 

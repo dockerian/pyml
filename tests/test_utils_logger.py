@@ -52,11 +52,11 @@ class LoggerTests(unittest.TestCase):
         """
         test ml.utils.logger.get_logger
         """
-        import re
         print_info()
+        # import re
         # removing prefix /^tests\./ for `python -m unitest`
-        logger_name = re.sub(r'^tests\.', '', LOGGER.name)
-        self.assertEqual(logger_name, 'test_utils_logger')
+        # logger_name = re.sub(r'^tests\.', '', LOGGER.name)
+        self.assertEqual(LOGGER.name, 'ml.tests.test_utils_logger')
         LOGGER.debug('LOGGER name: %s', LOGGER.name)
         LOGGER.warning('LOGGER warning ...')
 

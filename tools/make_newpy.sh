@@ -158,10 +158,11 @@ function check_input_author() {
   done
 }
 
+# see http://emailregex.com/
 function check_input_author_email() {
   local _stdin_=''
   local _valid_='false'
-  local _regex_='^[a-z]{1,10}([._-]?[a-z]{1,10})*@[a-z]{1,15}([._-]?[a-z]{1,15})$'
+  local _regex_='^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+'
   while [[ "${_valid_}" == "false" ]]; do
     read -p "Author e-mail (${__AUTHOR_EMAIL__:-N/A}): " _stdin_
     if [[ "${_stdin_}" =~ ^\s*$ ]] && [[ "${__AUTHOR_EMAIL__}" =~ ${_regex_} ]]; then
@@ -230,7 +231,7 @@ function check_input_docker_hostname() {
 function check_input_docker_user() {
   local _stdin_=''
   local _valid_='false'
-  local _regex_='^[a-z]{1,19}$'
+  local _regex_='^[a-z][a-z0-9]{1,19}$'
   while [[ "${_valid_}" == "false" ]]; do
     read -p "Docker user/organization (${__DOCKER_USER_OR_ORGANIZATION_NAME__:-N/A}): " _stdin_
     if [[ "${_stdin_}" =~ ^\s*$ ]] && [[ "${__DOCKER_USER_OR_ORGANIZATION_NAME__}" =~ ${_regex_} ]]; then

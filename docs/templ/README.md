@@ -190,6 +190,11 @@
 <br/><a name="travis-ci"></a>
 ## Travis CI
 
+  * Install `codecov`
+
+    ```
+    python3 -m pip install codecov
+    ```
   * Sign in http://codecov.io/ with Github account.
   * Add repository to codecov.io and get a token for specific repository.
   * Add a [travis-ci](https://docs.travis-ci.com/user/languages/python/)
@@ -204,6 +209,7 @@
     script:
       - make test
     after_success:
+      - export CODECOV_TOKEN={{__CODECOV_TOKEN__}}
       - bash <(curl -s https://codecov.io/bash) -t {{__CODECOV_TOKEN__}}
     ```
   * Another [example](http://thomas-cokelaer.info/blog/2014/08/1013/):
@@ -220,11 +226,11 @@
     # command to install dependencies
     # e.g. pip install -r requirements.txt --use-mirrors
     install:
-      - pip install .
+      - pip install
       - pip install nose coverage
       - pip install coveralls
     # command to run tests, e.g. python setup.py test
-    script:  
+    script:
       - python setup.py nosetests --with-coverage --cover-package pypiview
     after_sucess:
       - coveralls
@@ -234,7 +240,7 @@
   - https://github.com/codecov/codecov-python
   - https://realpython.com/python-continuous-integration/
   - https://docs.travis-ci.com/user/languages/python/
-  - https://docs.codecov.io/docs/team-bot
+  - https://docs.codecov.io/docs
 
 
 

@@ -24,6 +24,9 @@ def get_logger(name, level=logging.INFO):
 
     load_logging_config()  # loading logging config if not loaded yet
 
+    if not isinstance(name, str) or not name.startswith('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}'):
+        name = '{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.{}'.format(name)
+
     # print('setting logger[{}] level:{}'.format(name, level))
     logger = logging.getLogger(name)
     logger.setLevel(level)
