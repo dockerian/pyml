@@ -55,38 +55,36 @@ def get_fibonacci(n):
     return result
 
 
-def parseNumber(input_string, parsing_hex=False):
+def parse_number(input_string, parsing_hex=False):
     """
     # hex: ABCDEF
-    # atoi (int), integer/float
-    @param input_string:
-    @param parsing_hex:
+    # atoi (int, float), integer/float
+    @param input_string: input string
+    @param parsing_hex: ABCDEF
     @return:
     """
-    if not isinstance(input_string, str):
-        if isinstance(input_string, (int, float)):
-            return input_string
-        return None
-    input_string = input_string.strip()
-    if not len(input_string) > 0:
-        return None
-    if input_string == '-' or input_string == '+':
-        return None
-    result, sign = 0, 1
-    if input_string[0] == '-':
-        sign = -1
-        input_string = input_string[1:]
-    elif input_string[0] == '+':
-        input_string = input_string[1:]
-    if not '0' <= input_string[0] <= '9':
-        return None
-    for char in input_string:
-        if '0' <= char <= '9':
-            result = 10*result + ord(char) - ord('0')
-        else:
-            break
-    # print(result)
-    return sign*result
+    input_string = str(input_string).strip().strip('+').rstrip('.')
+    result, multiplier, division = 0, 10, 1
+    sign = -1 if input_string and input_string[0] == '-' else 1
+    if sign == -1:
+        input_string = input_string.strip('-')
+    for item in input_string:
+        # print('ch:', item)
+        if item == '.':
+            if division > 1:
+                return None
+            multiplier, division = 1, 10
+        elif item < '0' or item > '9':
+            return None
+        elif item >= '0' and item <= '9':
+            v = ord(item) - ord('0')
+            div = v / division if division > 1 else v
+            result = result * multiplier + div
+            # print(s, v, result)
+            if division != 1:
+                division *= 10
+
+    return None if input_string == '' else result * sign
 
 
 def find_largest_in_array(input_array):

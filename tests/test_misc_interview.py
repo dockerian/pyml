@@ -102,28 +102,30 @@ class InterviewTests(unittest.TestCase):
             result = get_fibonacci(n)
             self.assertEqual(result, expected)
 
-    def test_parseNumber(self):
+    def test_parse_number(self):
         """
         test ml.misc.interview.parseNumber
         @return:
         """
-        from ml.misc.interview import parseNumber
+        from ml.misc.interview import parse_number
         tests = [{
-            "result": 99, "in": '               99string    ',
+            "result": 0, "in": '   0    ',
         }, {
-            "result": 3838438, "in": '3838438sanba   ',
+            "result": None, "in": '               99string    ',
         }, {
-            "result": 3, "in": '     3.1415926',
+            "result": None, "in": '3838438sanba   ',
         }, {
-            "result": -57, "in": '-57perfectstring   ',
+            "result": 3.1415926, "in": '     3.1415926',
         }, {
-            "result": +789, "in": '   +789uuueeexddd  ',
+            "result": None, "in": '-57perfectstring   ',
+        }, {
+            "result": None, "in": '   +789uuueeexddd  ',
         }, {
             "result": None, "in": '   abcd998     ',
         }, {
-            "result": 96, "in": 96
+            "result": 96, "in": '96'
         }, {
-            "result": 9.89, "in": 9.89,
+            "result": 9.89, "in": '9.89',
         }, {
             "result": None, "in": ['3', '4', 'ade', 'lol', 'dota2'],
         }, {
@@ -136,12 +138,17 @@ class InterviewTests(unittest.TestCase):
             "result": None, "in": '+',
         }, {
             "result": None, "in": "-",
+        }, {
+            "result": None, "in": '3.14.15926'
         }]
         for test in tests:
             input_string = test['in']
             expected = test['result']
-            result = parseNumber(input_string)
-            self.assertEqual(result, expected)
+            result = parse_number(input_string)
+            if isinstance(result, float):
+                self.assertTrue(abs(result - expected) < .0000001)
+            else:
+                self.assertEqual(result, expected)
 
     def test_find_largest_in_array(self):
         """
