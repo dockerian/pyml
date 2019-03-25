@@ -80,7 +80,7 @@ class DrDataSvcTests(unittest.TestCase):
     def test_update(self):
         """
         test ml.common.parameters :: Parameters :: update
-        :return:
+        @return:
         """
         from ml.common.parameters import Parameters
 
@@ -111,7 +111,7 @@ class DrDataSvcTests(unittest.TestCase):
     def test_initialize_parameters_deep_he(self):
         """
         test ml.common.parameters :: Parameters :: initialize_parameters_deep_he
-        :return:
+        @return:
         """
         from ml.common.parameters import Parameters
 

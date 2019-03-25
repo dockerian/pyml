@@ -17,6 +17,7 @@
     - [Merge sort](#sorting-mergesort)
     - [Quick sort](#sorting-quicksort)
   * [Quiz, IQ, and Brain Teaser](#quiz)
+  * [Testing](#testing)
   * [Non-technical](#non-tech)
   * [Reading](#reading)
 
@@ -229,6 +230,37 @@
     Each speed at 1m, 2m, 5m, and 8m, can all pass in 15-minute?
   * Only 2 cuts allowed, paying one gold bar to a worker in 7 days (1 week).
   * Use 3 gallon jug and 5 gallon jug, measure out exactly 4 gallons.
+
+
+
+<br/><a name="testing"></a>
+### Software Testing
+
+  Test categories:
+  * spec test
+    - positive test
+    - negative test
+  * edge test cases, including out-of-range
+  * type check
+  * branch check
+  * exception check
+  * run time error
+
+  Advanced:
+  * usability test
+     - user interface and UX (user experience) - (consumer) product
+     - UI and readability (easy to read/understand)
+     - spec/doc, or user manual/guide
+  * performance test (load test / stress test)
+  * security test: (password exposure, input and logging, wired clear text, data loss, data integrity)
+  * risk test
+  * localizations: (non-ascii, unicode, different language documentation, user interface)
+  * integration
+    - installation and setup
+    - environment (os system/platform, cloud platform)
+    - ad hoc / smoke test / acceptance test / alpha / beta
+    - accessibility test, compatibility test
+    - work with other services/products
 
 
 
