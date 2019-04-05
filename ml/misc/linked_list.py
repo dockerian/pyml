@@ -1,3 +1,6 @@
+"""
+ml/misc/linked_list.py
+"""
 import copy
 
 
@@ -103,6 +106,13 @@ class LinkedList:
         return new_item
 
     def check_circular_link(self):
+        """
+        Example of circular link:
+             1        2        3        4
+        (A)----->(B)----->(C)----->(D)----->(E)
+                            \_______________/
+                                    5
+        """
         met, last, has_cyclic = self._get_circular_link()
         return has_cyclic
 

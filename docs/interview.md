@@ -276,15 +276,17 @@
 ### Reading
 
 * Books/Collection:
+  * [Computer Science in JavaScript](https://github.com/humanwhocodes/computer-science-in-javascript)
   * [Mock Interview Generator](https://docs.google.com/spreadsheets/d/1t_228bDllazltWrq7WrLaKCs3dHXlGHBybWz9nnRvSc/edit?usp=sharing)
   * [Tech Interview Handbook](https://github.com/yangshun/tech-interview-handbook)
 
-
 * Others:
+  * https://www.facebook.com/codingpill/
   * https://careersidekick.com/5-things-every-hiring-manager-wants/
   * https://careersidekick.com/brain-teaser-job-interview-questions-facebook-google-apple/
   * http://interactivepython.org/courselib/static/pythonds/index.html
   * https://javarevisited.blogspot.com/2011/06/top-programming-interview-questions.html
+  * https://www.geeksforgeeks.org/
   * https://www.geeksforgeeks.org/must-do-coding-questions-for-companies-like-amazon-microsoft-adobe/
   * https://www.geeksforgeeks.org/top-10-algorithms-in-interview-questions/
   * https://medium.freecodecamp.org/the-ultimate-guide-to-preparing-for-the-coding-interview-183251ee36c9

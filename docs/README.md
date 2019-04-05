@@ -10,11 +10,36 @@
   * [Python3 project templates](templ/README.md)
   * [Agile planning stories](./stories.md)
   * [Testing Notes](../tests/README.md)
+  * [Interview Notes](./interview.md)
   * [Dev Notes](../ml/README.md)
 
 
 
+<br/><a name="links"></a>
+## References
 
+  * [Awesome Python](https://github.com/vinta/awesome-python) |
+    [Chinese](https://github.com/jobbole/awesome-python-cn)
+  * [A better way to learn Python](https://thinkster.io/tutorials/a-better-way-to-learn-python)
+  * [The Hitchhiker's Guide to Learning Python](https://docs.python-guide.org/intro/learning/)
+  * Machine Learning
+    - [Introduction](https://www.datacamp.com/community/tutorials/introduction-machine-learning-python)
+    - [Essential Libraries for Machine Learning in Python](https://medium.freecodecamp.org/essential-libraries-for-machine-learning-in-python-82a9ada57aeb)
+    - [Faster Data Science Education](https://www.kaggle.com/learn/overview)
+    - [Machine Learning in Python](https://www.pyimagesearch.com/2019/01/14/machine-learning-in-python/)
+    - [Machine Learning Libraries](https://towardsdatascience.com/top-5-machine-learning-libraries-in-python-e36e3e0e02af):
+      - [numpy](http://www.numpy.org/),
+      - [pandas](https://pandas.pydata.org/),
+      - [matplotlib](https://matplotlib.org/),
+      - [sklearn](http://scikit-learn.org/stable/),
+      - [nltk](https://www.nltk.org/)
+    - [Scikit-learn](https://www.dataquest.io/blog/sci-kit-learn-tutorial/)
+    - [Others](https://medium.com/machine-learning-in-practice/over-200-of-the-best-machine-learning-nlp-and-python-tutorials-2018-edition-dd8cf53cb7dc)
+  * Online Python interpreters:
+    - [repl.it](https://repl.it/)
+    - [onlinegdb](https://www.onlinegdb.com/online_python_interpreter)
+    - [codingground](https://www.tutorialspoint.com/execute_python_online.php)
+    - [sourcelair](https://www.sourcelair.com/home)
 
 
 <p><br/></p>
