@@ -30,13 +30,13 @@ class Parameters:
         self._parameters = np.load(self._param_file).item()
         return self._parameters
 
-    def save(self, parameters):
+    def save(self):
         """
         save parameters from calculation to saved_parameters.npy
-        @param parameters: parameters from calculation, dictionaries
+        @param parameters: parameters from calfculation, dictionaries
         """
         LOGGER.info('saving parameters: {} ...'.format(self._param_file))
-        np.save(self._param_file, parameters, allow_pickle=True, fix_imports=True)
+        np.save(self._param_file, self._parameters, allow_pickle=True, fix_imports=True)
 
     def update(self, grads, learning_rate):
         """
@@ -78,3 +78,10 @@ class Parameters:
             assert (parameters['b' + str(l)].shape == (layer_dims[l], 1))
 
         self._parameters = parameters
+
+    def get(self):
+        """
+        get the parameters
+        @return: _parameters
+        """
+        return self._parameters

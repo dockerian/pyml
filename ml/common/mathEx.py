@@ -28,7 +28,7 @@ def change_to_multi_class(y):
 
     for i in range(m):
         label = y[0, i]
-        print(type(label))
+        # print(type(label))
         if isinstance(label, np.int64) and label >= 0:
             multi_class_y[label, i] = 1
         else:
@@ -160,13 +160,15 @@ def l_model_forward(x, parameters):
     """
     caches = []
     a = x
-    l = len(parameters) // 2  # number of layers in the neural network
+    l_total = len(parameters) // 2  # number of layers in the neural network
 
     # Implement [LINEAR -> RELU]*(L-1). Add "cache" to the "caches" list.
-    for l in range(1, l):
+    for l in range(1, l_total):
         a_prev = a
 
-        # use relu or leaky relu in hiden layers
+        # use relu or leaky relu in hidden layers
+        # print(l)
+        # print(parameters['W' + str(l)])
         a, cache = linear_activation_forward(
             a_prev, parameters['W' + str(l)], parameters['b' + str(l)],
             activation="leaky_relu")  # was relu
@@ -175,8 +177,9 @@ def l_model_forward(x, parameters):
     # Implement LINEAR -> SIGMOID. Add "cache" to the "caches" list.
 
     # output layer with sigmoid activation
+
     al, cache = linear_activation_forward(
-        a, parameters['W' + str(l)], parameters['b' + str(l)], activation="sigmoid")
+        a, parameters['W' + str(l_total)], parameters['b' + str(l_total)], activation="sigmoid")
 
     caches.append(cache)
 
@@ -316,6 +319,7 @@ def linear_forward(a, w, b):
     @return: current z, and caches for following calculations, numpy arrays and dictionaries
     """
 
+    # print(a.shape, w.shape, b.shape)
     z = w.dot(a) + b
 
     assert (z.shape == (w.shape[0], a.shape[1]))
@@ -388,7 +392,6 @@ def leaky_relu(z):
     """
 
     if isinstance(z, np.float) or isinstance(z, np.int64) or isinstance(z, float) or isinstance(z, int):
-        print('passed')
         z = np.array([[z]])
 
     a = np.maximum(0.01 * z, z)
@@ -419,9 +422,7 @@ def leaky_relu_backward(da, cache):
     # dZ = dZ*Z
 
     temp = np.ones_like(z)
-    print('temp1: ' + str(temp))
     temp[z <= 0] = 0.01
-    print('temp2: ' + str(temp))
     dz = dz*temp
 
     assert (dz.shape == z.shape)
