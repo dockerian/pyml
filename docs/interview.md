@@ -10,6 +10,7 @@
     - [Tree and Trie](#ds-tree)
     - [Graph](#ds-graph)
   * [Design questions](#design)
+  * [Mathematics problems](#math)
   * [Sorting Algorithms](#sorting)
     - [Big O Notation](#sorting-big-o)
     - [Bubble sort](#sorting-bubblesort)
@@ -18,6 +19,7 @@
     - [Quick sort](#sorting-quicksort)
   * [Quiz, IQ, and Brain Teaser](#quiz)
   * [Testing](#testing)
+  * [Networking](#networking)
   * [Non-technical](#non-tech)
   * [Reading](#reading)
 
@@ -30,6 +32,7 @@
 
   * Check if two strings are anagrams of each other.
   * Check if a string or a sentence is palindrome char by char, or word by word.
+  * Check if one string contains all characters in another string.
   * Find all permutations of a String.
   * Find the duplicate number in a given integer list.
   * Find the largest and smallest in a given unsorted integer list.
@@ -69,10 +72,36 @@
 <br/><a name="design"></a>
 ## Design questions
 
+### OOP
+
+  * Designing a simple card game.
+    - How to store the order of all the players (data structures)
+    - How to break it up into classes (card, game, player, etc)
+    - Create properties/fields and functions/methods.
+
+### Resources:
+
+  * Design Patterns: Elements of Reusable Object-Oriented Software (Gang of Four, 1994)
+  * Head First Design Patterns (2nd Edition, 2008)
+
   * The [System Design Primer](https://github.com/donnemartin/system-design-primer#how-to-approach-a-system-design-interview-question)
   * [Scalability for Dummies](http://www.lecloud.net/search/scalability+for+dummies)
   * Design a [Collaborative Editor](http://blog.gainlo.co/index.php/2016/03/22/system-design-interview-question-how-to-design-google-docs/)
   * Design a [URL Shortener](http://blog.gainlo.co/index.php/2016/03/08/system-design-interview-question-create-tinyurl-system/)
+
+
+
+<br/><a name="math"></a>
+## Mathematics
+
+### Big prime number
+
+  * https://langui.sh/2009/03/07/generating-very-large-primes/
+  * https://medium.com/@prudywsh/how-to-generate-big-prime-numbers-miller-rabin-49e6e6af32fb
+
+### Resources
+
+  * https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-042j-mathematics-for-computer-science-fall-2010/assignments/
 
 
 
@@ -231,10 +260,12 @@
   * Only 2 cuts allowed, paying one gold bar to a worker in 7 days (1 week).
   * Use 3 gallon jug and 5 gallon jug, measure out exactly 4 gallons.
 
+  * https://blog.codinghorror.com/classic-computer-science-puzzles/
+
 
 
 <br/><a name="testing"></a>
-### Software Testing
+## Software Testing
 
   Test categories:
   * spec test
@@ -261,6 +292,32 @@
     - ad hoc / smoke test / acceptance test / alpha / beta
     - accessibility test, compatibility test
     - work with other services/products
+
+
+
+<br/><a name="networking"></a>
+## Networking
+
+  Online network tools:
+  * http://www.all-nettools.com/toolbox/
+  * https://hackertarget.com/ip-tools/
+  * https://mxtoolbox.com/NetworkTools.aspx
+  * https://www.tamos.com/products/nettools/
+  * https://network-tools.com/
+
+  Downloadable tools:
+  * https://angryip.org/
+  * https://www.wireshark.org/
+  * https://nmap.org/
+  * https://www.ntop.org/
+  * https://www.ssh.com/ssh/putty/mac/ | * http://www.rbrowser.com/ | https://www.emtec.com/zoc/
+  * http://pandorafms.org/features/free-download-monitoring-software/
+  * https://www.putty.org/
+
+  Resources:
+  * https://www.geeksforgeeks.org/computer-network-tutorials/
+  * https://www.lantronix.com/resources/networking-tutorials/
+  * https://www.studytonight.com/computer-networks/
 
 
 
@@ -291,6 +348,7 @@
   * https://www.geeksforgeeks.org/top-10-algorithms-in-interview-questions/
   * https://medium.freecodecamp.org/the-ultimate-guide-to-preparing-for-the-coding-interview-183251ee36c9
   * https://www.interviewcake.com/google-interview-questions
+  * http://overthewire.org/wargames/
 
 
 
