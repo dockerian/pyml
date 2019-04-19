@@ -298,14 +298,30 @@
 <br/><a name="networking"></a>
 ## Networking
 
-  Online network tools:
+#### Data Transfer and Latency
+
+  |Computer Event| Speed  | Avg Latency | Normalized Scale |
+  |:-------------|-------:|------------:|-----------------:|
+  |3 GHz CPU     |        |      0.3 ns |               1s |
+  |Cache (L1)    | 3.5GB/s|      0.9 ns |               3s |
+  |Cache (L2)    |   3GB/s|      2.8 ns |               9s |
+  |Cache (L3)    |        |     12.9 ns |              43s |
+  |RAM           |   2GB/s|     ~100 ns |               4m |
+  |SSD           | 200MB/s|   25~150 μs |         1~4 days |
+  |Hard Drive    | 150MB/s|     1~10 ms |       1~9 months |
+  |Internet SF-NYC      ||        65 ms |          5 years |
+  |Internet SF-Hong Kong||       141 ms |         11 years |
+
+#### Online network tools
+
   * http://www.all-nettools.com/toolbox/
   * https://hackertarget.com/ip-tools/
   * https://mxtoolbox.com/NetworkTools.aspx
   * https://www.tamos.com/products/nettools/
   * https://network-tools.com/
 
-  Downloadable tools:
+#### Downloadable tools
+
   * https://angryip.org/
   * https://www.wireshark.org/
   * https://nmap.org/
@@ -314,10 +330,36 @@
   * http://pandorafms.org/features/free-download-monitoring-software/
   * https://www.putty.org/
 
-  Resources:
-  * https://www.geeksforgeeks.org/computer-network-tutorials/
-  * https://www.lantronix.com/resources/networking-tutorials/
-  * https://www.studytonight.com/computer-networks/
+#### Resources
+
+  * https://dev.to/ben/explain-tcp-like-im-five &#9734;&#9734;&#9734;
+  * http://bpastudio.csudh.edu/fac/lpress/471/hout/netech/postofficelayers.htm (analogy)
+  * http://xahlee.info/linux/computer_networking_index.html &#9733;&#9733;&#9734;&#9734;&#9734;
+  * https://www.geeksforgeeks.org/computer-network-tutorials/ &#9733;&#9733;&#9734;&#9734;&#9734;
+  * https://www.geeksforgeeks.org/computer-network-tcpip-model/ &#9734;&#9734;&#9734;
+  * https://www.garykessler.net/library/tcpip.html &#9733;&#9733;
+  * https://edu.gcfglobal.org/en/internetbasics/ &#9734;&#9734;
+  * https://www.inetdaemon.com/tutorials/index.shtml &#9733;&#9733;&#9733;
+  * https://www.lantronix.com/resources/networking-tutorials/ &#9733;&#9733;&#9734;&#9734;&#9734;
+  * http://www.omnisecu.com/tcpip/ &#9733;&#9733;&#9733;
+  * https://stackoverflow.com/questions/176264/what-is-the-difference-between-a-uri-a-url-and-a-urn
+  * https://en.wikipedia.org/wiki/List_of_information_technology_initialisms (acronyms)
+  * https://quizlet.com/113657279/common-networking-acronyms-flash-cards/ (acronyms)
+  * http://www.ibexsystems.com/NetworkAcronyms.htm (acronyms)
+  * https://nordicapis.com/defining-stateful-vs-stateless-web-services/
+
+#### Free/public APIs
+
+* https://any-api.com (collection)
+* https://www.computersciencezone.org/50-most-useful-apis-for-developers (collection for dev)
+* https://fakejson.com
+* https://github.com/toddmotto/public-apis (collection)
+* https://developer.here.com
+* https://my-json-server.typicode.com/ (fake API server)
+* https://httpstat.us (mocking status code in testing)
+* https://rapidapi.com (collection)
+* https://reqres.in | https://resttesttest.com | https://api.nasa.gov (AJAX)
+* https://swapi.co (The Star Wars)
 
 
 
