@@ -155,3 +155,81 @@ def parse_int(input):
             return None
         result = 10*result + (ord(ch) - ord('0'))
     return result*sign if input_string != '' else None
+
+
+def power(x, y):
+    """
+    Raise x to the power of y, O(log n)
+    ** does not support non-int ys
+    @return: x to the power of y
+    """
+    if not isinstance(y, int) or not isinstance(x, (int, float)):
+        raise TypeError
+    if y < 0:
+        x, y = 1 / x, -y
+    if y == 0:
+        return 1
+    result = 1
+    while y > 1:
+        if y % 2 == 0:
+            x *= x
+            y /= 2
+        else:
+            result *= x
+            x *= x
+            y = (y - 1) / 2
+    return x * result
+
+
+def camel_to_snake(input_string):
+    """
+    convert camelCase to sanke_case
+    @param input_string:
+    @return:
+    """
+    input_string = str(input_string)
+    output_string = ''
+    if input_string[0].isupper():
+        output_string += input_string[0].lower()
+        input_string = input_string[1:]
+    for char in input_string:
+        if char.isupper():
+            output_string += '_' + char.lower()
+        else:
+            output_string += char
+    return output_string
+
+
+def pick_fruit(fruits, weights):
+    """
+    generate fruit accoding to the fruit list and their weights
+    @param fruits: fruit list, list of string
+    @param weights: weight list, list of numbers
+    @return: the fruit generated, string
+    """
+    import random
+
+    random.seed(1)
+    # checking types
+    if not isinstance(fruits, list) or not isinstance(weights, list):
+        raise TypeError
+
+    # adjust invalid weights
+    for i in range(len(weights)):
+        if not isinstance(weights[i], (int, float)) or weights[i] < 0:
+            weights[i] = 0
+
+    # make sure length of lists matches
+    if len(fruits) != len(weights):
+        LOGGER.info('Please give lists with same length')
+        raise ValueError
+
+    rand = random.uniform(0, sum(weights))
+
+    if weights[0] >= rand:
+        return fruits[0]
+    for i in range(1, len(weights)):
+        weights[i] += weights[i - 1]
+        # print('interval is', weights)
+        if weights[i] > rand:
+            return fruits[i]

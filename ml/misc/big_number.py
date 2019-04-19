@@ -74,10 +74,38 @@ class BigNumber:
 
     def to_string(self):
         """
-        convert self.ist to string
+        convert self.list to string
         @return: string
         """
         result = ''
         for item in self.list:
             result += str(item)
         return result
+
+    def get_scale(self):
+        """
+        get the scale of self.list, like how big in human language
+        in the form of name, description
+        @return: name, description
+        """
+        deca_scale = {"name": 'deca', "description": 'Ten'}
+        hecto_scale = {"name": 'hecto', "description": 'Hundred'}
+        kilo_scale = {"name": 'kilo', "description": 'Thousand'}
+        mega_scale = {"name": 'mega', "description": 'Million'}
+        giga_scale = {"name": 'giga', "description": 'Billion'}
+        tera_scale = {"name": 'tera', "description": 'Trillion'}
+        peta_scale = {"name": 'peta', "description": 'Quadrillion'}
+        exa_scale = {"name": 'exa', "description": 'Quintillion'}
+        zeta_scale = {"name": 'zeta', "description": 'Sextillion'}
+        yotta_scale = {"name": 'yotta', "description": 'Septillion'}
+        scale_book = [deca_scale, deca_scale, hecto_scale, kilo_scale, kilo_scale, kilo_scale,
+                      mega_scale, mega_scale, mega_scale, giga_scale, giga_scale, giga_scale,
+                      tera_scale, tera_scale, tera_scale, peta_scale, peta_scale, peta_scale,
+                      exa_scale, exa_scale, exa_scale, zeta_scale, zeta_scale, zeta_scale,
+                      yotta_scale, yotta_scale, yotta_scale]
+        if len(self.list) <= len(scale_book):
+            name = scale_book[len(self.list) - 1]["name"]
+            description = scale_book[len(self.list) - 1]["description"]
+            return name, description
+        else:
+            return 'unknown', 'too big'

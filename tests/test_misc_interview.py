@@ -379,3 +379,161 @@ class InterviewTests(unittest.TestCase):
             expected = test["result"]
             result = parse_int(input_item)
             self.assertEqual(result, expected)
+
+    def test_power(self):
+        """
+        test ml.misc.interview.power
+        @return:
+        """
+        from ml.misc.interview import power
+        tests = [{
+            "x": 2, "y": 9,
+        }, {
+            "x": 7, "y": -36,
+        }, {
+            "x": -9, "y": 8,
+        }, {
+            "x": 3.7, "y": 2,
+        }, {
+            "x": -6.9, "y": -32,
+        }, {
+            "x": -7, "y": 77,
+        }, {
+            "x": 0, "y": sys.maxsize,
+        }, {
+            "x": 1, "y": -sys.maxsize,
+        }, {
+            "x": 99, "y": 84,
+        }, {
+            "x": sys.maxsize, "y": -sys.maxsize
+        }]
+
+        for test in tests:
+            print('test case', test['x'])
+            self.assertTrue(abs(power(test['x'], test['y']) - test['x']**test['y']) < 0.00000001)
+
+        # exception check
+        tests_ex = [{
+            "x": 'string', "y": 1,
+        }, {
+            "x": 37, "y": 'string',
+        }, {
+            "x": 3.7, "y": int,
+        }, {
+            "x": 9.9, "y": 3.7,
+        }, {
+            "x": int, "y": 5,
+        }, {
+            "x": [], "y": 7
+        }, {
+            "x": {}, "y": 8,
+        }, {
+            "x": 9, "y": [],
+        }, {
+            "x": 89.4, "y": {},
+        }, {
+            "x": None, "y": 0,
+        }, {
+            "x": 3, "y": None,
+        }, {
+            "x": None, "y": None,
+        }]
+
+        for test in tests_ex:
+            with self.assertRaises(TypeError):
+                power(test["x"], test["y"])
+
+    def test_camel_to_snake(self):
+        """
+        test ml.misc.camel_to_snake
+        @return:
+        """
+        from ml.misc.interview import camel_to_snake
+
+        tests = [{
+            "input": 'camelCase', "result": 'camel_case',
+        }, {
+            "input": '0_78Y', "result": '0_78_y',
+        }, {
+           "input": 'STRING', "result": 's_t_r_i_n_g'
+        }, {
+            "input": '   STRING  ', "result": '   _s_t_r_i_n_g  ',
+        }, {
+            "input": 'string', "result": 'string',
+        }, {
+            "input": 365, "result": '365',
+        }, {
+            "input": int, "result": "<class 'int'>",
+        }, {
+            "input": True, "result": 'true',
+        }, {
+            "input": 'C', "result": 'c',
+        }, {
+            "input": None, "result": 'none',
+        }, {
+            "input": ['STRING'], "result": "['_s_t_r_i_n_g']"
+        }, {
+            "input": '_A', "result": '__a'
+        }]
+        for test in tests:
+            self.assertEqual(camel_to_snake(test["input"]), test['result'])
+
+    def test_pick_fruit(self):
+        """
+        test ml.misc.interview.pick_fruit
+        @return:
+        """
+        from ml.misc.interview import pick_fruit
+
+        tests = [{
+            "fruits": ['a', 'b', 'c'], "weights": [2, 5, 7], "result": 'a',
+        }, {
+            "fruits": ['a', 'b', 'c'], "weights": [453, sys.maxsize, 7], "result": 'b',
+        }, {
+            "fruits": ['a', 'b', 99], "weights": [-99, int, 1], "result": 99,
+        }, {
+            "fruits": ['a', 'b', 'c'], "weights": [0, 0, 0], "result": 'a',
+        }, {
+            "fruits": [int, float, list], "weights": [0, 1, sys.maxsize], "result": list,
+        }, {
+            "fruits": ['a', ['a'], {"a": 'a'}], "weights": [0, 1, sys.maxsize], "result": {"a": 'a'},
+        }, {
+            "fruits": ['a', 'b', 'c'], "weights": [-0.5, -2, 0.0000001], "result": 'c',
+        }, {
+            "fruits": ['a', 'b', 'c'], "weights": [None, 1, None], "result": 'b',
+        }, {
+            "fruits": [None], "weights": [None], "result": None,
+        }]
+
+        for test in tests:
+            self.assertEqual(pick_fruit(test["fruits"], test["weights"]), test["result"])
+
+        # exception tests
+        type_error_tests = [{
+            "fruit": 1, "weights": [1],
+        }, {
+            "fruit": ['a'], "weights": 1,
+        }, {
+            "fruit": None, "weights": [1],
+        }, {
+            "fruit": ['a'], "weights": None,
+        }, {
+            "fruit": {"a": 'a'}, "weights": [1],
+        }, {
+            "fruit": ['a'], "weights": {"a": 'a'},
+        }, {
+            "fruit": 'string', "weights": [1],
+        }, {
+            "fruit": ['a'], "weights": 'string'
+        }, {
+            "fruit": int, "weights": [1],
+        }, {
+            "fruit": ['a'], "weights": int,
+        }]
+
+        for test in type_error_tests:
+            with self.assertRaises(TypeError):
+                pick_fruit(test["fruit"], test["weights"])
+
+        with self.assertRaises(ValueError):
+            pick_fruit(['a', 'b', 'c'], [1, 2, 3, 4, 5])

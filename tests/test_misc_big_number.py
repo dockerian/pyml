@@ -108,3 +108,57 @@ class BigNumberTests(unittest.TestCase):
             obj.add(test["input"])
             result = obj.to_string()
             self.assertEqual(result, test["result"])
+
+    def test_get_scale(self):
+        """
+        test ml.misc.big_number :: BigNumber :: get_scale
+        @return:
+        """
+        from ml.misc.big_number import BigNumber
+        tests = [{
+            "init": '5', "name": 'deca', "desc": 'Ten',
+        }, {
+            "init": '15', "name": 'deca', "desc": 'Ten',
+        }, {
+            "init": '115', "name": 'hecto', "desc": 'Hundred',
+        }, {
+            "init": '1115', "name": 'kilo', "desc": 'Thousand',
+        }, {
+            "init": '1632783', "name": 'mega', "desc": 'Million',
+        }, {
+            "init": '7732876432', "name": 'giga', "desc": 'Billion',
+        }, {
+            "init": '4323478483872', "name": 'tera', "desc": 'Trillion',
+        }, {
+            "init": '9432343235784323', "name": 'peta', "desc": 'Quadrillion',
+        }, {
+            "init": '7432348594323843238', "name": 'exa', "desc": 'Quintillion',
+        }, {
+            "init": '6323483283473829384738', "name": 'zeta', "desc": 'Sextillion',
+        }, {
+            "init": '5439204985093450934039554', "name": 'yotta', "desc": 'Septillion',
+        }, {
+            "init": '549350940395830495893405982094', "name": 'unknown', "desc": 'too big',
+        }, {
+            "init": '0', "name": 'deca', "desc": 'Ten',
+        }, {
+            "init": '3333.7', "name": 'deca', "desc": 'Ten',
+        }, {
+            "init": 'string', "name": 'deca', "desc": 'Ten',
+        }, {
+            "init": ['string'], "name": 'deca', "desc": 'Ten',
+        }, {
+            "init": {}, "name": 'deca', "desc": 'Ten',
+        }, {
+            "init": 8234, "name": 'kilo', "desc": 'Thousand',
+        }, {
+            "init": int, "name": 'deca', "desc": 'Ten',
+        }, {
+            "init": None, "name": 'deca', "desc": 'Ten',
+        }]
+
+        for test in tests:
+            obj = BigNumber(test["init"])
+            name, description = obj.get_scale()
+            self.assertEqual(name, test["name"])
+            self.assertEqual(description, test["desc"])
