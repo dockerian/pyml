@@ -71,9 +71,9 @@ ifeq ("$(DOCKER_PATH)", "")   # docker command is NOT installed
 endif
 
 # Don't need venv insider docker (in most situations)
-# ifneq ("$(DOCKER_DENV)", "")  # assume inside docker container
-#	DONT_RUN_PYVENV := true
-# endif
+ifneq ("$(DOCKER_DENV)", "")  # assume inside docker container
+	DONT_RUN_PYVENV := true
+endif
 # Don't start venv (virtual env) if it is already activated:
 ifneq ("$(VIRTUAL_ENV)", "")  # assume python venv is activated
 	DONT_RUN_PYVENV := true

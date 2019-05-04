@@ -19,9 +19,6 @@ def get_logger(name, level=logging.INFO):
     """
     Get a logger and load logging.yaml config file if exists.
     """
-    # Set a basic level of logging
-    logging.basicConfig(level=logging.INFO)
-
     load_logging_config()  # loading logging config if not loaded yet
 
     if not isinstance(name, str) or not name.startswith('ml'):
@@ -40,8 +37,12 @@ def load_logging_config():
     global __CONFIG__
 
     if __CONFIG__:
-        logging.config.dictConfig(__CONFIG__)
+        # only need to call logging.config once
+        # logging.config.dictConfig(__CONFIG__)
         return  # logging config has already been loaded
+
+    # Set a basic level of logging (should only be called once)
+    logging.basicConfig(level=logging.INFO)
 
     # Get the path to the logging config yaml
     dir_py_file = os.path.dirname(os.path.realpath(__file__))
@@ -52,7 +53,7 @@ def load_logging_config():
     # print('checking "{}" ...'.format(yml_logging))
     if os.path.exists(yml_logging):
         with open(yml_logging, 'r') as file_stream:
-            config = yaml.load(file_stream.read())
+            config = yaml.load(file_stream.read(), Loader=yaml.FullLoader)
             logging.config.dictConfig(config)
             print_logging_config(config)
             __CONFIG__ = config
