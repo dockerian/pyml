@@ -53,10 +53,9 @@ class LoggerTests(unittest.TestCase):
         test ml.utils.logger.get_logger
         """
         print_info()
-        # import re
-        # removing prefix /^tests\./ for `python -m unitest`
-        # logger_name = re.sub(r'^tests\.', '', LOGGER.name)
-        self.assertEqual(LOGGER.name, 'ml.tests.test_utils_logger')
+        # removing prefix for `python -m unitest`
+        logger_name = '.'.join(LOGGER.name.split('.')[-2:])
+        self.assertEqual(logger_name, __name__)
         LOGGER.debug('LOGGER name: %s', LOGGER.name)
         LOGGER.warning('LOGGER warning ...')
 

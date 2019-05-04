@@ -21,6 +21,7 @@ from ml.utils.extension import check_valid_md5
 from ml.utils.extension import del_attr
 from ml.utils.extension import get_attr
 from ml.utils.extension import get_camel_title_word
+from ml.utils.extension import get_class
 from ml.utils.extension import get_function
 from ml.utils.extension import get_hash
 from ml.utils.extension import get_json
@@ -308,6 +309,48 @@ class ExtensionTests(unittest.TestCase):
             expected = test['output']
             result = get_camel_title_word(test['input'], keep_capitals=False)
             self.assertEqual(result, expected)
+
+    def test_get_class(self):
+        """
+        test northstar.utils.extension.get_class
+        """
+        tests = [
+            {
+                'module': 'tests.test_utils_extension',
+                'class': 'ExtensionTests'
+            },
+        ]
+        for test in tests:
+            result = get_class(test.get('class'), test.get('module'))
+            result_instance = result('test_get_class')
+            self.assertEqual(result.__name__, test.get('class'))
+            self.assertIsInstance(result_instance, result)
+
+    def test_get_class_failed(self):
+        """
+        test northstar.utils.extension.get_class
+        """
+        tests = [
+            {
+                'class': [],
+                'module': []
+            },
+            {
+                'class': 'class',
+                'module': []
+            },
+            {
+                'class': [],
+                'module': 'module'
+            },
+            {
+                'class': 'no_class',
+                'module': 'no_module'
+            },
+        ]
+        for test in tests:
+            result = get_class(test.get('class'), test.get('module'))
+            self.assertIsNone(result)
 
     def test_get_function(self):
         import inspect
