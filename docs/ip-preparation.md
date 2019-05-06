@@ -43,7 +43,9 @@
 * IP Address Management (IPAM)
   - The administration of DNC and DHCP. It means Planing, tracking, and managing the Internet Protocol space used in a network. eg. DNS knowing the IP address taken via DHCP, and updating itself.
 * Local Area Network (LAN)
-  - Its a Network that connects computers and devices in a limited geographical area. oppose with WANs (Wide Area Network). eg. home and school. Smaller area, faster speed, no need for telecommunication line. 
+  - Its a Network that connects computers and devices in a limited geographical area. oppose with WANs (Wide Area Network). eg. home and school. Smaller area, faster speed, no need for telecommunication line.
+* deep packet inspection
+  - routers looking inside the data packet other than just read the ip address, take very slow
 
 <br/><a name="terms"></a>
 ## Job Terms
@@ -144,3 +146,28 @@
 
 #### Infrastructure
 * a wireless port connected to one of switch or hub like a star topology
+
+## Next-Gen Firewalls (NGFW)
+* similarities
+  - static packet filtering
+  - Stateful inspection or dynamic packet filtering, which checks every connection on every interface of a firewall for validity
+  - Network address translation for re-mapping the IP addresses included in packet headers (NAT)
+  - Port address translation that facilitates the mapping of multiple devices on a LAN to a single IP address (PAT)
+  - Virtual private network (VPN) support, which maintains the same safety and security features of a private network over the portion of a connection that traverses the internet or other public network
+* differences
+  - block to add application-level inspectioin
+  - IPS
+  - bringing intelligence from outside the firewall
+
+## Secure Shell SSH
+* communication Protocol(like http, https, ftp, etc)
+* do just about anything on the remote computer
+* traffic is encrypted
+* used mostly in the terminal/command line
+* SSH is the client, SSHD is the server (Open SSH Daemon), the server must have sshd installed and running
+* **generating keys**: 
+  - ssh-keygen
+  - ~/.ssh/id_rsa (private key)
+  - ~/.ssh/id_rsa.pub (public key)
+  - public key goes into server "authorized_keys" file
+* in windows: putty in older versions of windows, git bash & other terminal programs include the ssh command & other Unix tools
