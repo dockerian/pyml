@@ -9,4 +9,4 @@ scipy==1.2.0
 
 
 jsonpickle==1.1
-PyYAML==3.13
+PyYAML==5.1
