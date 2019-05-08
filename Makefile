@@ -40,6 +40,7 @@ UTTEST_ARGS := --buffer --catch --failfast --verbose
 # Python venv (virtual env) directory name (without full path)
 PYVENV_NAME ?= .venv
 
+SHOW_IMAGE ?= true
 MAKE_BUILD := tools/build.sh
 MAKE_VENV := tools/make_venv.sh
 MAKE_RUN := tools/run.sh
@@ -63,15 +64,16 @@ ifany_undef = $(filter undefined,$(foreach v,$(1),$(origin $(v))))
 # Don't need to start docker in 2 situations:
 ifneq ("$(DOCKER_DENV)", "")  # assume inside docker container
 	DONT_RUN_DOCKER := true
+	SHOW_IMAGE := false
 endif
 ifeq ("$(DOCKER_PATH)", "")   # docker command is NOT installed
 	DONT_RUN_DOCKER := true
 endif
 
 # Don't need venv insider docker (in most situations)
-# ifneq ("$(DOCKER_DENV)", "")  # assume inside docker container
-#	DONT_RUN_PYVENV := true
-# endif
+ifneq ("$(DOCKER_DENV)", "")  # assume inside docker container
+	DONT_RUN_PYVENV := true
+endif
 # Don't start venv (virtual env) if it is already activated:
 ifneq ("$(VIRTUAL_ENV)", "")  # assume python venv is activated
 	DONT_RUN_PYVENV := true
@@ -392,3 +394,52 @@ build-test-only:
 ############################################################
 # sub-projects Makefile redirection
 ############################################################
+
+.PHONY: cl-training classifier-training
+cl-training classifier-training:
+	@echo
+ifeq ("$(DONT_RUN_PYVENV)", "true")
+	@echo
+	PYTHONPATH=. python3 ml/classifier/training.py
+	@echo
+	@echo "- DONE: $@"
+else
+	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
+endif
+
+.PHONY: cl classifier
+cl classifier:
+	@echo
+ifeq ("$(DONT_RUN_PYVENV)", "true")
+	@echo
+	PYTHONPATH=. python3 ml/classifier/prediction.py
+	@echo
+	@echo "- DONE: $@"
+else
+	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
+endif
+
+
+.PHONY: dr-training digit-recognizer-training
+dr-training digit-recognizer-training:
+	@echo
+ifeq ("$(DONT_RUN_PYVENV)", "true")
+	@echo
+	PYTHONPATH=. python3 ml/digit_recognizer/training.py
+	@echo
+	@echo "- DONE: $@"
+else
+	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
+endif
+
+.PHONY: dr
+dr:
+	@echo
+ifeq ("$(DONT_RUN_PYVENV)", "true")
+	@echo
+	PYTHONPATH=. python3 ml/digit_recognizer/prediction.py
+	@echo
+	@echo "- DONE: $@"
+else
+	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
+endif

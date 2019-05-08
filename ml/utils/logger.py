@@ -53,7 +53,7 @@ def load_logging_config():
     # print('checking "{}" ...'.format(yml_logging))
     if os.path.exists(yml_logging):
         with open(yml_logging, 'r') as file_stream:
-            config = yaml.load(file_stream.read())
+            config = yaml.load(file_stream.read(), Loader=yaml.FullLoader)
             logging.config.dictConfig(config)
             print_logging_config(config)
             __CONFIG__ = config
