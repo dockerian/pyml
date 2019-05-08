@@ -1,4 +1,4 @@
-# IT Preparation
+# Network/IT Preparation
 
 
 ## Contents
@@ -13,7 +13,7 @@
 * Authenticated DHCP
   - First network access control, authenticating user id/password be for delivering a DHCP.
 * Backbone
-   - Primary connectivity mechanism of a hierarchical distribution system. All systems that have connectivity to the backbone are assured of connectivity to each other. 
+   - Primary connectivity mechanism of a hierarchical distribution system. All systems that have connectivity to the backbone are assured of connectivity to each other.
 * Blacklisting
   - An access control system that denies entry to specific users, programs, or net work addresses
 * Berkeley Internet Name Domain (BIND)
@@ -35,7 +35,7 @@
 * Frame
   - A unit of data transmission in layer two, containing a packet to layer three
 * File Transfer Protocol (FTP)
-  - the protocol to transfer files from one host to another. eg. cyberduck (assure the security of transfer). Now people use FTP. 
+  - the protocol to transfer files from one host to another. eg. cyberduck (assure the security of transfer). Now people use FTP.
 * Hypertext Transfer Protocol (HTTP)
   - Protocol that supports request-response from a server. eg. a browser sends hyper text "www.google.com" to google.com through HTTP, then google.com returns a HTML to our browser
 * Hop
@@ -58,7 +58,7 @@
   - data is copied to all its ports -- broadcasting
 * Switch
   - like a hub, accepts ethernet connections from network devices
-  - it is intelligent, knows the physical address(MAC address) in switch table. 
+  - it is intelligent, knows the physical address(MAC address) in switch table.
   - when a data is sent, it is directed to to intended port
   - reduce unnecessary traffic
 * Hub and switch are not capable of exchanging data outside its own network, because to be able to reach outside network a device need to be able to read IP addresses
@@ -73,19 +73,19 @@
 * can me exceptions by users
 
 ## Malware
-* Virus are a little piece of code, that can copy itself to other programs when triggered. corrupt datas. Often attached to an excutable file. 
-* Malware are software crashing systems, stealing important information. 
+* Virus are a little piece of code, that can copy itself to other programs when triggered. corrupt datas. Often attached to an excutable file.
+* Malware are software crashing systems, stealing important information.
 * Trojans are harmful software that can steal information, user are usually lead to open the software.
 * Ransomware host pc hostage, threatening to destroy data
 * Spyware secretly gathers private information such as passwords
-* Worms replicate themselves and attack other devices in the network, slowing down traffic and 
-* Malware today is an conclusion of all above and more. 
+* Worms replicate themselves and attack other devices in the network, slowing down traffic and
+* Malware today is an conclusion of all above and more.
 
 ## Intrusion Detection Prevention (IDP)
 
 ### Intrusion Detection System (IDS)
 * connect to one of the port at a switch
-* IDS determine whether the traffic that is going to the web service is dangerous. eg. compare the signatures, anomalies with in quantity and types. 
+* IDS determine whether the traffic that is going to the web service is dangerous. eg. compare the signatures, anomalies with in quantity and types.
 * It does not stop the attack from happening. it simply alerts the attack
 
 ### Intrusion Prevention System (IPS)
@@ -97,16 +97,18 @@
 * a IDS/IPS system sometime cost money, if we want to just protect one server, we can run prevent system as an software in tha server
 * We can install it into many devices in our networl. eg. routers, firewalls(eg. UTM(Unified Threat Management):Palo Alto, checkpoint)
 
-## Domain Name System(DNS)
+## Domain Name System (DNS)
 * resolves domain names to IP addresses
-* domain name typed in **> DNS server search through its database to find its matching IP address **> DNS will resolve the domain name into IP addresses
+  1. domain name typed in
+  2. DNS server search through its database to find its matching IP address
+  3. DNS will resolve the domain name into IP addresses
 * works like a phone book
 
 ### Detailed Steps:
 * type in the Domain Name in web browser
 * if the computer can't find its IP address in its cache memory, it will send the query to the Resolver server(basically your ISP)
 * Resolver will check its own cache memory, if not, it will send the query to Root server, the top or the root of the DNS hierarchy, 13 sets of root servers around the world, operated by 12 organizations. each set has its own IP address
-* The root server will direct the resolver the Top Level Domain server (TLD), for the .com, .net, .org(top level domains) domain. 
+* The root server will direct the resolver the Top Level Domain server (TLD), for the .com, .net, .org(top level domains) domain.
 * TLD will direct the resolver to the Authoritative Name Server(ANS), and the resolver will ask the ANS for the IP address
 * ANS is responsible for knowing everything including the IP address of the domain
 * ANS will respond with IP address
@@ -132,7 +134,7 @@
 
 #### Bus
 * each device is connected to the back bone
-* the back bone is a coaxial cable, connected to the computers using BNC connector(T connectors) 
+* the back bone is a coaxial cable, connected to the computers using BNC connector (T connectors)
 * pro: cheap and easy to implement
 * con: needs terminators at both end of back bone, if not there will be signal reflection, causing data flow disrupted
 
@@ -165,7 +167,7 @@
 * traffic is encrypted
 * used mostly in the terminal/command line
 * SSH is the client, SSHD is the server (Open SSH Daemon), the server must have sshd installed and running
-* **generating keys**: 
+* **generating keys**:
   - ssh-keygen
   - ~/.ssh/id_rsa (private key)
   - ~/.ssh/id_rsa.pub (public key)

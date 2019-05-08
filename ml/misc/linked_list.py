@@ -110,7 +110,7 @@ class LinkedList:
         Example of circular link:
              1        2        3        4
         (A)----->(B)----->(C)----->(D)----->(E)
-                            \_______________/
+                           \\_______________/
                                     5
         """
         met, last, has_cyclic = self._get_circular_link()

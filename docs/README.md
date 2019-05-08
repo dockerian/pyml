@@ -11,6 +11,7 @@
   * [Agile planning stories](./stories.md)
   * [Testing Notes](../tests/README.md)
   * [Interview Notes](./interview.md)
+  * [Network/IT Notes](./network.md)
   * [Dev Notes](../ml/README.md)
 
 
