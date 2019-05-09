@@ -56,9 +56,10 @@ COPY $PROJECT_DIR/requirements.txt $SOURCE/$PROJECT/requirements.txt
 # install python dependencies, and aws cli
 RUN mkdir -p $SOURCE \
  && pip install --upgrade pip \
-#&& pip install -r $SOURCE/$PROJECT/requirements-dev.txt \
-#&& pip install -r $SOURCE/$PROJECT/requirements.txt \
- && pip install awscli
+ && pip install -r $SOURCE/$PROJECT/requirements-dev.txt \
+ && pip install -r $SOURCE/$PROJECT/requirements.txt \
+#&& pip install awscli \
+ && pip list
 
 WORKDIR $SOURCE/$PROJECT
 
