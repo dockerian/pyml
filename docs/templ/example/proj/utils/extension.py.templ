@@ -133,6 +133,21 @@ def get_camel_title_word(target_str, keep_capitals=True):
     return str_words.replace(' ', '')
 
 
+def get_class(class_name, module_name):
+    """
+    Retrieves a class based off the module using __import__.
+    """
+    if not isinstance(class_name, str) or not isinstance(module_name, str):
+        return None
+    try:
+        # requiring parameter `fromlist` to get specified module
+        module = __import__(module_name, fromlist=[''])
+        if hasattr(module, class_name):
+            return getattr(module, class_name)
+    except ImportError:
+        return None
+
+
 def get_function(obj, function_name):
     """
     Get function object by name.
