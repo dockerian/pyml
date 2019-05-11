@@ -25,11 +25,16 @@ from ml.utils.extension import get_class
 from ml.utils.extension import get_function
 from ml.utils.extension import get_hash
 from ml.utils.extension import get_json
+from ml.utils.extension import get_module
 from ml.utils.extension import is_function
 from ml.utils.extension import pickle_object
 from ml.utils.extension import pickle_to_str
 
 LOGGER = getLogger(__name__)
+
+
+def func_for_test():
+    pass
 
 
 class Bar():
@@ -312,7 +317,7 @@ class ExtensionTests(unittest.TestCase):
 
     def test_get_class(self):
         """
-        test northstar.utils.extension.get_class
+        test ml.utils.extension.get_class
         """
         tests = [
             {
@@ -328,7 +333,7 @@ class ExtensionTests(unittest.TestCase):
 
     def test_get_class_failed(self):
         """
-        test northstar.utils.extension.get_class
+        test ml.utils.extension.get_class
         """
         tests = [
             {
@@ -435,6 +440,36 @@ class ExtensionTests(unittest.TestCase):
         for test in tests:
             result = get_json(test['obj'], indent=0)
             self.assertEqual(result, test['out'])
+
+    def test_get_module(self):
+        """
+        test ml.utils.extension.get_module
+        """
+        tests = [{
+            'func': 'func_for_test',
+            'module': 'tests.test_utils_extension',
+            'expectNone': False
+        }, {
+            'func': 'does_not_exist',
+            'module': 'tests.no_such_module',
+            'expectNone': True
+        }, {
+            'func': None,
+            'module': 'tests.no_such_module',
+            'expectNone': True
+        }]
+        for test in tests:
+            module_name = test.get('module')
+            result = get_module(module_name)
+            if test.get('expectNone'):
+                self.assertIsNone(result)
+            else:
+                self.assertEqual(result.__name__, module_name)
+                self.assertIsNotNone(result)
+                func_name = test.get('func')
+                func = get_function(result, func_name)
+                self.assertIsNotNone(func)
+                self.assertTrue(callable(func))
 
     def test_is_function(self):
         import inspect

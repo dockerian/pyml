@@ -148,6 +148,18 @@ def get_class(class_name, module_name):
         return None
 
 
+def get_module(module_name: str):
+    """
+    Retrieves a module.
+    """
+    try:
+        # requiring parameter `fromlist` to get specified module
+        module = __import__(module_name, fromlist=[''])
+        return module
+    except ImportError:
+        return None
+
+
 def get_function(obj, function_name):
     """
     Get function object by name.
