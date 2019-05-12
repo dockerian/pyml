@@ -66,4 +66,6 @@ WORKDIR $SOURCE/$PROJECT
 # ENTRYPOINT ["/bin/bash", "-c"]
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
+EXPOSE {{__DOCKER_PORT__}}/TCP
+
 CMD ["/bin/bash"]

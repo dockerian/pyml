@@ -66,4 +66,6 @@ WORKDIR $SOURCE/$PROJECT
 # ENTRYPOINT ["/bin/bash", "-c"]
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
+EXPOSE 8080/TCP 8081/TCP
+
 CMD ["/bin/bash"]

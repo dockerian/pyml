@@ -6,10 +6,10 @@ api:
   name: API Service
   desc: Python flask/connexion API service.
   host: 0.0.0.0
-  port: 8081
+  port: {{__DOCKER_PORT__}}
   timeout: 30
-  version: 1.0.0
-  path: http://localhost:8081/api
+  version: {{__VERSION__}}
+  path: http://localhost:{{__DOCKER_PORT__}}/api
   debug: true
 
 aws:
@@ -27,6 +27,3 @@ mysql:
   port: 3306
   username: admin
   password:
-
-show:
-  image: true
