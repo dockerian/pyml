@@ -1,0 +1,108 @@
+############################################################
+# API Services Specifications
+swagger: "2.0"
+info:
+  title: {{__PROJECT_TITLE__}} API
+  description: {{__DOCKER_CONTAINER_NAME__}} - {{__PROJECT_DESCRIPTION__}}
+  version: {{__VERSION__}}
+  contact:
+    name: {{__AUTHOR_NAME__}}
+    email: {{__AUTHOR_EMAIL__}}
+host: localhost:{{__DOCKER_PORT__}}
+basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+  - https
+tags:
+  - name: info
+    description: Generic API information
+
+
+############################################################
+# PATHS
+paths:
+
+####################
+# API info
+
+  ########## /info
+  "/info":
+    # /info GET
+    get:
+      tags:
+        - info
+      summary: Get API info
+      description: "Get info of the API Services"
+      operationId: getInfo
+      x-swagger-router-controller: {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_v1
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            $ref: '#/definitions/apiSchema'
+
+  ########## /spec
+  "/spec":
+    # /spec GET
+    get:
+      tags:
+        - info
+      summary: Get API specifications
+      description: "Get swagger.yaml as specifications of the API Services."
+      operationId: getApiDoc
+      x-swagger-router-controller: {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_v1
+      produces:
+        - application/octet-stream
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            type: file
+
+
+############################################################
+# MODELS DEFINITIONS
+definitions:
+
+  ########## Model: ApiSchema ##########
+  apiSchema:
+    type: object
+    description: "ApiSchema provides detailed info of the API service."
+    properties:
+      name:
+        description: "Name of API service."
+        example: Subject - {{__PROJECT_SUBJECT__}}
+        type: string
+      version:
+        description: "Version of API service."
+        example: 2.0.0
+        type: string
+      "description":
+        description: "Description of the API service."
+        example: Description - {{__PROJECT_DESCRIPTION__}}
+        type: string
+      endpointURL:
+        description: "EndpointURL of the API service."
+        example: http://localhost:{{__DOCKER_PORT__}}/api
+        type: string
+      environment:
+        description: "Deployment environment for the API service."
+        example: test
+        type: string
+      spec:
+        description: "Spec of the API service."
+        example: http://localhost:{{__DOCKER_PORT__}}/api/swagger.json
+        type: string
+
+
+############################################################
+# EXTERNAL DOCUMENTATIONS
+externalDocs:
+  description: Find out more about OpenAPI specification.
+  url: https://swagger.io/specification/v2/

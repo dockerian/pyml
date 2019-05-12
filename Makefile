@@ -17,6 +17,7 @@ PROJECT := ml
 ############################################################
 # Makefile variables and functions
 ############################################################
+DOCKER_PORT ?= 8081
 DOCKER_USER := dockerian
 DOCKER_NAME := pyml
 DOCKER_IMAG := $(DOCKER_USER)/$(DOCKER_NAME)
@@ -386,6 +387,106 @@ build-test-only:
 	@echo
 	BUILD_ENV=test USE_PYTHON3=$(USE_PYTHON3) $(MAKE_BUILD)
 	@echo
+	@echo "- DONE: $@"
+
+
+############################################################
+# run
+############################################################
+run-api:
+	@echo ""
+ifndef DONT_RUN_DOCKER
+	@echo "Starting $(DOCKER_TAGS)"
+	@echo ""
+	PROJECT_DIR="$(PWD)" \
+	GITHUB_USER=$(GITHUB_CORP) GITHUB_REPO=$(GITHUB_REPO) \
+	DOCKER_USER=$(DOCKER_USER) DOCKER_NAME=$(DOCKER_NAME) DOCKER_FILE="$(DOCKER_FILE)" \
+	DOCKER_PORT=$(DOCKER_PORT) \
+	$(MAKE_RUN) $@
+else
+ifeq ("$(DONT_RUN_PYVENV)", "true")
+	env|sort
+	@echo ""
+	PYTHONPATH=. python3 $(PROJECT)/app.py
+else
+	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
+endif
+endif
+	@echo ""
+	@echo "- DONE: $@"
+
+
+############################################################
+# swagger and api spec
+############################################################
+SWAGGER_PORT ?= 8881
+SWAGGER_PAGE := http://localhost:$(SWAGGER_PORT)
+SWAGGER_EDIT := swaggerapi/swagger-editor
+SWAGGER_UIMG := swaggerapi/swagger-ui
+# docker image for swagger web
+SWAGGER_WTAG := swagger-ml-app
+SWAGGER_NGNX := /usr/share/nginx
+SWAGGER_SEDS := 'sed -i "s|cp -s \$$SWAGGER_JSON \$$NGINX_ROOT|\# cp -s \$$SWAGGER_JSON \$$NGINX_ROOT|g" /usr/share/nginx/docker-run.sh && . /usr/share/nginx/docker-run.sh'
+
+SWAGGER_FILE := swagger.yaml
+SWAGGER_PATH := $(PWD)/ml/apidoc/v2
+
+swagger-clean:
+	@echo ""
+	@echo "Cleaning docker container: $(SWAGGER_WTAG)"
+	@echo ""
+	docker rm -f $(shell docker ps -a|grep $(SWAGGER_WTAG)|awk '{print $$1}') 2>/dev/null || true
+	@echo ""
+	@echo "- DONE: $@"
+
+swagger swagger-ui: swagger-clean
+	@echo ""
+ifneq ("$(DOCKER_PATH)","")
+	@echo "Starting $@ in docker container ..."
+	docker run \
+	--name $(SWAGGER_WTAG) \
+	-d -p $(SWAGGER_PORT):8080 \
+	-e SWAGGER_JSON=/tmp/$(SWAGGER_FILE) \
+	-v $(SWAGGER_PATH):/tmp \
+	$(SWAGGER_UIMG)
+	@echo ""
+ifeq ($(OS), Windows_NT) # Windows
+	start $(SWAGGER_PAGE)
+else ifeq ($(shell uname),Darwin) # Mac OS
+	open $(SWAGGER_PAGE)
+else
+	nohup xdg-open $(SWAGGER_PAGE) >/dev/null 2>&1 &
+endif
+else
+	@echo "Cannot start docker run for $@"
+endif
+	@echo ""
+	@echo "- DONE: $@"
+
+swagger-editor: swagger-clean
+	@echo ""
+ifneq ("$(DOCKER_PATH)","")
+	@echo "Starting $@ in docker container ..."
+	docker run \
+	--name $(SWAGGER_WTAG) \
+	-d -p $(SWAGGER_PORT):8080 \
+	-e SWAGGER_JSON=$(SWAGGER_NGNX)/html/swagger.json \
+	-v $(SWAGGER_PATH)/$(SWAGGER_FILE):$(SWAGGER_NGNX)/html/swagger.json \
+	$(SWAGGER_EDIT)
+	@echo ""
+ifeq ($(OS), Windows_NT) # Windows
+	start $(SWAGGER_PAGE)
+else ifeq ($(shell uname),Darwin) # Mac OS
+	open $(SWAGGER_PAGE)
+else
+	nohup xdg-open $(SWAGGER_PAGE) >/dev/null 2>&1 &
+endif
+	@echo "......................................................................."
+	@echo "Started $@ at http"
+else
+	@echo "Cannot start docker run for $@"
+endif
+	@echo ""
 	@echo "- DONE: $@"
 
 

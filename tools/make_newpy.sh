@@ -44,6 +44,7 @@ __AUTHOR_NAME__="$(git config --get user.name 2>/dev/null)"
 __AUTHOR_EMAIL__="$(git config --get user.email 2>/dev/null)"
 __CODECOV_TOKEN__="${CODECOV_TOKEN}"
 __DOCKER_CONTAINER_NAME__=
+__DOCKER_PORT__="8080"
 __DOCKER_USER_OR_ORGANIZATION_NAME__="${DOCKER_USER:-${docker_user:-dockerian}}"
 __GITHUB_USER_OR_ORGANIZATION__=
 __GITHUB_REPOSITORY_NAME__=""
@@ -102,6 +103,7 @@ function check_all_inputs() {
   check_input_python_module
   check_input_project_info
   check_input_docker_hostname
+  check_input_docker_port
   check_input_docker_user
   check_input_author
   check_input_author_email
@@ -221,6 +223,27 @@ function check_input_docker_hostname() {
     else
       echo "${_DOT_SPLIT_}"
       echo "Docker host/image's name is validated by regex:"
+      echo ''
+      echo "    ${_regex_}"
+      echo ''
+    fi
+  done
+}
+
+function check_input_docker_port() {
+  local _stdin_=''
+  local _valid_='false'
+  local _regex_='^([1-9][0-9]{1,3})$'
+  while [[ "${_valid_}" == "false" ]]; do
+    read -p "Docker or API service port (${__DOCKER_PORT__}): " _stdin_
+    if [[ "${_stdin_}" =~ ^\s*$ ]] && [[ "${__DOCKER_PORT__}" =~ ${_regex_} ]]; then
+      _valid_="true"
+    elif [[ "${_stdin_}" =~ ${_regex_} ]]; then
+      __DOCKER_PORT__="${_stdin_}"
+      _valid_="true"
+    else
+      echo "${_DOT_SPLIT_}"
+      echo 'Docker or API service port is validated by regex:'
       echo ''
       echo "    ${_regex_}"
       echo ''
@@ -727,6 +750,7 @@ function create_project_file() {
     _line="${_line//\{\{__AUTHOR_EMAIL__\}\}/${__AUTHOR_EMAIL__}}"
     _line="${_line//\{\{__CODECOV_TOKEN__\}\}/${__CODECOV_TOKEN__}}"
     _line="${_line//\{\{__DOCKER_CONTAINER_NAME__\}\}/${__DOCKER_CONTAINER_NAME__}}"
+    _line="${_line//\{\{__DOCKER_PORT__\}\}/${__DOCKER_PORT__}}"
     _line="${_line//\{\{__DOCKER_USER_OR_ORGANIZATION_NAME__\}\}/${__DOCKER_USER_OR_ORGANIZATION_NAME__}}"
     _line="${_line//\{\{__GITHUB_USER_OR_ORGANIZATION__\}\}/${__GITHUB_USER_OR_ORGANIZATION__}}"
     _line="${_line//\{\{__GITHUB_REPOSITORY_NAME__\}\}/${__GITHUB_REPOSITORY_NAME__}}"
@@ -762,6 +786,7 @@ function display_inputs() {
   echo "     Github repository name : ${__GITHUB_REPOSITORY_NAME__}"
   echo "Docker user or organization : ${__DOCKER_USER_OR_ORGANIZATION_NAME__}"
   echo "      Docker container name : ${__DOCKER_CONTAINER_NAME__}"
+  echo " Docker or API service port : ${__DOCKER_PORT__}"
   echo "   Test covergage threshold : ${__TEST_COVERAGE_THRESHOLD__} %"
   echo "Project/repository top path : ${__REPOSITORY_DIRECTORY__} ${_dir_tag_:-[new]}"
   echo "       Project logfile name : ${__PROJECT_LOG_NAME__}"
@@ -896,6 +921,7 @@ function usage() {
     fi
   done < "${script_file}"
 }
+
 
 _SIG_TITLE_="
 +================================+
