@@ -8,7 +8,6 @@ info:
   contact:
     name: {{__AUTHOR_NAME__}}
     email: {{__AUTHOR_EMAIL__}}
-host: localhost:{{__DOCKER_PORT__}}
 basePath: /api
 consumes:
   - application/json
@@ -38,7 +37,7 @@ paths:
       summary: Get API info
       description: "Get info of the API Services"
       operationId: getInfo
-      x-swagger-router-controller: {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_v1
+      x-swagger-router-controller: {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_{{__API_VERSION__}}
       produces:
         - application/json
       responses:
@@ -56,7 +55,7 @@ paths:
       summary: Get API specifications
       description: "Get swagger.yaml as specifications of the API Services."
       operationId: getApiDoc
-      x-swagger-router-controller: {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_v1
+      x-swagger-router-controller: {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_{{__API_VERSION__}}
       produces:
         - application/octet-stream
       responses:

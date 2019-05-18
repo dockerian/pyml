@@ -11,11 +11,12 @@ chardet==3.0.4
 Click==7.0
 clickclick==1.2.2
 connexion==2.2.0
-coverage==4.5.2
+coverage==4.5.3
 cryptography==2.6.1
 docutils==0.14
 execnet==1.5.0
 Flask==1.0.3
+Flask-SSLify==0.1.5
 idna==2.8
 inflection==0.3.1
 isort==4.3.4

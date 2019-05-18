@@ -1,0 +1,67 @@
+FROM python:3.7.3-alpine3.9
+
+MAINTAINER Jason Zhu <jason.zhuyx@gmail.com>
+LABEL maintainer="jason.zhuyx@gmail.com"
+LABEL organization="Dockerian"
+LABEL project="pyml"
+
+RUN apk update \
+ && apk upgrade \
+ && apk add --no-cache --virtual .build-deps \
+    bash \
+    ca-certificates \
+    dpkg \
+    gcc \
+    groff \
+    less \
+    libc-dev \
+    libev-dev \
+    libffi-dev \
+    mariadb-dev \
+    make \
+    tree \
+    tar \
+    zip \
+ && rm -rf /tmp/* \
+ && rm -rf /var/cache/apk/* \
+ && rm /bin/sh && ln -sf /bin/bash /bin/sh \
+ && echo "export PS1='\n\u@\h [\w] \D{%F %T} [\#]:\n\$ '" >> ~/.bashrc \
+ && echo "alias ll='ls -al'" >> ~/.bashrc \
+ && echo "alias apkinfo='apk info -a --no-cache 2>/dev/null|grep ^[a-z]|xargs -n1 -I{} apk info --no-cache -s {} 2>/dev/null|grep -v fetch|xargs -n4|awk '\"'\"'{print \$4 \"\\t\" \$1}'\"'\"'|sort -rn'" >> ~/.bashrc \
+ && echo "" >> ~/.bashrc \
+ && echo "# apk info -a --no-cache 2>/dev/null|grep ^[a-z]|xargs -n1 -I{} apk info --no-cache -s {} 2>/dev/null|grep -v fetch|xargs -n4|awk '{print \$4 \"\\t\" \$1}'|sort -rn" >> ~/.bashrc \
+ && echo "" >> ~/.bashrc
+
+# install gosu for a better su+exec command
+# ARG GOSU_VERSION=1.10
+# RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
+#  && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
+#  && chmod +x /usr/local/bin/gosu \
+#  && gosu nobody true
+
+# COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+ENV PROJECT=pyml \
+    PROJECT_DIR=ml \
+    SHELL=/bin/bash \
+    SOURCE=/src
+
+COPY $PROJECT_DIR/requirements-dev.txt $SOURCE/$PROJECT/requirements-dev.txt
+COPY $PROJECT_DIR/requirements.txt $SOURCE/$PROJECT/requirements.txt
+
+# install python dependencies, and aws cli
+RUN mkdir -p $SOURCE \
+ && pip install --upgrade pip \
+#&& pip install -r $SOURCE/$PROJECT/requirements-dev.txt \
+ && pip install -r $SOURCE/$PROJECT/requirements.txt \
+#&& pip install awscli \
+ && pip list
+
+WORKDIR $SOURCE/$PROJECT
+
+# ENTRYPOINT ["/bin/bash", "-c"]
+# ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+EXPOSE 8081/TCP
+
+CMD ["/bin/bash"]

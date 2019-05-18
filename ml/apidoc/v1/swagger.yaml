@@ -8,7 +8,6 @@ info:
   contact:
     name: Jason Zhu
     email: jason_zhuyx@hotmail.com
-host: localhost:8081
 basePath: /api
 consumes:
   - application/json

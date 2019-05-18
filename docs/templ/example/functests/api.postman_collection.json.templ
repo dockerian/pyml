@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "f14c299f-b696-4556-b2b1-f6b480b0bd05",
+		"name": "{{__GITHUB_REPOSITORY_NAME__}}",
+		"description": "{{__PROJECT_DESCRIPTION__}}",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{PROTO}}://{{API_HOST}}:{{API_PORT}}/{{API_PATH}}",
+					"protocol": "{{PROTO}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"port": "{{API_PORT}}",
+					"path": [
+						"{{API_PATH}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{PROTO}}://{{API_HOST}}:{{API_PORT}}/{{API_PATH}}/info",
+					"protocol": "{{PROTO}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"port": "{{API_PORT}}",
+					"path": [
+						"{{API_PATH}}",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/ui",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{PROTO}}://{{API_HOST}}:{{API_PORT}}/{{API_PATH}}/ui",
+					"protocol": "{{PROTO}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"port": "{{API_PORT}}",
+					"path": [
+						"{{API_PATH}}",
+						"ui"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "4a118044-9eaf-43ce-814e-181a796c2e86",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "83a5e808-8518-461f-b689-09214730fff2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
