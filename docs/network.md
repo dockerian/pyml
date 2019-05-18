@@ -4,16 +4,22 @@
 ## Contents
 
 * [Definitions](#def)
-* [Job Terms](#term)
+* [Network Terms](#network-term)
+* [Network Topology](#topology)
+* [Next-Gen Firewalls (NGFW)](#ngfw)
+* [Secure Shell SSH](#ssh)
+
+
 
 <br/><a name="def"></a>
 ## Definitions
+
 * 802.1X
   - Enhance security of WLAN by IEEE, provides authentication frame work, allows users to be authenticated by a central authority. wireless.
 * Authenticated DHCP
   - First network access control, authenticating user id/password be for delivering a DHCP.
 * Backbone
-   - Primary connectivity mechanism of a hierarchical distribution system. All systems that have connectivity to the backbone are assured of connectivity to each other.
+  - Primary connectivity mechanism of a hierarchical distribution system. All systems that have connectivity to the backbone are assured of connectivity to each other.
 * Blacklisting
   - An access control system that denies entry to specific users, programs, or net work addresses
 * Berkeley Internet Name Domain (BIND)
@@ -47,8 +53,9 @@
 * deep packet inspection
   - routers looking inside the data packet other than just read the ip address, take very slow
 
-<br/><a name="terms"></a>
-## Job Terms
+
+<br/><a name="network-terms"></a>
+## Network Terms
 
 ### Hub, Switch and Router
 * Hub
@@ -67,12 +74,16 @@
   - The gateway of a network
 * Hub and switches are used create networks while routers are used to connect networks
 
-## Firewall
+
+### Firewall
+
 * scans each little packet of data
 * physical(routers) or software
 * can me exceptions by users
 
-## Malware
+
+### Malware
+
 * Virus are a little piece of code, that can copy itself to other programs when triggered. corrupt datas. Often attached to an excutable file.
 * Malware are software crashing systems, stealing important information.
 * Trojans are harmful software that can steal information, user are usually lead to open the software.
@@ -81,7 +92,8 @@
 * Worms replicate themselves and attack other devices in the network, slowing down traffic and
 * Malware today is an conclusion of all above and more.
 
-## Intrusion Detection Prevention (IDP)
+
+### Intrusion Detection Prevention (IDP)
 
 ### Intrusion Detection System (IDS)
 * connect to one of the port at a switch
@@ -97,14 +109,14 @@
 * a IDS/IPS system sometime cost money, if we want to just protect one server, we can run prevent system as an software in tha server
 * We can install it into many devices in our networl. eg. routers, firewalls(eg. UTM(Unified Threat Management):Palo Alto, checkpoint)
 
-## Domain Name System (DNS)
+### Domain Name System (DNS)
 * resolves domain names to IP addresses
   1. domain name typed in
   2. DNS server search through its database to find its matching IP address
   3. DNS will resolve the domain name into IP addresses
 * works like a phone book
 
-### Detailed Steps:
+#### Detailed Steps:
 * type in the Domain Name in web browser
 * if the computer can't find its IP address in its cache memory, it will send the query to the Resolver server(basically your ISP)
 * Resolver will check its own cache memory, if not, it will send the query to Root server, the top or the root of the DNS hierarchy, 13 sets of root servers around the world, operated by 12 organizations. each set has its own IP address
@@ -115,7 +127,11 @@
 * the resolver will tell the computer the IP address
 * the resolver will store the IP Address in its cache memory
 
+
+
+<br/><a name="topology"></a>
 ## Network Topology
+
 * network topology is a layout of how a network communicates with different devices
 * wired and wireless
 
@@ -144,12 +160,16 @@
 * pro: expensive
 * rarely used on LAN, mainly used on WAN(like internet)
 
+
 ### Wireless Topologies
 
 #### Infrastructure
 * a wireless port connected to one of switch or hub like a star topology
 
+
+<br/><a name="ngfw"></a>
 ## Next-Gen Firewalls (NGFW)
+
 * similarities
   - static packet filtering
   - Stateful inspection or dynamic packet filtering, which checks every connection on every interface of a firewall for validity
@@ -161,7 +181,10 @@
   - IPS
   - bringing intelligence from outside the firewall
 
+
+<br/><a name="ssh"></a>
 ## Secure Shell SSH
+
 * communication Protocol(like http, https, ftp, etc)
 * do just about anything on the remote computer
 * traffic is encrypted
@@ -173,3 +196,9 @@
   - ~/.ssh/id_rsa.pub (public key)
   - public key goes into server "authorized_keys" file
 * in windows: putty in older versions of windows, git bash & other terminal programs include the ssh command & other Unix tools
+
+
+
+<div><br/>
+&raquo; Back to <a href="#contents">Contents</a> | <a href="../docs/README.md">Docs</a>
+</div>

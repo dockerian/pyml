@@ -1,9 +1,11 @@
 # AWS Study
-> This page taken from the notes when studying aws
+
+> This page taken from the notes when studying AWS
 
 
 
 ## Content
+
 * [EC2](#ec2)
 
 
@@ -11,10 +13,10 @@
 </br><a name="ec2"></a>
 ## EC2
 
-
 ### Web Server
 
 #### Creating Steps
+
 1. request a EC2 instance from AWS, I used the free ubuntu server, storage 28, with SSH, HTTP, HTTPS protocols
 2. use terminal ssh command to login to the server: ssh -i ~/.ssh/jiz148_ec2.pem ubuntu@"public_dns"
 3. sudo apt-get update, sudo install apache2, install the web server pachage
@@ -22,8 +24,9 @@
 5. replace the htmls
 
 ### Commands
+
 * chmod 400 jiz148_ec2.pem: manage the visibility of a file
-* ssh -i ~/.ssh/jiz148_ec2.pem "user_name"[public dns]: login to the server with the ssh key in "~/.ssh/jiz148_ec2.pem"; user_name can be ec2-user or ubuntu; eg. ssh -i "jiz148_ec2.pem" ubuntu@"public_dns"; -i for identity file (eg. private key)
+* ssh -i \~/.ssh/jiz148_ec2.pem "user_name"[public dns]: login to the server with the ssh key in "\~/.ssh/jiz148_ec2.pem"; user_name can be ec2-user or ubuntu; eg. ssh -i "jiz148_ec2.pem" ubuntu@"public_dns"; -i for identity file (eg. private key)
 * sudo apt-get update: get latest packges updated
 * sudo apt-get install: install package; eg. sudo apt-get install apache2 (for web server)
 * sudo chown -R ubuntu /var/www/html: change the user of the file to specific user, this time it is for changing the owner of html that ubuntu is looking for ubuntu is the user_name, -R means process of the files in the directory and its subdirectoreis
@@ -32,6 +35,7 @@
 * scp -i "pravite key" "file directory" "user_name"@"public_dns":"destination_on_ec2": secured copy file using TCP
 
 ### HTML
+
 * ```<html> and </html>```: opening and closing
 * ```<head> </head> and <body> </body>```: head and body, ```<br />``` means next line
 * ```<title> and </title>```: web page title
