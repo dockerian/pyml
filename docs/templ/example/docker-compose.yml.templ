@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+
+    {{__DOCKER_CONTAINER_NAME__}}:
+      image: {{__DOCKER_USER_OR_ORGANIZATION_NAME__}}/{{__DOCKER_CONTAINER_NAME__}}
+      build: Dockerfile.prod
+      hostname: {{__DOCKER_CONTAINER_NAME__}}
+      container_name: {{__DOCKER_CONTAINER_NAME__}}
+      command: ["/bin/bash", "-c", "make run-api"]
+      environment:
+        - API_PORT
+        - AWS_DEFAULT_REGION
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCESS_KEY_ID
+      network_mode: bridge
+      privileged: true
+      expose:
+        - {{__DOCKER_PORT__}}
+      ports:
+        - 0.0.0.0:{{__DOCKER_PORT__}}:{{__DOCKER_PORT__}}
+      restart: always
+      volumes:
+        - type: bind
+          source: ./
+          target: /src/{{__GITHUB_REPOSITORY_NAME__}}/
+
+volumes:
+  dir-svc:

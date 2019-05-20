@@ -31,6 +31,7 @@ DOCKER_PORT_TEST="8181"
 DOCKER_HOST_NAME="${DOCKER_NAME}"
 DOCKER_EXEC="run"
 
+DOCKER_FILE=${DOCKER_FILE:-Dockerfile}
 DOCKER_TAGS=$(docker images 2>&1|grep ${DOCKER_IMAG}|awk '{print $1;}')
 # detect if the process running inside the container
 DOCKER_PROC="$(cat /proc/1/cgroup 2>&1|grep -e "/docker/[0-9a-z]\{64\}"|head -1)"
@@ -84,7 +85,9 @@ function main() {
 
   # run make directly if already inside the container
   if [[ -e "/.dockerenv" ]] || [[ "${DOCKER_PROC}" != "" ]]; then
-    make ${MAKE_ARGS}
+    if [[ "${MAKE_ARGS}" != "docker" ]]; then
+      make ${MAKE_ARGS}
+    fi
     return
   fi
 
@@ -93,8 +96,12 @@ function main() {
   if [[ "${DOCKER_TAGS}" != "${DOCKER_IMAG}" ]]; then
     echo -e "\nBuilding docker image [${DOCKER_IMAG}] for '${GITHUB_REPO}'"
     echo "-----------------------------------------------------------------------"
-    docker build -t ${DOCKER_IMAG} .
+    docker build -f ${DOCKER_FILE} -t ${DOCKER_IMAG} .
     echo "-----------------------------------------------------------------------"
+    if [[ "${MAKE_ARGS}" == "docker" ]]; then
+      echo -e "\nDocker image [${DOCKER_IMAG}] is ready.\n"
+      return
+    fi
   fi
 
   # configure and start the container
@@ -112,6 +119,7 @@ function main() {
     -e BUILD_MASTER_VERSION
     -e BUILD_VERSION="${BUILD_VERSION:-1.0}"
     -e BUILDS_DIR
+    -e DOCKER_FILE
     -e LOCAL_USER_ID=${LOCAL_USER_ID:-$(id -u)}
     -e LOCAL_GROUP_ID=${LOCAL_GROUP_ID:-$(id -g)}
     -e USER

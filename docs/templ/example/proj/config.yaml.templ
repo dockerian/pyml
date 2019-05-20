@@ -2,14 +2,17 @@ api:
   spec:
     file: swagger.yaml
     path: apidoc
-    version: v1
+    version: {{__API_VERSION__}}
   name: API Service
   desc: Python flask/connexion API service.
   host: 0.0.0.0
   port: {{__DOCKER_PORT__}}
+  path: api
+  enable_ssl: false
+  cert_key: apidoc/cert.key
+  cert_pem: apidoc/cert.pem
   timeout: 30
   version: {{__VERSION__}}
-  path: http://localhost:{{__DOCKER_PORT__}}/api
   debug: true
 
 aws:

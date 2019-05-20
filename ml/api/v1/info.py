@@ -38,7 +38,8 @@ def get_info():
     """
     api_name = settings('api.name')
     api_desc = settings('api.desc')
-    api_path = settings('api.path')
+    api_host = flask.request.host_url.strip('/')
+    api_path = '{}/{}'.format(api_host, settings('api.path'))
     api_spec = '{}/swagger.json'.format(api_path)
     api_version = settings('api.version')
     env = settings('env')
@@ -49,5 +50,6 @@ def get_info():
         "description": api_desc,
         "endpointURL": api_path,
         "environment": env,
+        "swagger-ui": "%s/ui" % api_path,
         "spec": api_spec,
     }

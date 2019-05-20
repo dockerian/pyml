@@ -1,17 +1,17 @@
 """
-# test_api_v1
+# test_api_{{__API_VERSION__}}
 """
 import logging
 import unittest
 import mock
 
-from ml.api_v1 import getInfo
-from ml.api_v1 import getApiDoc
+from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_{{__API_VERSION__}} import getInfo
+from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_{{__API_VERSION__}} import getApiDoc
 
 
 class ApiRouteTester(unittest.TestCase):
     """
-    ApiRouteTester includes all unit tests for ml.app module
+    ApiRouteTester includes all unit tests for {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_{{__API_VERSION__}} module
     """
 
     @classmethod
@@ -26,7 +26,7 @@ class ApiRouteTester(unittest.TestCase):
         """tearing down at the end of the test"""
         pass
 
-    @mock.patch('ml.api_v1.info')
+    @mock.patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api_{{__API_VERSION__}}.info')
     def test_info_functions(self, mock_info):
         getInfo()
         mock_info.get_info.assert_called()

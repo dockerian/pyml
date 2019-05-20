@@ -24,6 +24,7 @@ DOCKER_IMAG := $(DOCKER_USER)/$(DOCKER_NAME)
 DOCKER_TAGS := $(DOCKER_USER)/$(DOCKER_NAME)
 DOCKER_DENV := $(wildcard /.dockerenv)
 DOCKER_PATH := $(shell which docker)
+DOCKER_FILE ?= Dockerfile
 
 BUILD_ENV ?= test
 COVERAGE_DIR := htmlcov
@@ -249,7 +250,8 @@ ifeq ("$(DOCKER_DENV)", "")
 	PROJECT_DIR="$(PWD)" \
 	GITHUB_USER=$(GITHUB_CORP) GITHUB_REPO=$(GITHUB_REPO) \
 	DOCKER_USER=$(DOCKER_USER) DOCKER_NAME=$(DOCKER_NAME) \
-	$(MAKE_RUN) cmd
+	DOCKER_FILE=$(DOCKER_FILE) \
+	$(MAKE_RUN) $@
 else
 	@echo "env in the container:"
 	@echo "-----------------------------------------------------------------------"
@@ -264,7 +266,7 @@ ifeq ("$(DOCKER_DENV)", "")
 	@echo ""
 	@echo `date +%Y-%m-%d:%H:%M:%S` "Building '$(DOCKER_TAGS)'"
 	@echo "-----------------------------------------------------------------------"
-	docker build -t $(DOCKER_TAGS) . | tee docker_build.tee
+	docker build -f $(DOCKER_FILE) -t $(DOCKER_TAGS) . | tee docker_build.tee
 	@echo "-----------------------------------------------------------------------"
 	@echo ""
 	docker images --all | grep -e 'REPOSITORY' -e '$(DOCKER_TAGS)'
@@ -431,7 +433,7 @@ SWAGGER_NGNX := /usr/share/nginx
 SWAGGER_SEDS := 'sed -i "s|cp -s \$$SWAGGER_JSON \$$NGINX_ROOT|\# cp -s \$$SWAGGER_JSON \$$NGINX_ROOT|g" /usr/share/nginx/docker-run.sh && . /usr/share/nginx/docker-run.sh'
 
 SWAGGER_FILE := swagger.yaml
-SWAGGER_PATH := $(PWD)/ml/apidoc/v2
+SWAGGER_PATH := $(PWD)/ml/apidoc/{{__API_VERSION__}}
 
 swagger-clean:
 	@echo ""
