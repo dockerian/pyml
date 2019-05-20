@@ -17,6 +17,7 @@
 
   * [Blueprint, Flask-RESTPlus, and Swagger](http://michal.karzynski.pl/blog/2016/06/19/building-beautiful-restful-apis-using-flask-swagger-ui-flask-restplus/) |
     [source](https://github.com/postrational/rest_api_demo/tree/master/rest_api_demo)
+  * [Designing well-structed REST APIs with Flask-RestPlus](https://medium.com/ki-labs-engineering/designing-well-structured-rest-apis-with-flask-restplus-part-1-7e96f2da8850)
   * [Flask REST API with Swagger UI](https://towardsdatascience.com/working-with-apis-using-flask-flask-restplus-and-swagger-ui-7cf447deda7f)
   * Requirements:
     - flask

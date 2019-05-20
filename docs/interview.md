@@ -3,6 +3,8 @@
 > Collective interview questions on data structure and algorithms
 
 ## Contents
+
+  * [Languages](#lang)
   * [Data Structure](#ds)
     - [Array/List](#ds-array)
     - [Linked List](#ds-linkedlist)
@@ -22,6 +24,77 @@
   * [Networking](#networking)
   * [Non-technical](#non-tech)
   * [Reading](#reading)
+
+
+
+<br/><a name="lang"></a>
+## Languages
+
+### Error Handling
+
+  * [Deal with exceptions in Python](https://www.pythonforthelab.com/blog/learning-not-to-handle-exceptions/)
+  * [Use try/except in Python](https://www.techbeamers.com/use-try-except-python/)
+
+  * Catch all exceptions (NOT recommended)
+
+    ```python
+    try:
+        do_some_func()
+    except BaseException as ex:  # catch *all* exceptions; same as bare `except:`
+        # will catch all including `SystemExit`, `KeyboardInterrupt`, or `GeneratorExit`.
+        pass  # potential causing to hang
+    ```
+
+  * Find out the exception name
+    ```python
+    try:
+        do_some_func()
+        raise IndexError # as test error
+    except Exception as ex:
+        # won't catch `SystemExit`, `KeyboardInterrupt`, or `GeneratorExit`.
+        print(type(ex).__name__) # print the name of the exception
+    ```
+
+  * Print traceback
+
+    ```python
+    import traceback
+    try:
+        sqrt = 0**-1
+    except Exception as ex:
+        print(ex)
+        print(traceback.print_exc())
+    ```
+
+### Multi-threading
+
+  * Mutex vs Semaphores (C/C++)
+    - [Part 1: Semapores](https://blog.feabhas.com/2009/09/mutex-vs-semaphores-%e2%80%93-part-1-semaphores/)
+    - [Part 2: The Mutex](https://blog.feabhas.com/2009/09/mutex-vs-semaphores-%e2%80%93-part-2-the-mutex/) (MUTual EXclusion)
+    - [Part 3: Mutual Exclusion Problems](https://blog.feabhas.com/2009/10/mutex-vs-semaphores-%e2%80%93-part-3-final-part-mutual-exclusion-problems/)
+
+### Code Online
+
+  * [CodePen](http://codepen.io/)
+  * [CodeShare](https://codeshare.io)
+  * [CollabEdit](http://collabedit.com)
+  * [CodeAnywhere](https://codeanywhere.com) - IDE
+  * [JSFiddle](https://jsfiddle.net/) - HTML, CSS and JavaScript |
+    see [list](https://www.sitepoint.com/7-code-playgrounds/)
+  * [OnlineGDB](https://www.onlinegdb.com/online_python_compiler) - Java, Python, Haskell, Swift, etc.
+  * [SoloLearn](https://code.sololearn.com) - C/C++, C#, HTML/CSS/JS, Java, Python3, PHP, Ruby
+  * [Repl.it](https://repl.it) -
+    [Python](https://repl.it/languages/python3) and [more](https://repl.it/languages/)
+  * [Awesome Online IDE](https://github.com/styfle/awesome-online-ide)
+  * [Go Playground](https://play.golang.org/)
+  * [Rust](https://play.rust-lang.org/)
+
+### Others
+
+  * [50 Shades of Go](http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/)
+  * [Go error vs try...catch/except](https://opencredo.com/blogs/why-i-dont-like-error-handling-in-go/)
+  * [Rust Ownership](https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html)
+
 
 
 <br/><a name="ds"></a>
@@ -385,6 +458,7 @@
   * https://careersidekick.com/brain-teaser-job-interview-questions-facebook-google-apple/
   * http://interactivepython.org/courselib/static/pythonds/index.html
   * https://javarevisited.blogspot.com/2011/06/top-programming-interview-questions.html
+  * https://javarevisited.blogspot.com/2017/07/top-50-java-programs-from-coding-Interviews.html
   * https://www.geeksforgeeks.org/
   * https://www.geeksforgeeks.org/must-do-coding-questions-for-companies-like-amazon-microsoft-adobe/
   * https://www.geeksforgeeks.org/top-10-algorithms-in-interview-questions/

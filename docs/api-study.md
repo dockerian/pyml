@@ -221,6 +221,7 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
     * `502 Bad Gateway`
     - `503 Service Unavailable`
     - `504 Gateway Timeout`
+  * See [more](https://www.restapitutorial.com/httpstatuscodes.html)
 
 
 <br/><a name="design"></a>
