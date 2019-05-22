@@ -19,6 +19,7 @@
     [source](https://github.com/postrational/rest_api_demo/tree/master/rest_api_demo)
   * [Designing well-structed REST APIs with Flask-RestPlus](https://medium.com/ki-labs-engineering/designing-well-structured-rest-apis-with-flask-restplus-part-1-7e96f2da8850)
   * [Flask REST API with Swagger UI](https://towardsdatascience.com/working-with-apis-using-flask-flask-restplus-and-swagger-ui-7cf447deda7f)
+  * [Flask and Flask-RESTPlus](https://nikgrozev.com/2018/10/12/python-api-with-flask-and-flask-restplus/)
   * Requirements:
     - flask
     - flask-restplus
@@ -42,6 +43,10 @@
     if __name__ == '__main__':
       app.run(debug=True)  
     ```
+  * See
+    - [Flask-RestPlus](https://flask-restplus.readthedocs.io/en/stable/)
+    - [Flasgger](https://github.com/rochacbruno/flasgger/)
+    - [Eve](https://docs.python-eve.org/en/stable/)
 
 ### Spec-first
 
@@ -56,6 +61,11 @@
       * Jinja2==2.10.1
       * MarkupSafe==1.1.1
       * Werkzeug==0.15.4
+    - flasgger (optional)
+      * aniso8601==6.0.0
+      * flasgger==0.9.2
+      * Flask-RESTful==0.3.7 (pip install flask-restful)
+      * mistune==0.8.4 (with flasgger)
     - connexion
       * certifi==2019.3.9
       * chardet==3.0.4
