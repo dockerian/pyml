@@ -7,6 +7,7 @@ import unittest
 from mock import patch
 from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app import \
     main, \
+    config_connexion, \
     check_cert, \
     https_before_request, \
     root_api_{{__API_VERSION__}}, root_api, \
@@ -31,9 +32,13 @@ class AppTester(unittest.TestCase):
         pass
 
     @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app.app')
+    def test_config_connexion(self, mock_app):
+        config_connexion()
+        mock_app.add_api.assert_called()
+
+    @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app.app')
     def test_main(self, mock_app):
         main()
-        mock_app.add_api.assert_called()
         mock_app.run.assert_called()
 
     @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app.main')

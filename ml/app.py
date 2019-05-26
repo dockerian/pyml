@@ -16,32 +16,24 @@ LOGGER = get_logger(__name__)
 ALL_METHODS = ['HEAD', 'GET', 'PATCH', 'PUT', 'POST', 'DELETE', 'OPTIONS']
 SSL_CONTEXT = 'adhoc'  # or None
 
+api_host = settings('api.host')
+api_port = get_uint('api.port')
+api_spec_file = settings('api.spec.file')
 api_spec_path = os.path.join(
     settings('api.spec.path'), settings('api.spec.version'))
-app = connexion.App(__name__, specification_dir=api_spec_path)
+api_debug = get_boolean('api.debug')
+app = connexion.App(
+    __name__,
+    host=api_host,
+    port=api_port,
+    specification_dir=api_spec_path,
+    debug=api_debug)
 
 
 def main():
     """
     The main API routine.
     """
-    global app
-
-    # TODO: using Flask-SSLify for flask app
-    # from flask_sslify import SSLify
-    # SSLify(app.app)
-
-    api_host = settings('api.host')
-    api_port = get_uint('api.port')
-    api_spec_file = settings('api.spec.file')
-    api_debug = get_boolean('api.debug')
-
-    LOGGER.debug('loading api spec: %s/%s', api_spec_path, api_spec_file)
-    app.add_api(api_spec_file)  # read from above specification_dir
-
-    # app is a connexion application
-    # app.app is a flask application; or `strict_slashes=False` on @app.route
-    app.app.url_map.strict_slashes = False
     ssl_context = check_cert()
 
     proto = 'https' if ssl_context else 'http'
@@ -51,6 +43,23 @@ def main():
         port=api_port,
         ssl_context=ssl_context,
         debug=api_debug)
+
+
+def config_connexion():
+    """
+    Configure connexion API.
+    """
+    global app
+
+    app.app.logger.handlers = LOGGER.handlers
+    app.app.logger.setLevel(LOGGER.level)
+
+    LOGGER.debug('loading api spec: %s/%s', api_spec_path, api_spec_file)
+    app.add_api(api_spec_file)  # read from above specification_dir
+
+    # app is a connexion application
+    # app.app is a flask application; or `strict_slashes=False` on @app.route
+    app.app.url_map.strict_slashes = False
 
 
 def check_cert():
@@ -113,5 +122,10 @@ def root():
     return redirect('/api/ui', code=302)
 
 
+config_connexion()
+
+# application = app.app # expose global WSGI application object
+
 if __name__ == '__main__':
     main()
+    pass

@@ -6,12 +6,25 @@
 ## Contents
 
 * [Flask API](#flask-api)
+* [WSGI Servers](#wsgi-servers)
 * [Swagger](#swagger)
 
 
 
 <br/><a name="flask-api"></a>
 ## Flask API
+
+### Comparison
+
+  * https://fastapi.tiangolo.com/alternatives/
+  * https://github.com/the-benchmarker/web-frameworks
+    - [hug](http://www.hug.rest/) | [github](https://github.com/hugapi/hug)
+    - [vibora](https://vibora.io/) | [github](https://github.com/vibora-io/vibora)
+    - [falcon](http://falconframework.org/) | [github](https://github.com/falconry/falcon)
+    - [fastapi](http://fastapi.tiangolo.com/) | [github](https://github.com/tiangolo/fastapi)
+    - [japronto](https://github.com/squeaky-pl/japronto)
+    - [bottle](http://bottlepy.org/docs/dev/) | [github]()
+
 
 ### Code-first approach
 
@@ -21,6 +34,30 @@
   * Requirements:
     - flask
     - flask-restplus
+    - fastapi (`pip install fastapi[all]`)
+      * fastapi==0.26.0
+      * aiofiles-0.4.0
+      * aniso8601-3.0.2
+      * dnspython-1.16.0
+      * email-validator-1.0.4
+      * graphene-2.1.3
+      * graphql-core-2.1
+      * graphql-relay-0.4.5
+      * h11-0.8.1
+      * httptools-0.0.13
+      * promise-2.2.1
+      * pydantic==0.26 (`pip install fastapi`)
+      * python-multipart-0.0.5
+      * rx-1.6.1 ujson-1.35
+      * starlette==0.12.0 (`pip install fastapi`)
+      * uvicorn-0.7.1
+      * uvloop-0.12.2
+      * websockets-7.0
+    - flasgger (optional)
+      * aniso8601==6.0.0
+      * flasgger==0.9.2 (15M)
+      * Flask-RESTful==0.3.7 (`pip install flask-restful`)
+      * mistune==0.8.4 (with flasgger)
   * Example:
 
     ```python
@@ -59,7 +96,7 @@
       * certifi==2019.3.9
       * chardet==3.0.4
       * clickclick==1.2.2
-      * connexion==2.2.0
+      * connexion==2.2.0 (4.2M)
       * idna==2.8
       * inflection==0.3.1
       * jsonschema==2.6.0
@@ -95,6 +132,20 @@
     if __name__ == '__main__':
         app.run(host='0.0.0.0', port=8081, debug=True)
     ```
+
+
+<br/><a name="wsgi-servers"></a>
+## WSGI Servers
+
+  * [A Detailed Study of WSGI](https://www.cabotsolutions.com/2017/11/a-detailed-study-of-wsgi-web-server-gateway-interface-of-python)
+  * An Introduction to Python WSGI Servers
+    - [Part 1](https://www.appdynamics.com/blog/engineering/an-introduction-to-python-wsgi-servers-part-1/)
+    - [Part 2](https://www.appdynamics.com/blog/engineering/a-performance-analysis-of-python-wsgi-servers-part-2/)
+  * [Choosing a Fast Python API Framework](https://fgimian.github.io/blog/2018/05/17/choosing-a-fast-python-api-framework/)
+  * [Gunicorn Documentation](https://buildmedia.readthedocs.org/media/pdf/gunicorn-docs/stable/gunicorn-docs.pdf)
+  * [Python WSGI Server Benchmark](https://github.com/kubeup/python-wsgi-benchmark)
+  * [WSGI Servers](https://www.fullstackpython.com/wsgi-servers.html)
+
 
 
 <br/><a name="swagger"></a>

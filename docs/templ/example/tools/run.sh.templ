@@ -96,7 +96,7 @@ function main() {
   if [[ "${DOCKER_TAGS}" != "${DOCKER_IMAG}" ]]; then
     echo -e "\nBuilding docker image [${DOCKER_IMAG}] for '${GITHUB_REPO}'"
     echo "-----------------------------------------------------------------------"
-    docker build -f ${DOCKER_FILE} -t ${DOCKER_IMAG} .
+    docker build -t ${DOCKER_IMAG} .
     echo "-----------------------------------------------------------------------"
     if [[ "${MAKE_ARGS}" == "docker" ]]; then
       echo -e "\nDocker image [${DOCKER_IMAG}] is ready.\n"
