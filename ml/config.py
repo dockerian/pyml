@@ -16,6 +16,7 @@ CONFIG_DEFAULT = os.path.join(
 LOGGER = get_logger(__name__)
 
 
+# TODO: https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Singleton.html
 class _Singleton(type):  # pylint: disable=too-few-public-methods
     """
     A metaclass that creates a Singleton base class when called.

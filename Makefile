@@ -411,13 +411,37 @@ else
 ifeq ("$(DONT_RUN_PYVENV)", "true")
 	env|sort
 	@echo ""
-	PYTHONPATH=. python3 $(PROJECT)/app.py
+	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(PROJECT).app:app
 else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
 endif
 endif
 	@echo ""
 	@echo "- DONE: $@"
+
+run-gunicorn:
+	@echo ""
+	@echo "Starting API server with gunicorn wsgi"
+	# pip install gunicorn
+	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(PROJECT).app:app
+
+run-gevent:
+	@echo ""
+	@echo "Starting API server with gevent wsgi"
+	# pip install gevent
+	PYTHONPATH=. python3 $(PROJECT)/run_gevent.py
+
+run-fastapi:
+	@echo ""
+	@echo "Starting a fastapi server with uvicorn wsgi"
+	# pip install fastapi
+	# pip install uvicorn
+	PYTHONPATH=. uvicorn --host 0.0.0.0 --port 8000 $(PROJECT).app_fastapi:app
+
+run-flask:
+	@echo ""
+	@echo "Starting a connexion/flask API server"
+	PYTHONPATH=. python3 $(PROJECT)/app.py
 
 
 ############################################################
