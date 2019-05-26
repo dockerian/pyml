@@ -204,10 +204,12 @@
 
   ```python
   def bubble_sort(arr, reversed_order=False):
-      x_range = range(len(arr)) if reversed_order else range(len(arr)-1, 0, -1)
+      x_range = range(len(arr)-1, 0, -1)
       for num in x_range:
           for i in range(num):
-              if arr[i] > arr[i+1]:
+              is_upper = not reversed_order and arr[i] > arr[i+1]
+              is_lower = reversed_order and arr[i] < arr[i+1]
+              if is_lower or is_upper:
                   arr[i], arr[i+1] = arr[i+1], arr[i]
   ```
 
