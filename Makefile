@@ -398,6 +398,7 @@ build-test-only:
 API_CODE_FIRST := $(PROJECT).app_fastapi
 API_SPEC_FIRST := $(PROJECT).app_connexion
 API_APP_MODULE ?= $(PROJECT).app
+API_APP_WSGI ?= gunicorn
 
 run-api:
 	@echo ""
@@ -413,7 +414,7 @@ else
 ifeq ("$(DONT_RUN_PYVENV)", "true")
 	env|sort
 	@echo ""
-	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(API_APP_MODULE):app
+	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_$(API_APP_WSGI).py $(API_APP_MODULE):app
 else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
 endif

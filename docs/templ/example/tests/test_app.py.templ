@@ -1,0 +1,39 @@
+"""
+# test_app
+"""
+import logging
+import unittest
+
+from mock import patch
+from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app import application
+
+
+class AppTester(unittest.TestCase):
+    """
+    AppTester includes all unit tests for {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app module
+    """
+
+    @classmethod
+    def teardown_class(cls):
+        logging.shutdown()
+
+    def setUp(self):
+        """setup for test"""
+        pass
+
+    def tearDown(self):
+        """tearing down at the end of the test"""
+        pass
+
+    def test_app(self):
+        self.assertIsNotNone(application)
+        pass
+
+    @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app_{{__API_APP_MODULE__}}.app_main')
+    def test_main(self, mock_app_main):
+        import runpy
+        result = runpy.run_module('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app', run_name='__main__')
+        self.assertEqual(result['__name__'], '__main__')
+        # print('main result:', result)
+        mock_app_main.assert_called()
+        pass
