@@ -10,6 +10,7 @@ from ml.app_config import \
     api_name, api_desc, api_version, \
     api_path, \
     api_docs_url, \
+    api_icon_file, \
     api_spec, \
     app_env
 from ml.api.__models import ApiSchema
@@ -42,6 +43,12 @@ def get_info(request: Request):
         "swaggerFile": '{}/{}'.format(host_url, api_spec),
         "swaggerUi": '{}/{}'.format(host_url, api_docs_url),
     }
+
+
+@ROUTER.get('/favicon.ico')
+def api_icon():
+    res = RedirectResponse(url='/static/%s' % api_icon_file, status_code=302)
+    return res
 
 
 @ROUTER.api_route(

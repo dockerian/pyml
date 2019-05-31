@@ -1,6 +1,7 @@
 api:
   spec:
     file: swagger.yaml
+    icon: favicon.ico
     path: apidoc
     version: v1
   name: API Service

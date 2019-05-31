@@ -8,6 +8,7 @@ import mock
 from starlette.datastructures import URL
 from starlette.requests import Request
 from ml.api.__route import \
+    api_icon, \
     api_info, api_root, \
     api_v1_redirect, \
     get_info
@@ -37,6 +38,14 @@ class ApiRouteTester(unittest.TestCase):
     def tearDown(self):
         """tearing down at the end of the test"""
         pass
+
+    @mock.patch('ml.api.__route.RedirectResponse')
+    def test_api_icon(self, mock_redirect):
+        mock_result = 'redirect_api_icon'
+        mock_redirect.return_value = mock_result
+        result = api_icon()
+        mock_redirect.assert_called_with(url='/static/favicon.ico', status_code=302)
+        self.assertEqual(result, mock_result)
 
     @mock.patch('ml.api.__route.RedirectResponse')
     def test_api_info(self, mock_redirect):

@@ -5,6 +5,7 @@ LABEL maintainer="jason.zhuyx@gmail.com"
 LABEL organization="Dockerian"
 LABEL project="pyml"
 
+# some packages require gcc, libc-dev, libev-dev, libffi-dev, and mariadb-dev
 RUN apk update \
  && apk upgrade \
  && apk add --no-cache --virtual .build-deps \
@@ -18,6 +19,7 @@ RUN apk update \
     libev-dev \
     libffi-dev \
     mariadb-dev \
+    nginx \
     make \
     tree \
     tar \
@@ -43,17 +45,19 @@ RUN apk update \
 
 ENV PROJECT=pyml \
     PROJECT_DIR=ml \
+    PYTHONPATH=src/pyml \
     SHELL=/bin/bash \
     SOURCE=/src
 
-COPY $PROJECT_DIR/requirements-dev.txt $SOURCE/$PROJECT/requirements-dev.txt
+COPY $PROJECT_DIR/requirements-api.txt $SOURCE/$PROJECT/requirements-api.txt
 COPY $PROJECT_DIR/requirements.txt $SOURCE/$PROJECT/requirements.txt
+COPY tools/nginx.conf /etc/nginx/conf.d/default.conf
 
 # install python dependencies, and aws cli
 RUN mkdir -p $SOURCE \
  && pip install --upgrade pip \
-#&& pip install -r $SOURCE/$PROJECT/requirements-dev.txt \
- && pip install -r $SOURCE/$PROJECT/requirements.txt \
+ && pip install -r $SOURCE/$PROJECT/requirements-api.txt \
+#&& pip install -r $SOURCE/$PROJECT/requirements.txt \
 #&& pip install awscli \
  && pip list
 
@@ -62,6 +66,6 @@ WORKDIR $SOURCE/$PROJECT
 # ENTRYPOINT ["/bin/bash", "-c"]
 # ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 8081/TCP
+EXPOSE 80/TCP 8081/TCP
 
 CMD ["/bin/bash"]
