@@ -420,26 +420,38 @@ endif
 run-gunicorn:
 	@echo ""
 	@echo "Starting API server with gunicorn wsgi"
+	# --- requiring venv or docker
 	# pip install gunicorn
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(PROJECT).app:app
+	@echo ""
+	@echo "- DONE: $@"
 
 run-gevent:
 	@echo ""
 	@echo "Starting API server with gevent wsgi"
+	# --- requiring venv or docker
 	# pip install gevent
 	PYTHONPATH=. python3 $(PROJECT)/run_gevent.py
+	@echo ""
+	@echo "- DONE: $@"
 
 run-fastapi:
 	@echo ""
-	@echo "Starting a fastapi server with uvicorn wsgi"
-	# pip install fastapi
-	# pip install uvicorn
-	PYTHONPATH=. uvicorn --host 0.0.0.0 --port 8000 $(PROJECT).app_fastapi:app
+	@echo "Starting a fastapi server with gunicorn/uvicorn wsgi"
+	# --- requiring venv or docker
+	# pip install fastapi gunicorn uvicorn
+	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_uvicorn.py $(PROJECT).app_fastapi:app
+	@echo ""
+	@echo "- DONE: $@"
 
 run-flask:
 	@echo ""
 	@echo "Starting a connexion/flask API server"
+	# --- requiring venv or docker
+	# pip install flask connexion[all]
 	PYTHONPATH=. python3 $(PROJECT)/app.py
+	@echo ""
+	@echo "- DONE: $@"
 
 
 ############################################################

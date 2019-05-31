@@ -41,6 +41,7 @@
   │
   ├── {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}
   │   ├── __init__.py
+  │   ├── api                       # api service
   │   ├── common                    # common/shared library
   │   │   └── __init__.py
   │   ├── utils                     # utilities library
@@ -51,6 +52,7 @@
   │   │
   │   ├── Makefile                  # project-level Makefile
   │   ├── README.md
+  │   ├── app.py                    # api service entry point
   │   ├── config.py                 # config module
   │   ├── config.yaml
   │   ├── logging.conf              # logging config

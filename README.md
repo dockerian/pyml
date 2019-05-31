@@ -1,6 +1,6 @@
 # PyML
 
-> Python Machine Learning Practice
+> Python Moonlight (Machine Learning) Practice
 
 [![Code Coverage](https://codecov.io/gh/dockerian/pyml/branch/master/graph/badge.svg)](https://codecov.io/gh/dockerian/pyml)
 [![Build Status](https://travis-ci.org/dockerian/pyml.svg?branch=master)](https://travis-ci.org/dockerian/pyml)
@@ -14,6 +14,7 @@
 * [Prerequisites Checklist](#pre-req)
 * [Dev Setup](#dev-setup)
 * [Testing](#testing)
+* [Run](#run)
 
 
 
@@ -58,6 +59,31 @@
   ```
 
 
+
+<br/><a name="run"></a>
+## Run
+
+### API Example
+
+  * run Gunicorn/Flask API in docker container
+
+    ```
+    make run-api
+    ```
+
+  * run Gunicorn/Flask example in virtual environment (venv)
+
+    ```
+    # start/enable venv (e.g. `source .venv/bin/activate`)
+    make run-gunicorn
+    ```
+
+  * run Gunicorn/FastApi in venv
+
+    ```
+    # start/enable venv (e.g. `source .venv/bin/activate`)
+    make run-fastapi
+    ```
 
 
 <p><br/></p>
