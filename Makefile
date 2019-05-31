@@ -395,6 +395,10 @@ build-test-only:
 ############################################################
 # run
 ############################################################
+API_CODE_FIRST := $(PROJECT).app_fastapi
+API_SPEC_FIRST := $(PROJECT).app_connexion
+API_APP_MODULE ?= $(PROJECT).app
+
 run-api:
 	@echo ""
 ifndef DONT_RUN_DOCKER
@@ -409,7 +413,7 @@ else
 ifeq ("$(DONT_RUN_PYVENV)", "true")
 	env|sort
 	@echo ""
-	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(PROJECT).app:app
+	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(API_APP_MODULE):app
 else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
 endif
@@ -422,7 +426,7 @@ run-gunicorn:
 	@echo "Starting API server with gunicorn wsgi"
 	# --- requiring venv or docker
 	# pip install gunicorn
-	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(PROJECT).app:app
+	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(API_SPEC_FIRST):app
 	@echo ""
 	@echo "- DONE: $@"
 
@@ -440,16 +444,16 @@ run-fastapi:
 	@echo "Starting a fastapi server with gunicorn/uvicorn wsgi"
 	# --- requiring venv or docker
 	# pip install fastapi gunicorn uvicorn
-	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_uvicorn.py $(PROJECT).app_fastapi:app
+	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_uvicorn.py $(API_CODE_FIRST):app
 	@echo ""
 	@echo "- DONE: $@"
 
 run-flask:
 	@echo ""
-	@echo "Starting a connexion/flask API server"
+	@echo "Starting a connexion/flask API server in dev mode"
 	# --- requiring venv or docker
 	# pip install flask connexion[all]
-	PYTHONPATH=. python3 $(PROJECT)/app.py
+	PYTHONPATH=. python3 $(PROJECT)/app_connexion.py
 	@echo ""
 	@echo "- DONE: $@"
 

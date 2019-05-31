@@ -1,0 +1,36 @@
+"""
+# test_app_fastapi
+"""
+import logging
+import unittest
+
+from mock import patch
+from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app_config import api_name, api_desc
+
+
+class AppFastApiTester(unittest.TestCase):
+    """
+    AppFastApiTester includes all unit tests for {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app_fastapi module
+    """
+
+    @classmethod
+    def teardown_class(cls):
+        logging.shutdown()
+
+    def setUp(self):
+        """setup for test"""
+        pass
+
+    def tearDown(self):
+        """tearing down at the end of the test"""
+        pass
+
+    @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app_fastapi.fastapi')
+    @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app_fastapi.router_info')
+    def test_api(self, mock_router, mock_fastapi):
+        from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app_fastapi import app
+        self.assertIsNotNone(app)
+        self.assertEqual(app.title, api_name)
+        self.assertEqual(app.description, api_desc)
+        self.assertEqual(app.version, '{{__VERSION__}}')
+        pass

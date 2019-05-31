@@ -1,6 +1,6 @@
 """
-app.py - application entrance
-using connexion to start a RESTful API service per spec defined in swagger.yaml
+app_connexion.py: spec-first API framework
+using `connexion` to construct a RESTful API service per defined spec in swagger.yaml.
 
 author: Jason Zhu <jason_zhuyx@hotmail.com>
 """
@@ -9,6 +9,8 @@ import os
 
 from flask import redirect, request
 from ml.app_config import \
+    ALL_METHODS, \
+    SSL_CONTEXT, \
     api_host, api_port, \
     api_spec_file, api_spec_path, \
     api_debug
@@ -16,9 +18,6 @@ from ml.config import get_boolean, settings
 from ml.utils.logger import get_logger
 
 LOGGER = get_logger(__name__)
-
-ALL_METHODS = ['HEAD', 'GET', 'PATCH', 'PUT', 'POST', 'DELETE', 'OPTIONS']
-SSL_CONTEXT = 'adhoc'  # or None
 
 app = connexion.App(
     __name__,
@@ -28,7 +27,7 @@ app = connexion.App(
     debug=api_debug)
 
 
-def main():
+def app_main():
     """
     The main API routine.
     """
@@ -104,7 +103,7 @@ def root_api_v1(rest_path):
     return redirect('/api/{}'.format(rest_path), code=307)
 
 
-@app.route('/api/')
+@app.route('/api')
 def root_api():
     """
     Redirect /api to /api/info.
@@ -125,5 +124,5 @@ def root():
 config_connexion()
 
 if __name__ == '__main__':
-    main()
+    app_main()
     pass

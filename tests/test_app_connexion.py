@@ -1,12 +1,12 @@
 """
-# test_app
+# test_app_connexion
 """
 import logging
 import unittest
 
 from mock import patch
-from ml.app import \
-    main, \
+from ml.app_connexion import \
+    app_main, \
     config_connexion, \
     check_cert, \
     https_before_request, \
@@ -31,27 +31,27 @@ class AppTester(unittest.TestCase):
         """tearing down at the end of the test"""
         pass
 
-    @patch('ml.app.app')
+    @patch('ml.app_connexion.app')
     def test_config_connexion(self, mock_app):
         config_connexion()
         mock_app.add_api.assert_called()
 
-    @patch('ml.app.app')
+    @patch('ml.app_connexion.app')
     def test_main(self, mock_app):
-        main()
+        app_main()
         mock_app.run.assert_called()
 
-    @patch('ml.app.main')
+    @patch('ml.app_connexion.app_main')
     def test_main_module(self, mock_main):
         # import runpy
         # runpy.run_module('ml.app', run_name='__main__')
         pass
 
-    @patch('ml.app.os')
-    @patch('ml.app.app')
-    @patch('ml.app.get_boolean')
+    @patch('ml.app_connexion.os')
+    @patch('ml.app_connexion.app')
+    @patch('ml.app_connexion.get_boolean')
     def test_check_cert(self, mock_get, mock_app, mock_os):
-        from ml.app import SSL_CONTEXT
+        from ml.app_connexion import SSL_CONTEXT
         tests = [{
             "ssl": False, "mock_isfile": False,
         }, {
@@ -71,15 +71,15 @@ class AppTester(unittest.TestCase):
                 mock_app.app.before_request.assert_called()
             self.assertEqual(result is None, no_cert or not ssl_enabled)
 
-    @patch('ml.app.request')
-    @patch('ml.app.redirect')
+    @patch('ml.app_connexion.request')
+    @patch('ml.app_connexion.redirect')
     def test_https_before_request(self, mock_redirect, mock_request):
         expected = 'https://host:8080/api/route'
         mock_request.url = 'http://host:8080/api/route'
         https_before_request()
         mock_redirect.assert_called_with(expected, code=301)
 
-    @patch('ml.app.redirect')
+    @patch('ml.app_connexion.redirect')
     def test_root_api(self, mock_redirect):
         mock_result = 'root_redirect'
         mock_redirect.return_value = mock_result
@@ -88,8 +88,8 @@ class AppTester(unittest.TestCase):
         self.assertEqual(result, mock_result)
         pass
 
-    @patch('ml.app.request')
-    @patch('ml.app.redirect')
+    @patch('ml.app_connexion.request')
+    @patch('ml.app_connexion.redirect')
     def test_root_api_v1(self, mock_redirect, mock_request):
         mock_result = 'root_redirect'
         mock_redirect.return_value = mock_result
@@ -102,7 +102,7 @@ class AppTester(unittest.TestCase):
         self.assertEqual(result, mock_result)
         pass
 
-    @patch('ml.app.redirect')
+    @patch('ml.app_connexion.redirect')
     def test_root(self, mock_redirect):
         mock_result = 'root_redirect'
         mock_redirect.return_value = mock_result
