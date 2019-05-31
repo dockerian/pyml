@@ -6,9 +6,8 @@ import os
 
 from ml.config import get_boolean, get_uint, settings
 
-debug_level = get_uint('debug.level', logging.DEBUG)
-
 ALL_METHODS = ['HEAD', 'GET', 'PATCH', 'PUT', 'POST', 'DELETE', 'OPTIONS']
+SSL_CONTEXT = 'adhoc'  # or None
 
 api_name = settings('api.name', 'API Service')
 api_desc = settings('api.desc', 'Python API Framework and Service')
@@ -32,3 +31,6 @@ api_spec = '{}/swagger.json'.format(api_path)  # must be in JSON format
 
 api_debug = get_boolean('api.debug', True)
 app_env = settings('env', 'dev')
+
+debug_level = get_uint('debug.level', logging.DEBUG)
+ssl_enabled = get_boolean('api.enable_ssl')

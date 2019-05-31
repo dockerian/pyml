@@ -31,6 +31,12 @@ _COPY_BASE_="example"
 _TEMP_PATH_="/tmp/__new_python_project_templ__"
 _TMPL_PATH_="${script_base}/docs/templ"
 _TOOL_PATH_="${script_base}/tools"
+# settings for python api framework
+_PAPI_SPEC_FIRST_="connexion"
+_PAPI_CODE_FIRST_="fastapi"
+# settings for using config_*.py for gunicorn wsgi
+_WSGI_SPEC_FIRST_="gunicorn"
+_WSGI_CODE_FIRST_="uvicorn"
 _DELIMITER_="------------------------------------------------------------------------"
 _DOT_SPLIT_="........................................................................"
 _BOX_TITLE_="
@@ -59,6 +65,8 @@ __PROJECT_TITLE__=
 __PROJECT_URL__=
 __REPOSITORY_DIRECTORY__=""
 __TEST_COVERAGE_THRESHOLD__="90"
+__API_APP_MODULE__="${_PAPI_SPEC_FIRST_}"  # using spec-first framework by default
+__API_APP_WSGI__="${_WSGI_SPEC_FIRST_}"
 __API_VERSION__="v1"
 __VERSION__="1.0.0"
 
@@ -429,6 +437,7 @@ function check_input_project_info() {
   check_input_project_codename
   check_input_version
   check_input_api_version
+  check_input_api_options
   check_input_subject
 
   read -p "Project description (optional): " __PROJECT_DESCRIPTION__
@@ -491,6 +500,27 @@ function check_input_subject() {
       echo ''
     fi
   done
+}
+
+function check_input_api_options() {
+  local _query_="Use spec-first API template"
+  local _stdin_=""
+  echo ""
+  echo "${_DOT_SPLIT_}"
+  echo 'Python API Framework template options:'
+  echo '  * spec-first using connexion/flask with gunicorn wsgi'
+  echo '  * code-first using fastapi with gunicorn/uvicorn'
+  echo ''
+  echo "${_DELIMITER_}"
+  read -p "${_query_} (y/n): " _stdin_
+  shopt -s nocasematch
+  if [[ ! "${_stdin_}" =~ ^\s*$ ]] && [[ ! "${_stdin_}" =~ ^(okay|sure|yes|yeah|ye|y)$ ]]; then
+    echo ""
+    echo '  * using gunicorn/uvicorn wsgi for fastapi'
+    __API_APP_MODULE__="${_PAPI_CODE_FIRST_}"
+    __API_APP_WSGI__="${_WSGI_CODE_FIRST_}"
+    echo ""
+  fi
 }
 
 function check_input_api_version() {
@@ -784,6 +814,8 @@ function create_project_file() {
   local _pym_="${__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__:-${__PYTHON_MODULE__}}"
   while IFS='' read -r _line || [[ -n "${_line}" ]]; do
     _line="${_line//\{\{__API_VERSION__\}\}/${__API_VERSION__}}"
+    _line="${_line//\{\{__API_APP_MODULE__\}\}/${__API_APP_MODULE__}}"
+    _line="${_line//\{\{__API_APP_WSGI__\}\}/${__API_APP_WSGI__}}"
     _line="${_line//\{\{__AUTHOR_NAME__\}\}/${__AUTHOR_NAME__}}"
     _line="${_line//\{\{__AUTHOR_EMAIL__\}\}/${__AUTHOR_EMAIL__}}"
     _line="${_line//\{\{__CODECOV_TOKEN__\}\}/${__CODECOV_TOKEN__}}"
@@ -826,6 +858,8 @@ function display_inputs() {
   echo "      Docker container name : ${__DOCKER_CONTAINER_NAME__}"
   echo " Docker or API service port : ${__DOCKER_PORT__}"
   echo "        Project API version : ${__API_VERSION__}"
+  echo "      Project API Framework : ${__API_APP_MODULE__}"
+  echo "    Project API WSGI server : ${__API_APP_WSGI__}"
   echo "Project/repository top path : ${__REPOSITORY_DIRECTORY__} ${_dir_tag_:-[new]}"
   echo "       Project logfile name : ${__PROJECT_LOG_NAME__}"
   echo "   Test covergage threshold : ${__TEST_COVERAGE_THRESHOLD__} %"

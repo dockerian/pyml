@@ -1,5 +1,8 @@
 """
-api_fastapi.py
+api_fastapi.py: code-first API framework
+using `fastapi` to construct a RESTful API service with included routers.
+
+author: Jason Zhu <jason_zhuyx@hotmail.com>
 """
 import fastapi
 
@@ -26,5 +29,12 @@ app = fastapi.FastAPI(
     openapi_url='/{}'.format(api_spec),
     debug=api_debug)
 
+app.router.redirect_slashes = True
+
 # Note: router_info should be added at the last.
 app.include_router(router_info)
+
+
+def app_main():
+    LOGGER.info('FastApi requires a WSGI server to run\n')
+    pass
