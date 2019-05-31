@@ -51,4 +51,4 @@ class ApiInfoTester(unittest.TestCase):
         test {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api.{{__API_VERSION__}}.info.get_info
         """
         result = get_info()
-        self.assertEqual(result.get('name'), 'API Service')
+        self.assertEqual(result.get('name'), '{{__PROJECT_TITLE__}}')

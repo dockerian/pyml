@@ -1,16 +1,16 @@
 """
-# test_config_connexion
+# test_config_gunicorn
 """
 import logging
 import unittest
-
 import mock
+
 import ml.config_gunicorn as config_gunicorn
 
 
 class ConfigGunicornTester(unittest.TestCase):
     """
-    ConfigGunicornTester includes all unit tests for ml.config_connexion module
+    ConfigGunicornTester includes all unit tests for ml.config_gunicorn module
     """
 
     @classmethod
@@ -26,6 +26,7 @@ class ConfigGunicornTester(unittest.TestCase):
         pass
 
     def test_config(self):
+        self.assertEqual(config_gunicorn.worker_class, 'sync')
         self.assertTrue(config_gunicorn.workers >= 1)
 
     def test_hooks(self):

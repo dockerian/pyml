@@ -87,16 +87,20 @@ definitions:
         example: A collection of API demo services.
         type: string
       endpointURL:
-        description: "EndpointURL of the API service."
+        description: "Deployment endpoint URL of the API service."
         example: http://localhost:8081/api
         type: string
       environment:
         description: "Deployment environment for the API service."
         example: test
         type: string
-      spec:
-        description: "Spec of the API service."
+      swaggerFile:
+        description: "Swagger specification file of the API service."
         example: http://localhost:8081/api/swagger.json
+        type: string
+      swaggerUi:
+        description: "Swagger (OpenAPI) documentation of the API service."
+        example: http://localhost:8081/api/ui
         type: string
 
 

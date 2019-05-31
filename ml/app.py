@@ -1,5 +1,5 @@
 """
-ml/app.py - application entrance
+app.py - application entrance
 using connexion to start a RESTful API service per spec defined in swagger.yaml
 
 author: Jason Zhu <jason_zhuyx@hotmail.com>
@@ -8,7 +8,11 @@ import connexion
 import os
 
 from flask import redirect, request
-from ml.config import get_boolean, get_uint, settings
+from ml.app_config import \
+    api_host, api_port, \
+    api_spec_file, api_spec_path, \
+    api_debug
+from ml.config import get_boolean, settings
 from ml.utils.logger import get_logger
 
 LOGGER = get_logger(__name__)
@@ -16,12 +20,6 @@ LOGGER = get_logger(__name__)
 ALL_METHODS = ['HEAD', 'GET', 'PATCH', 'PUT', 'POST', 'DELETE', 'OPTIONS']
 SSL_CONTEXT = 'adhoc'  # or None
 
-api_host = settings('api.host')
-api_port = get_uint('api.port')
-api_spec_file = settings('api.spec.file')
-api_spec_path = os.path.join(
-    settings('api.spec.path'), settings('api.spec.version'))
-api_debug = get_boolean('api.debug')
 app = connexion.App(
     __name__,
     host=api_host,
@@ -122,9 +120,9 @@ def root():
     return redirect('/api/ui', code=302)
 
 
-config_connexion()
-
 # application = app.app # expose global WSGI application object
+
+config_connexion()
 
 if __name__ == '__main__':
     main()

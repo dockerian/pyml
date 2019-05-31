@@ -1,16 +1,16 @@
 """
-# test_config_gunicorn
+# test_config_uvicorn
 """
 import logging
 import unittest
 import mock
 
-import {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.config_gunicorn as config_gunicorn
+import ml.config_uvicorn as config_gunicorn
 
 
-class ConfigGunicornTester(unittest.TestCase):
+class ConfigUvicornTester(unittest.TestCase):
     """
-    ConfigGunicornTester includes all unit tests for {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.config_gunicorn module
+    ConfigUvicornTester includes all unit tests for ml.config_uvicorn module
     """
 
     @classmethod
@@ -26,7 +26,7 @@ class ConfigGunicornTester(unittest.TestCase):
         pass
 
     def test_config(self):
-        self.assertEqual(config_gunicorn.worker_class, 'sync')
+        self.assertEqual(config_gunicorn.worker_class, 'uvicorn.workers.UvicornWorker')
         self.assertTrue(config_gunicorn.workers >= 1)
 
     def test_hooks(self):

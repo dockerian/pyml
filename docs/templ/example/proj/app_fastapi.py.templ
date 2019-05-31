@@ -3,20 +3,20 @@ api_fastapi.py
 """
 import fastapi
 
-from ml.api.__route import ROUTER as router_info
+from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api.__route import ROUTER as router_info
 
-from ml.app_config import \
+from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app_config import \
     api_name, api_desc, api_version, \
     api_debug, \
     api_docs_url, \
     api_redoc_url, \
     api_spec
-from ml.utils.logger import get_logger
+from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.utils.logger import get_logger
 
 LOGGER = get_logger(__name__)
 
 # Deployment Note:
-# PYTHONPATH=. gunicorn -c ouroboros/config_uvicorn.py ml.app_fastapi:app
+# PYTHONPATH=. gunicorn -c ouroboros/config_uvicorn.py {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.app_fastapi:app
 app = fastapi.FastAPI(
     title=api_name,
     description=api_desc,

@@ -156,6 +156,14 @@
   * [Gunicorn Documentation](https://buildmedia.readthedocs.org/media/pdf/gunicorn-docs/stable/gunicorn-docs.pdf)
   * [Python WSGI Server Benchmark](https://github.com/kubeup/python-wsgi-benchmark)
   * [WSGI Servers](https://www.fullstackpython.com/wsgi-servers.html)
+  * [uWSGI](http://flask.pocoo.org/docs/1.0/deploying/uwsgi/)
+
+See also:
+  * Maximizing Python Performance with Nginx
+    - [Part 1](https://www.nginx.com/blog/maximizing-python-performance-with-nginx-parti-web-serving-and-caching/)
+    - [Part 2](https://www.nginx.com/blog/maximizing-python-performance-with-nginx-part-ii-load-balancing-and-monitoring/)
+  * [Full Stack Python](https://www.fullstackpython.com/table-of-contents.html)
+    - [Nginx](https://www.fullstackpython.com/nginx.html)
 
 
 

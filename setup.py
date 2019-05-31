@@ -12,7 +12,7 @@ AUTHOR_EMAIL = 'jason_zhuyx@hotmail.com'
 BULD_VERSION = '1.0.0'  # in format of `<major>.<minor>.<release>`
 PROJECT_CODE_NAME = 'Moonlight'
 PROJECT_DESCRIPTION = 'Python Machine Learning Practice'
-PROJECT_URL = ''
+PROJECT_URL = 'https://github.com/dockerian/pyml'
 SUBJECT = 'Machine Learning'
 
 HERE = os.path.abspath(os.path.dirname(__file__))

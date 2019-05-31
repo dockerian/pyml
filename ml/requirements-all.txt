@@ -1,7 +1,7 @@
 aniso8601==6.0.0
 apipkg==1.5
 asn1crypto==0.24.0
-astroid==2.1.0
+astroid==2.2.5
 atomicwrites==1.2.1
 attrs==18.2.0
 boto3==1.9.139
@@ -53,7 +53,7 @@ py==1.7.0
 pycparser==2.19
 pydantic==0.26
 pyflakes==2.0.0
-pylint==2.2.2
+pylint==2.3.1
 pyOpenSSL==19.0.0
 pyparsing==2.3.0
 pytest==4.1.1
@@ -72,6 +72,7 @@ scipy==1.2.0
 six==1.12.0
 starlette==0.12.0
 swagger-ui-bundle==0.0.3
+typed-ast==1.3.5
 urllib3==1.24.3
 uvicorn==0.7.1
 uvloop==0.12.2

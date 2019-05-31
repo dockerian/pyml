@@ -1,19 +1,8 @@
-# Python Machine Learning Practice
+# Python Moonlight (Machine Learning) Design
 
-> 
+> Python Moonlight API Services and machine learning project high level design and dev notes
 
+<br/><a name="contents"></a>
+## Contents
 
-<br/><a name="cl"></a>
-## Classifier
-
-  ```
-  make classifier  # or `make cl`
-  ```
-
-
-<br/><a name="dr"></a>
-## Digit recognizer
-
-  ```
-  make digit-recognizer  # or `make dr`
-  ```
+* [Design API Server](./api/README.md)
