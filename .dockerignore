@@ -17,6 +17,7 @@ __pycache__
 *.bak
 *.log
 *.out
+*.pid
 *.pyc
 *.pyd
 *.pyo

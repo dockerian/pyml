@@ -20,6 +20,7 @@ PROJECT := ml
 DOCKER_PORT ?= 8081
 DOCKER_USER := dockerian
 DOCKER_NAME := pyml
+GITHUB_REPO := pyml
 DOCKER_IMAG := $(DOCKER_USER)/$(DOCKER_NAME)
 DOCKER_TAGS := $(DOCKER_USER)/$(DOCKER_NAME)
 DOCKER_DENV := $(wildcard /.dockerenv)
@@ -136,8 +137,9 @@ clean-all: clean-cache
 ifeq ("$(DOCKER_DENV)", "")
 	# not in a docker container
 	@echo "--- Removing docker image $(DOCKER_TAGS)"
-	docker rm -f $(shell docker ps -a|grep $(DOCKER_NAME)|awk '{print $1}') 2>/dev/null || true
-	docker rmi -f $(shell docker images -a|grep $(DOCKER_TAGS) 2>&1|awk '{print $1}') 2>/dev/null || true
+	docker rm -f $(shell docker ps -a|grep $(DOCKER_NAME)|awk '{print $$1}') 2>/dev/null || true
+	docker rm -f $(shell docker ps -a|grep $(DOCKER_NAME)-prod|awk '{print $$1}') 2>/dev/null || true
+	docker rmi -f $(shell docker images -a|grep $(DOCKER_TAGS) 2>&1|awk '{print $$1}') 2>/dev/null || true
 	rm -rf docker_build.tee
 endif
 	@echo
@@ -258,7 +260,7 @@ else
 endif
 	@echo "- DONE: $@"
 
-docker_build.tee: Dockerfile
+docker_build.tee: $(DOCKER_FILE)
 ifeq ("$(DOCKER_DENV)", "")
 	# make in a docker host environment
 	@echo ""
@@ -458,6 +460,52 @@ run-flask:
 	@echo ""
 	@echo "- DONE: $@"
 
+run-nginx-clean:
+ifeq ("$(DOCKER_DENV)", "")
+	@echo ""
+	@echo "Cleaning $(DOCKER_NAME)-prod"
+	docker rm -f $(shell docker ps -a|grep $(DOCKER_NAME)-prod|awk '{print $$1}') 2>/dev/null || true
+	@echo ""
+	docker ps -a
+endif
+
+run-nginx-build:
+ifeq ("$(DOCKER_DENV)", "")
+	@echo ""
+	@echo "Building $(DOCKER_TAGS):prod"
+	docker images -a| grep -e '$(DOCKER_TAGS) *prod' || \
+	docker build -t $(DOCKER_TAGS):prod -f $(DOCKER_FILE).prod .
+	@echo ""
+	docker images -a| grep $(DOCKER_TAGS) 2>/dev/null
+endif
+
+run-nginx: run-nginx-clean run-nginx-build
+	@echo ""
+ifeq ("$(DOCKER_DENV)", "")
+	@echo "Starting $(DOCKER_TAGS):prod"
+	@echo ""
+	PROJECT="$(PROJECT)" \
+	PROJECT_DIR="$(PWD)" \
+	DOCKER_PORT="$(DOCKER_PORT)" \
+	docker run -d \
+	--hostname $(DOCKER_NAME) --name $(DOCKER_NAME)-prod \
+	-v $(PWD)/tools/nginx.conf:/etc/nginx/conf.d/default.conf \
+	-v $(PWD):/src/$(GITHUB_REPO) \
+	-p $(DOCKER_PORT):80 $(DOCKER_TAGS):prod \
+	/bin/bash -c "make $@"
+	@echo ""
+	@echo "$(DOCKER_NAME)-prod is available at http://localhost:$(DOCKER_PORT)"
+else
+	env|sort
+	@echo ""
+	@which nginx || echo "Cannot find in $(DOCKER_NAME)-prod"
+	nginx -g "pid $(PWD)/nginx.pid;"
+	@echo ""
+	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_$(API_APP_WSGI).py $(API_APP_MODULE):app
+endif
+	@echo ""
+	@echo "- DONE: $@"
+
 
 ############################################################
 # swagger and api spec
@@ -467,12 +515,12 @@ SWAGGER_PAGE := http://localhost:$(SWAGGER_PORT)
 SWAGGER_EDIT := swaggerapi/swagger-editor
 SWAGGER_UIMG := swaggerapi/swagger-ui
 # docker image for swagger web
-SWAGGER_WTAG := swagger-ml-app
+SWAGGER_WTAG := $(DOCKER_NAME)-swagger
 SWAGGER_NGNX := /usr/share/nginx
 SWAGGER_SEDS := 'sed -i "s|cp -s \$$SWAGGER_JSON \$$NGINX_ROOT|\# cp -s \$$SWAGGER_JSON \$$NGINX_ROOT|g" /usr/share/nginx/docker-run.sh && . /usr/share/nginx/docker-run.sh'
 
 SWAGGER_FILE := swagger.yaml
-SWAGGER_PATH := $(PWD)/ml/apidoc/{{__API_VERSION__}}
+SWAGGER_PATH := $(PWD)/ml/apidoc/v1
 
 swagger-clean:
 	@echo ""

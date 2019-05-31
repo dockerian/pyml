@@ -11,6 +11,7 @@ from ml.app_connexion import \
     check_cert, \
     https_before_request, \
     root_api_v1, root_api, \
+    root_icon, \
     root
 
 
@@ -99,6 +100,15 @@ class AppTester(unittest.TestCase):
         expected_url = '/api/' + mock_rest_path
         result = root_api_v1(mock_rest_path)
         mock_redirect.assert_called_with(expected_url, code=307)
+        self.assertEqual(result, mock_result)
+        pass
+
+    @patch('ml.app_connexion.redirect')
+    def test_root_icon(self, mock_redirect):
+        mock_result = 'root_redirect_static_api_png'
+        mock_redirect.return_value = mock_result
+        result = root_icon()
+        mock_redirect.assert_called_with('/static/api.png', code=302)
         self.assertEqual(result, mock_result)
         pass
 

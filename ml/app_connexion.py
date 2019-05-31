@@ -11,6 +11,7 @@ from flask import redirect, request
 from ml.app_config import \
     ALL_METHODS, \
     SSL_CONTEXT, \
+    api_docs_path, \
     api_host, api_port, \
     api_spec_file, api_spec_path, \
     api_debug
@@ -53,6 +54,8 @@ def config_connexion():
 
     LOGGER.debug('loading api spec: %s/%s', api_spec_path, api_spec_file)
     app.add_api(api_spec_file)  # read from above specification_dir
+
+    app.app.static_url_path = app.app.static_folder = api_docs_path
 
     # app is a connexion application
     # app.app is a flask application; or `strict_slashes=False` on @app.route
@@ -103,12 +106,18 @@ def root_api_v1(rest_path):
     return redirect('/api/{}'.format(rest_path), code=307)
 
 
+@app.route('/api/')
 @app.route('/api')
 def root_api():
     """
     Redirect /api to /api/info.
     """
     return redirect('/api/info', code=302)
+
+
+@app.route('/favicon.ico')
+def root_icon():
+    return redirect('/static/api.png', code=302)
 
 
 @app.route('/')

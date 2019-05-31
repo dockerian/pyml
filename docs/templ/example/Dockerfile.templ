@@ -47,6 +47,7 @@ COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 ENV PROJECT={{__GITHUB_REPOSITORY_NAME__}} \
     PROJECT_DIR={{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}} \
+    PYTHONPATH=/src/{{__GITHUB_REPOSITORY_NAME__}} \
     SHELL=/bin/bash \
     SOURCE=/src
 

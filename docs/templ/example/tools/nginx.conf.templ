@@ -1,0 +1,39 @@
+# nginx config for {{__GITHUB_REPOSITORY_NAME__}}
+server {
+    listen 80;
+    server_name _;
+    access_log  /dev/stdout;
+    error_log   /dev/stdout;
+
+    add_header    HttpHost              $http_host;
+    add_header    HttpPort              $http_port;
+    add_header    Host                  $host;
+    add_header    ServerName            $server_name;
+    add_header    X-Real-IP             $remote_addr;
+    add_header    X-Forwarded-For       $proxy_add_x_forwarded_for;
+    add_header    X-Forwarded-Proto     $scheme;
+
+    location ~ ^/{{__API_VERSION__}}(/?)(.*)$ {
+        proxy_pass          http://127.0.0.1:8081/api$1$2$is_args$args;
+        proxy_redirect      off;
+    }
+
+    location = /favicon.ico {
+        alias               /src/{{__GITHUB_REPOSITORY_NAME__}}/{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}/apidoc/nginx.png;
+    }
+
+    location /info {
+        proxy_pass          http://127.0.0.1:{{__DOCKER_PORT__}}/api/info;
+        proxy_redirect      off;
+    }
+
+    location /apidoc {
+        proxy_pass          http://127.0.0.1:{{__DOCKER_PORT__}}/api/{{__API_VERSION__}}/ui;
+        proxy_redirect      off;
+    }
+
+    location / {
+        proxy_pass          http://127.0.0.1:{{__DOCKER_PORT__}}/;
+        proxy_redirect      off;
+    }
+}
