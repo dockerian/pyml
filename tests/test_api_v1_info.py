@@ -5,7 +5,7 @@ import os
 import logging
 import unittest
 
-from mock import patch
+from mock import MagicMock, patch
 from ml.api.v1.info import get_api_doc
 from ml.api.v1.info import get_info
 
@@ -46,9 +46,13 @@ class ApiInfoTester(unittest.TestCase):
         pass
 
     @patch('ml.api.v1.info.flask')
-    def test_get_info(self, mock_flask):
+    @patch('ml.api.v1.info.jsonpickle')
+    @patch('ml.api.v1.info.json')
+    def test_get_info(self, mock_json, mock_pickle, mock_flask):
         """
         test ml.api.v1.info.get_info
         """
+        mock_flask.request = MagicMock()
+        mock_pickle.encode.return_value = {}
         result = get_info()
         self.assertEqual(result.get('name'), 'API Service')

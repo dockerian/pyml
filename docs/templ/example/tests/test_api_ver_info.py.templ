@@ -5,7 +5,7 @@ import os
 import logging
 import unittest
 
-from mock import patch
+from mock import MagicMock, patch
 from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api.{{__API_VERSION__}}.info import get_api_doc
 from {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api.{{__API_VERSION__}}.info import get_info
 
@@ -46,9 +46,13 @@ class ApiInfoTester(unittest.TestCase):
         pass
 
     @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api.{{__API_VERSION__}}.info.flask')
-    def test_get_info(self, mock_flask):
+    @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api.v1.info.jsonpickle')
+    @patch('{{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api.v1.info.json')
+    def test_get_info(self, mock_json, mock_pickle, mock_flask):
         """
         test {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.api.{{__API_VERSION__}}.info.get_info
         """
+        mock_flask.request = MagicMock()
+        mock_pickle.encode.return_value = {}
         result = get_info()
         self.assertEqual(result.get('name'), '{{__PROJECT_TITLE__}}')

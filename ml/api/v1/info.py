@@ -2,17 +2,19 @@
 ml/api/v1/info.py
 """
 import flask
+import json
+import jsonpickle
 import os
 
+from ml.app_connexion import application
 from ml.app_config import \
     api_name, api_desc, api_version, \
     api_path, \
     api_docs_url, \
     api_spec, api_spec_file, api_spec_path, \
     app_env
-from ml.utils.logger import get_logger
 
-LOGGER = get_logger(__name__)
+LOGGER = application.logger
 
 
 def get_api_doc():
@@ -39,7 +41,7 @@ def get_info():
     """
     base_url = flask.request.host_url.strip('/')
 
-    return {
+    res = {
         "name": api_name,
         "version": api_version,
         "description": api_desc,
@@ -48,3 +50,11 @@ def get_info():
         "swaggerFile": '{}/{}'.format(base_url, api_spec),
         "swaggerUi": '{}/{}'.format(base_url, api_docs_url),
     }
+    if app_env != 'prod':
+        req = json.loads(jsonpickle.encode(
+            flask.request, unpicklable=False, max_depth=5))
+        LOGGER.info('Request: %s', json.dumps(req, sort_keys=True, indent=2))
+        res.update({
+            "~/request": req
+        })
+    return res

@@ -128,7 +128,7 @@ def root():
     return redirect('/api/ui', code=302)
 
 
-# application = app.app # expose global WSGI application object
+application = app.app  # expose global WSGI application object
 
 config_connexion()
 
