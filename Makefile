@@ -18,14 +18,15 @@ PROJECT := ml
 # Makefile variables and functions
 ############################################################
 DOCKER_PORT ?= 8081
+DOCKER_FILE ?= Dockerfile
 DOCKER_USER := dockerian
 DOCKER_NAME := pyml
-GITHUB_REPO := pyml
 DOCKER_IMAG := $(DOCKER_USER)/$(DOCKER_NAME)
-DOCKER_TAGS := $(DOCKER_USER)/$(DOCKER_NAME)
+DOCKER_TAGS := $(shell docker images 2>&1|grep -m1 ${DOCKER_IMAG}|awk '{print $$1;}')
 DOCKER_DENV := $(wildcard /.dockerenv)
 DOCKER_PATH := $(shell which docker)
-DOCKER_FILE ?= Dockerfile
+GITHUB_CORP := dockerian
+GITHUB_REPO := pyml
 
 BUILD_ENV ?= test
 COVERAGE_DIR := htmlcov
@@ -36,7 +37,7 @@ SYSTOOLS := find rm python tee xargs zip
 USE_PYTHON3 := true
 PIPLIST_ALL := $(PROJECT)/requirements.txt
 PIPLIST_DEV := $(PROJECT)/requirements-dev.txt
-PY_LIB_PATH := $(shell python -c "import site; print(site.getsitepackages()[0])")
+PY_LIB_PATH := $(shell python -c "import site; print(site.getsitepackages()[0])" 2>/dev/null)
 PYTEST_ARGS := --flakes --pep8 --pylint -s -vv --cov-report term-missing
 NOSE_2_ARGS := --output-buffer -v --with-coverage --coverage $(PROJECT) --coverage-report html --coverage-report term
 UTTEST_ARGS := --buffer --catch --failfast --verbose
@@ -416,6 +417,7 @@ else
 ifeq ("$(DONT_RUN_PYVENV)", "true")
 	env|sort
 	@echo ""
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_$(API_APP_WSGI).py $(API_APP_MODULE):app
 else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
@@ -429,6 +431,7 @@ run-gunicorn:
 	@echo "Starting API server with gunicorn wsgi"
 	# --- requiring venv or docker
 	# pip install gunicorn
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(API_SPEC_FIRST):app
 	@echo ""
 	@echo "- DONE: $@"
@@ -438,6 +441,7 @@ run-gevent:
 	@echo "Starting API server with gevent wsgi"
 	# --- requiring venv or docker
 	# pip install gevent
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. python3 $(PROJECT)/run_gevent.py
 	@echo ""
 	@echo "- DONE: $@"
@@ -447,6 +451,7 @@ run-fastapi:
 	@echo "Starting a fastapi server with gunicorn/uvicorn wsgi"
 	# --- requiring venv or docker
 	# pip install fastapi gunicorn uvicorn
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_uvicorn.py $(API_CODE_FIRST):app
 	@echo ""
 	@echo "- DONE: $@"
@@ -456,6 +461,7 @@ run-flask:
 	@echo "Starting a connexion/flask API server in dev mode"
 	# --- requiring venv or docker
 	# pip install flask connexion[all]
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. python3 $(PROJECT)/app_connexion.py
 	@echo ""
 	@echo "- DONE: $@"
@@ -487,7 +493,10 @@ ifeq ("$(DOCKER_DENV)", "")
 	PROJECT="$(PROJECT)" \
 	PROJECT_DIR="$(PWD)" \
 	DOCKER_PORT="$(DOCKER_PORT)" \
+	API_PORT="$(DOCKER_PORT)" \
+	ENV=$(BUILD_ENV) \
 	docker run -d \
+	-e API_PORT -e ENV \
 	--hostname $(DOCKER_NAME) --name $(DOCKER_NAME)-prod \
 	-v $(PWD)/tools/nginx.conf:/etc/nginx/conf.d/default.conf \
 	-v $(PWD):/src/$(GITHUB_REPO) \
@@ -501,6 +510,7 @@ else
 	@which nginx || echo "Cannot find in $(DOCKER_NAME)-prod"
 	nginx -g "pid $(PWD)/nginx.pid;"
 	@echo ""
+	API_PORT="$(DOCKER_PORT)" \
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_$(API_APP_WSGI).py $(API_APP_MODULE):app
 endif
 	@echo ""

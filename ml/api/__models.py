@@ -18,6 +18,8 @@ class ApiSchema(BaseModel):
         ...,
         description='Deployment environment for the API service.',
         **{"example": "dev"})
+    redocsUrl: str = Schema(
+        None, description='Open API documentation.')
     swaggerFile: str = Schema(
         None, description='Swagger specification file of the API service.')
     swaggerUi: str = Schema(

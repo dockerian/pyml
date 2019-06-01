@@ -49,23 +49,22 @@ ENV PROJECT={{__GITHUB_REPOSITORY_NAME__}} \
     SHELL=/bin/bash \
     SOURCE=/src
 
-COPY $PROJECT_DIR/requirements-dev.txt $SOURCE/$PROJECT/requirements-dev.txt
-COPY $PROJECT_DIR/requirements.txt $SOURCE/$PROJECT/requirements.txt
+COPY . $SOURCE/$PROJECT/
 COPY tools/nginx.conf /etc/nginx/conf.d/default.conf
 
 # install python dependencies, and aws cli
 RUN mkdir -p $SOURCE \
  && pip install --upgrade pip \
-#&& pip install -r $SOURCE/$PROJECT/requirements-dev.txt \
- && pip install -r $SOURCE/$PROJECT/requirements.txt \
+#&& pip install -r $PYTHONPATH/$PROJECT_DIR/requirements-dev.txt \
+ && pip install -r $PYTHONPATH/$PROJECT_DIR/requirements.txt \
 #&& pip install awscli \
  && pip list
+
+EXPOSE 80/TCP {{__DOCKER_PORT__}}/TCP
 
 WORKDIR $SOURCE/$PROJECT
 
 # ENTRYPOINT ["/bin/bash", "-c"]
 # ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 80/TCP {{__DOCKER_PORT__}}/TCP
-
-CMD ["/bin/bash"]
+CMD ["make", "run-nginx"]
