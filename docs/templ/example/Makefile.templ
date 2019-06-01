@@ -24,7 +24,7 @@ DOCKER_USER := {{__DOCKER_USER_OR_ORGANIZATION_NAME__}}
 DOCKER_NAME := {{__DOCKER_CONTAINER_NAME__}}
 GITHUB_REPO := {{__GITHUB_REPOSITORY_NAME__}}
 DOCKER_IMAG := $(DOCKER_USER)/$(DOCKER_NAME)
-DOCKER_TAGS := $(DOCKER_USER)/$(DOCKER_NAME)
+DOCKER_TAGS := $(shell docker images 2>&1|grep -m1 ${DOCKER_IMAG}|awk '{print $$1;}')
 DOCKER_DENV := $(wildcard /.dockerenv)
 DOCKER_PATH := $(shell which docker)
 DOCKER_FILE ?= Dockerfile
@@ -38,7 +38,7 @@ SYSTOOLS := find rm python tee xargs zip
 USE_PYTHON3 := true
 PIPLIST_ALL := $(PROJECT)/requirements.txt
 PIPLIST_DEV := $(PROJECT)/requirements-dev.txt
-PY_LIB_PATH := $(shell python -c "import site; print(site.getsitepackages()[0])")
+PY_LIB_PATH := $(shell python -c "import site; print(site.getsitepackages()[0])" 2>/dev/null)
 PYTEST_ARGS := --flakes --pep8 --pylint -s -vv --cov-report term-missing
 NOSE_2_ARGS := --output-buffer -v --with-coverage --coverage $(PROJECT) --coverage-report html --coverage-report term
 UTTEST_ARGS := --buffer --catch --failfast --verbose
@@ -138,10 +138,10 @@ clean-all: clean-cache
 	@echo
 ifeq ("$(DOCKER_DENV)", "")
 	# not in a docker container
-	@echo "--- Removing docker image $(DOCKER_TAGS)"
+	@echo "--- Removing docker image $(DOCKER_IMAG)"
 	docker rm -f $(shell docker ps -a|grep $(DOCKER_NAME)|awk '{print $$1}') 2>/dev/null || true
 	docker rm -f $(shell docker ps -a|grep $(DOCKER_NAME)-prod|awk '{print $$1}') 2>/dev/null || true
-	docker rmi -f $(shell docker images -a|grep $(DOCKER_TAGS) 2>&1|awk '{print $$1}') 2>/dev/null || true
+	docker rmi -f $(shell docker images -a|grep $(DOCKER_IMAG) 2>&1|awk '{print $$1}') 2>/dev/null || true
 	rm -rf docker_build.tee
 endif
 	@echo
@@ -266,12 +266,12 @@ docker_build.tee: $(DOCKER_FILE)
 ifeq ("$(DOCKER_DENV)", "")
 	# make in a docker host environment
 	@echo ""
-	@echo `date +%Y-%m-%d:%H:%M:%S` "Building '$(DOCKER_TAGS)'"
+	@echo `date +%Y-%m-%d:%H:%M:%S` "Building '$(DOCKER_IMAG)'"
 	@echo "-----------------------------------------------------------------------"
-	docker build -f $(DOCKER_FILE) -t $(DOCKER_TAGS) . | tee docker_build.tee
+	docker build -f $(DOCKER_FILE) -t $(DOCKER_IMAG) . | tee docker_build.tee
 	@echo "-----------------------------------------------------------------------"
 	@echo ""
-	docker images --all | grep -e 'REPOSITORY' -e '$(DOCKER_TAGS)'
+	docker images --all | grep -e 'REPOSITORY' -e '$(DOCKER_IMAG)'
 	@echo "......................................................................."
 	@echo "- DONE: {docker build}"
 	@echo ""
@@ -426,7 +426,7 @@ DOCKER_APIS := {{__DOCKER_CONTAINER_NAME__}}
 run-api:
 	@echo ""
 ifndef DONT_RUN_DOCKER
-	@echo "Starting $(DOCKER_TAGS)"
+	@echo "Starting $(DOCKER_IMAG)"
 	@echo ""
 	PROJECT_DIR="$(PWD)" \
 	GITHUB_USER=$(GITHUB_CORP) GITHUB_REPO=$(GITHUB_REPO) \
@@ -437,6 +437,7 @@ else
 ifeq ("$(DONT_RUN_PYVENV)", "true")
 	env|sort
 	@echo ""
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_$(API_APP_WSGI).py $(API_APP_MODULE):app
 else
 	USE_PYTHON3=$(USE_PYTHON3) VENV_NAME=$(PYVENV_NAME) $(MAKE_VENV) "$@"
@@ -450,6 +451,7 @@ run-gunicorn:
 	@echo "Starting API server with gunicorn wsgi"
 	# --- requiring venv or docker
 	# pip install gunicorn
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_gunicorn.py $(API_SPEC_FIRST):app
 	@echo ""
 	@echo "- DONE: $@"
@@ -459,6 +461,7 @@ run-fastapi:
 	@echo "Starting a fastapi server with gunicorn/uvicorn wsgi"
 	# --- requiring venv or docker
 	# pip install fastapi gunicorn uvicorn
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_uvicorn.py $(API_CODE_FIRST):app
 	@echo ""
 	@echo "- DONE: $@"
@@ -468,6 +471,7 @@ run-flask:
 	@echo "Starting a connexion/flask API server in dev mode"
 	# --- requiring venv or docker
 	# pip install flask connexion[all]
+	ENV=$(BUILD_ENV) \
 	PYTHONPATH=. python3 $(PROJECT)/app_connexion.py
 	@echo ""
 	@echo "- DONE: $@"
@@ -484,26 +488,28 @@ endif
 run-nginx-build:
 ifeq ("$(DOCKER_DENV)", "")
 	@echo ""
-	@echo "Building $(DOCKER_TAGS):prod"
-	docker images -a| grep -e '$(DOCKER_TAGS) *prod' || \
-	docker build -t $(DOCKER_TAGS):prod -f $(DOCKER_FILE).prod .
+	@echo "Building $(DOCKER_IMAG):prod"
+	docker images -a| grep -e '$(DOCKER_IMAG) *prod' || \
+	docker build -t $(DOCKER_IMAG):prod -f $(DOCKER_FILE).prod .
 	@echo ""
-	docker images -a| grep $(DOCKER_TAGS) 2>/dev/null
+	docker images -a| grep $(DOCKER_IMAG) 2>/dev/null
 endif
 
 run-nginx: run-nginx-clean run-nginx-build
 	@echo ""
 ifeq ("$(DOCKER_DENV)", "")
-	@echo "Starting $(DOCKER_TAGS):prod"
+	@echo "Starting $(DOCKER_IMAG):prod"
 	@echo ""
 	PROJECT="$(PROJECT)" \
 	PROJECT_DIR="$(PWD)" \
 	DOCKER_PORT="$(DOCKER_PORT)" \
+	ENV=$(BUILD_ENV) \
 	docker run -d \
+	-e ENV \
 	--hostname $(DOCKER_NAME) --name $(DOCKER_NAME)-prod \
 	-v $(PWD)/tools/nginx.conf:/etc/nginx/conf.d/default.conf \
 	-v $(PWD):/src/$(GITHUB_REPO) \
-	-p $(DOCKER_PORT):80 $(DOCKER_TAGS):prod \
+	-p $(DOCKER_PORT):80 $(DOCKER_IMAG):prod \
 	/bin/bash -c "make $@"
 	@echo ""
 	@echo "$(DOCKER_NAME)-prod is available at http://localhost:$(DOCKER_PORT)"
