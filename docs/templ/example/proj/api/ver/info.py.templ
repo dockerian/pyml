@@ -48,7 +48,7 @@ def get_info():
         "endpointURL": '{}/{}'.format(base_url, api_path),
         "environment": app_env,
         "swaggerFile": '{}/{}'.format(base_url, api_spec),
-        "swaggerUi": '{}/{}'.format(base_url, api_docs_url),
+        "swaggerUi": '{}/{}/'.format(base_url, api_docs_url),
     }
     if app_env != 'prod':
         req = json.loads(jsonpickle.encode(

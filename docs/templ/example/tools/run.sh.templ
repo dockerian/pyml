@@ -112,9 +112,10 @@ function main() {
     -e AWS_ACCESS_KEY_ID
     -e AWS_DEFAULT_REGION
     -e AWS_SECRET_ACCESS_KEY
+    -e BINARY
+    -e BUILD_ENV
     -e BUILD_ARTIFACT
     -e BUILD_NUMBER
-    -e BINARY
     -e BUILD_OS="${BUILD_OS:-linux}"
     -e BUILD_MASTER_VERSION
     -e BUILD_VERSION="${BUILD_VERSION:-1.0}"

@@ -13,6 +13,8 @@ services:
         - AWS_DEFAULT_REGION
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCESS_KEY_ID
+        - BUILD_ENV
+        - ENV
       network_mode: bridge
       privileged: true
       expose:
