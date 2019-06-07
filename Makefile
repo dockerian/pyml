@@ -18,14 +18,15 @@ PROJECT := ml
 # Makefile variables and functions
 ############################################################
 DOCKER_PORT ?= 8081
+DOCKER_FILE ?= Dockerfile
 DOCKER_USER := dockerian
 DOCKER_NAME := pyml
-GITHUB_REPO := pyml
 DOCKER_IMAG := $(DOCKER_USER)/$(DOCKER_NAME)
 DOCKER_TAGS := $(shell docker images 2>&1|grep -m1 ${DOCKER_IMAG}|awk '{print $$1;}')
 DOCKER_DENV := $(wildcard /.dockerenv)
 DOCKER_PATH := $(shell which docker)
-DOCKER_FILE ?= Dockerfile
+GITHUB_CORP := dockerian
+GITHUB_REPO := pyml
 
 BUILD_ENV ?= test
 COVERAGE_DIR := htmlcov
@@ -494,9 +495,10 @@ ifeq ("$(DOCKER_DENV)", "")
 	PROJECT="$(PROJECT)" \
 	PROJECT_DIR="$(PWD)" \
 	DOCKER_PORT="$(DOCKER_PORT)" \
+	API_PORT="$(DOCKER_PORT)" \
 	ENV=$(BUILD_ENV) \
 	docker run -d \
-	-e ENV \
+	-e API_PORT -e ENV \
 	--hostname $(DOCKER_NAME) --name $(DOCKER_NAME)-prod \
 	-v $(PWD)/tools/nginx.conf:/etc/nginx/conf.d/default.conf \
 	-v $(PWD):/src/$(GITHUB_REPO) \
@@ -510,6 +512,7 @@ else
 	@which nginx || echo "Cannot find in $(DOCKER_NAME)-prod"
 	nginx -g "pid $(PWD)/nginx.pid;"
 	@echo ""
+	API_PORT="$(DOCKER_PORT)" \
 	PYTHONPATH=. gunicorn --config=$(PROJECT)/config_$(API_APP_WSGI).py $(API_APP_MODULE):app
 endif
 	@echo ""

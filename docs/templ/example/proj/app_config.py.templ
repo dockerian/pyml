@@ -29,8 +29,8 @@ api_spec_path = os.path.join(
 
 # OpenAPI spec file and path (for code-first framework, e.g. fastapi)
 api_path = settings('api.path', 'api')
-api_docs_url = '{}/ui'.format(api_path)
-api_redoc_url = '{}/docs'.format(api_path)
+api_docs_url = '{}/ui/'.format(api_path)
+api_redoc_url = '{}/docs/'.format(api_path)
 api_spec = '{}/swagger.json'.format(api_path)  # must be in JSON format
 
 api_debug = get_boolean('api.debug', True)
