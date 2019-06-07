@@ -16,6 +16,7 @@
   - [Operations](#rest-op)
 * [HTTP Headers](#http-headers)
 * [Design Flow](#design)
+* [CORS](#cors)
 
 
 
@@ -233,3 +234,60 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
   * Decide the resource name schemes based on types and relationships.
   * Decide the resource (entity) schemas.
   * Add methods to resources.
+
+
+<br/><a name="cors"></a>
+## CORS
+
+> Cross-Origin Resource Sharing (CORS) is a mechanism that uses additional HTTP
+  headers to tell a browser to let a web application running at one origin (domain)
+  have permission to access selected resources from a server at a different origin.
+> A web application executes a **cross-origin HTTP request** when it requests
+  a resource that has a different origin (domain, protocol, and port)
+  than its own origin.
+
+### Preflight mechanism
+
+> To protect resources against cross-origin requests that could not originate
+  from certain user agents before this specification existed a preflight request
+  is made to ensure that the resource is aware of this specification.
+
+  Preflight requests were introduced so that a browser could be sure it was
+  dealing with a CORS-aware server before sending certain requests.
+  Those requests were defined to be those that were both potentially
+  dangerous (state-changing) and new (not possible before CORS due to
+  the [Same Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy)).
+  Using preflight requests means that servers must opt-in (by responding
+  properly to the preflight) to the new, potentially dangerous types of
+  request that CORS makes possible.
+
+### CORS and Preflight Example
+
+  A browser user is logged into a.com. When the user navigates to a malicious
+  b.com, where a page includes some JavaScript that tries to send a `DELETE`
+  request to a.com/api/resource.
+  Since the user is logged into a.com, that request, if sent, would include
+  cookies that identify the user.
+
+  Before CORS, the browser's [Same Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy)
+  would have blocked it from sending such request - a.com might have assumed that
+  it could never receive such a request, and thus it might have never been hardened
+  against such an attack.
+
+  To protect such non-CORS-aware servers, then, the protocol requires
+  the browser to first send a preflight request. This new kind of request is
+  something that only CORS-aware servers can respond to properly, allowing
+  the browser to know whether or not it's safe to send the actual `DELETE`.
+
+  Preflight requests were created so as to reduce (but not fully protect from)
+  the attack form on site b.com can `POST` to a.com with the user's cookies -
+  a.k.a CSRF ([Cross-Site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery))
+  attack surface for non-CORS-aware servers.
+
+
+### Reference
+
+  * https://www.codecademy.com/articles/what-is-cors
+  * https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+  * https://stackoverflow.com/questions/15381105/cors-what-is-the-motivation-behind-introducing-preflight-requests
+  * https://auth0.com/blog/cors-tutorial-a-guide-to-cross-origin-resource-sharing/

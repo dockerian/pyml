@@ -9,6 +9,7 @@
   * [Starter](../README.md)
   * [Known issues](./known-issues.md)
   * [Python3 project templates](templ/README.md)
+  * [Python study](./python-study.md)
   * [Agile planning stories](./stories.md)
   * [Testing Notes](../tests/README.md)
   * [Interview Notes](./interview.md)
