@@ -44,6 +44,9 @@ UTTEST_ARGS := --buffer --catch --failfast --verbose
 # Python venv (virtual env) directory name (without full path)
 PYVENV_NAME ?= .venv
 
+PROTO_SRC := ml/protobuf
+PROTO_DST := ml/proto
+
 SHOW_IMAGE ?= true
 MAKE_BUILD := tools/build.sh
 MAKE_VENV := tools/make_venv.sh
@@ -394,6 +397,19 @@ build-test-only:
 	@echo
 	BUILD_ENV=test USE_PYTHON3=$(USE_PYTHON3) $(MAKE_BUILD)
 	@echo
+	@echo "- DONE: $@"
+
+
+############################################################
+# protobuf
+############################################################
+proto:
+	@echo ""
+	@echo "Generating protobuf models in $(PROTO_DST)"
+	@echo ""
+	@mkdir -p "$(PROTO_DST)"
+	protoc -I=$(PROTO_SRC) --python_out=$(PROTO_DST) $(PROTO_SRC)/*.proto
+	@echo ""
 	@echo "- DONE: $@"
 
 

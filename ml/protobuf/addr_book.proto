@@ -1,0 +1,31 @@
+// addr_book.proto
+syntax = "proto3";
+
+package addr_book;
+
+import "google/protobuf/timestamp.proto";
+
+
+enum PhoneType {
+  MOBILE = 0;
+  WORK = 1;
+  HOME = 3;
+}
+
+message PhoneNumber {
+  string number = 1;
+  PhoneType type = 2;
+}
+
+message Person {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  PhoneNumber phone = 4;
+  map<string, Person> relations = 9;
+  google.protobuf.Timestamp birthday = 10;
+}
+
+message AddressBook {
+  repeated Person contacts = 1;
+}

@@ -14,6 +14,7 @@
   * [Testing Notes](../tests/README.md)
   * [Interview Notes](./interview.md)
   * [Network/IT Notes](./network.md)
+  * [Protobuf Study Notes](./protobuf.md)
   * [API Study Notes](./api-study.md)
   * [Dev Notes](../ml/README.md)
 

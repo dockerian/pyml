@@ -444,6 +444,7 @@
   * [Psychological Tricks](https://github.com/yangshun/tech-interview-handbook/blob/master/non-technical/psychological-tricks.md)
   * [Questions to ask](https://github.com/yangshun/tech-interview-handbook/blob/master/non-technical/questions-to-ask.md)
   * [Negotiation](https://github.com/yangshun/tech-interview-handbook/blob/master/non-technical/negotiation.md)
+  * [STAR](http://www.rightattitudes.com/2008/07/15/star-technique-answer-interview-questions/)
 
 
 <br/><a name="reading"></a>

@@ -16,6 +16,7 @@
   - [Operations](#rest-op)
 * [HTTP Headers](#http-headers)
 * [Design Flow](#design)
+* [Microservices vs SOA](#msa-vs-soa)
 * [CORS](#cors)
 
 
@@ -196,6 +197,7 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
     * `200 OK` for other methods success
     - `202 Accepted` (long-running operation, with `Location` in header)
     - `203 Non-Authoritative Information`
+    - `204 No Content`
     - `205 Reset Content`
     - `206 Partial Content`
   * `3xx` (Redirection)
@@ -213,14 +215,18 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
     * `404 Not Found`
     * `405 Method Not Allowed`
     * `406 Not Acceptable`
+      (the client has a request with header `Accept-*` that the server is unable to fulfill)
     * `408 Request Timeout`
+      (server decided to close the connection rather than continue waiting request message to complete within certain time)
     * `409 Conflict` (Concurrency conflict, e.g. read-modify-write conflict)
     - `499 Client Closed Request` (cancelled by client)
   * `5xx` (Server Error)
     * `500 Internal Server Error` (server corruption, possible data loss)
     - `501 Not Implemented`
     * `502 Bad Gateway`
+      (service temporarily overloaded, temporary error, or proxy server received an invalid response from an upstream server)
     - `503 Service Unavailable`
+      (simply refuse, or may with `Retry-After` header on temporary overloaded or scheduled maintenance)
     - `504 Gateway Timeout`
   * See [more](https://www.restapitutorial.com/httpstatuscodes.html)
 
@@ -234,6 +240,58 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
   * Decide the resource name schemes based on types and relationships.
   * Decide the resource (entity) schemas.
   * Add methods to resources.
+
+
+
+<br/><a name="msa-vs-soa"></a>
+## Microservice vs SOA
+
+### 3 types of architectures
+
+  * Monolithic is similar to a big container (single unit) wherein all the software components of an application are assembled together and tightly packaged.
+  * SOA (Service-Oriented Architecture) is essentially a collection of services (coarse-grained). These services communicate with each other. The communication can involve either simple data passing or it could involve two or more services coordinating some activity.
+    - Functional Service (business users)
+    - Enterprise Service (shared services team)
+    - Application Service (application development team)
+    - Infrastructure Service (infrastructure services team)
+  * Microservices, aka Microservice Architecture, is an architectural style that structures an application as a collection of small autonomous services, modeled around a business domain. (fine-grained)
+    - Functional Service and Infrastructure Service by application development teams
+    - Limited service taxonomy
+    - Minimal coordination
+
+### Microservices vs SOA
+
+  * **Service Granularity**
+    - Service components within a microservices architecture are generally single-purpose services that do one thing really well.
+    - With SOA, service components can range in size anywhere from small application services to very large enterprise services. It is common to have a service component within SOA represented by a large product or even a subsystem.
+  * **Component Sharing**
+    - Component sharing is one of the core tenets of SOA. As a matter of fact, component sharing is what enterprise services are all about. SOA enhances component sharing, whereas MSA tries to minimize on sharing through "bounded context".
+    - A bounded context refers to the coupling of a component and its data as a single unit with minimal dependencies. As SOA relies on multiple services to fulfill a business request, systems built on SOA are likely to be slower than MSA.
+  * **Middleware vs API layer**
+    - The microservices architecture pattern typically has what is known as an API layer, whereas SOA has a messaging middleware component.
+    - The messaging middleware in SOA offers a host of additional capabilities not found in MSA, including mediation and routing, message enhancement, message, and protocol transformation.
+    - MSA has an API layer between services and service consumers.
+  * **Remote services**
+    - SOA architectures rely on messaging (AMQP, MSMQ) and SOAP as primary remote access protocols. Most MSAs rely on two protocols -- REST and simple messaging (JMS, MSMQ), and the protocol found in MSA is usually homogeneous.
+  * **Heterogeneous interoperability**
+    - SOA promotes the propagation of multiple heterogeneous protocols through its messaging middleware component. SOA should be used to integrate several systems using different protocols in a heterogeneous environment.
+    - MSA attempts to simplify the architecture pattern by reducing the number of choices for integration. MSA is a better option if all services could be exposed and accessed through the same remote access protocol.
+
+### Comparison chart
+
+  |SOA|MSA|
+  |:--|:--|
+  |share-as-much-as-possible|share-as-little-as-possible|
+  |importance is on business functionality reuse|importance is on the concept of "bounded context"|
+  |have common governance and standards|people collaboration and freedom of other options|
+  |use Enterprise Service bus (ESB) for communication|use Simple messaging system|
+  |multiple message protocols|lightweight protocols such as HTTP/REST etc.|
+  |multi-threaded with more overheads to handle I/O|single-threaded usually with the use of Event Loop features for non-locking I/O handling|
+  |maximizes application service reusability|focuses on decoupling|
+  |use traditional relational database|use modern relational database|
+  |systematic change requires modifying the monolith|systematic change is to create a new service|
+  |devOps and CD popular, but not yet mainstream|strong focus on devOps and CD|
+
 
 
 <br/><a name="cors"></a>
