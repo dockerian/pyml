@@ -19,7 +19,7 @@
   "desc": "github repository",
   "path": "https://github.com/dockerian/pyml",
   "format": "html",
-  "regx": "Python Machine Learning Practice"
+  "regx": "GitHub - dockerian/pyml"
 }, {
   "name": "mocky.io",
   "desc": "mocky.io hello world",

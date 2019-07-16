@@ -13,7 +13,7 @@ LOGGER = get_logger(__name__)
 
 class GridTests(unittest.TestCase):
     """
-    MiscStrTests includes all unit tests for ml.misc.str module
+    GridTests includes all unit tests for ml.misc.str module
     """
     @classmethod
     def teardown_class(cls):
