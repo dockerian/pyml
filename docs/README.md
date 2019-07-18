@@ -16,6 +16,7 @@
   * [Network/IT Notes](./network.md)
   * [Protobuf Study Notes](./protobuf.md)
   * [API Study Notes](./api-study.md)
+  * [Karat tech interview](./karat.md)
   * [Dev Notes](../ml/README.md)
 
 
