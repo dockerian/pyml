@@ -24,26 +24,44 @@ class BinaryTree:
 
 
 def breadth_first(root: dict) -> list:
+    """
+    Using a queue to do breadth-first traverse from tree root iteratively.
+    """
     if not root or not isinstance(root, dict):
         return []
     data = []
     node = root
     queue = []
-    queue.append(node)
+    queue.append(node)  # enqueue the node - add the node at the end
     while len(queue) > 0:
         node = queue[0] or {}
+        del queue[0]  # dequeue the node - remove the node from the beginning
         data.append(node.get('value'))
         node_left = node.get('left')
         node_right = node.get('right')
         if node_left:
-            queue.append(node_left)
+            queue.append(node_left)   # enqueue the left
         if node_right:
-            queue.append(node_right)
-        queue = queue[1:]
+            queue.append(node_right)  # enqueue the right
     return data
 
 
 def from_breadth_first(arr: list) -> dict:
+    r"""
+    Reconstruct a tree from breadth-first (sorted) list.
+
+    At each index, its potential 2 children (left and right) are at
+    2 * index + 1 and 2 * index + 2.
+
+    For example: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] represents
+              0 (root)
+             /     \
+            1       2
+           / \     / \
+          3   4   5   6
+         / \
+        7   8
+    """
     def from_sorted(arr, size, index, node):
         l_index = 2 * index + 1
         r_index = 2 * index + 2
@@ -124,8 +142,19 @@ def from_preorder(arr: list) -> dict:
 
 
 def to_inorder(node: dict, data: list=None):
-    """
+    r"""
     Convert a binary tree node to depth-first in-order list.
+
+    Example:
+        ```
+              F (root)
+             /       \
+            C         I
+           /  \      /  \
+          B    E    H    J
+         /    /    /    /
+        A    D    G    K
+        ```
     """
     if data is None or not isinstance(data, list):
         data = []
@@ -158,8 +187,19 @@ def to_inorder_iterative(root: dict) -> list:
 
 
 def to_postorder(node: dict, data: list=None):
-    """
+    r"""
     Convert a binary tree node to depth-first post-order list.
+
+    Example:
+        ```
+              K (root)
+             /       \
+            E         J
+           /  \      /  \
+          B    D    G    I
+         /    /    /    /
+        A   C     F    H
+        ```
     """
     if data is None or not isinstance(data, list):
         data = []
@@ -192,8 +232,19 @@ def to_postorder_iterative(root: dict) -> list:
 
 
 def to_preorder(node: dict, data: list=None):
-    """
+    r"""
     Convert a binary tree node to depth-first pre-order list.
+
+    Example:
+        ```
+            A (root)
+           /       \
+          B         G
+         /  \      /  \
+        C    E    H    J
+       /    /    /    /
+      D    F    I    K
+        ```
     """
     if data is None or not isinstance(data, list):
         data = []

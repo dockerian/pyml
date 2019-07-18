@@ -23,7 +23,9 @@ class BiTree:
     The time complexity of the construction is O(nLogn) as it calls update()
     for all n elements.
 
-    See https://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/
+    See
+    - https://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/
+    - https://blog.csdn.net/Yaokai_AssultMaster/article/details/79492190
     """
     def __init__(self, array: list):
         n = len(array)
