@@ -165,7 +165,7 @@ def to_inorder(node: dict, data: list=None):
     return data
 
 
-def to_inorder_iterative(root: dict) -> list:
+def to_inorder_iterative(root: dict, allow_none_value: bool = False) -> list:
     """
     Convert a binary tree node to depth-first in-order list (iteratively).
     """
@@ -180,7 +180,7 @@ def to_inorder_iterative(root: dict) -> list:
             node = stack[-1]
             del stack[-1]   # pop the node from stack
             node_value = node.get('value')
-            if node_value is not None:
+            if node_value is not None or allow_none_value:
                 node_list.append(node_value)
             node = node.get('right')
     return node_list
@@ -210,7 +210,7 @@ def to_postorder(node: dict, data: list=None):
     return data
 
 
-def to_postorder_iterative(root: dict) -> list:
+def to_postorder_iterative(root: dict, allow_none_value: bool = False) -> list:
     """
     Convert a binary tree node to depth-first post-order list (iteratively).
     """
@@ -222,7 +222,7 @@ def to_postorder_iterative(root: dict) -> list:
         node_left = node.get('left')
         node_right = node.get('right')
         node_value = node.get('value')
-        if node_value is not None:
+        if node_value is not None or allow_none_value:
             node_list.insert(0, node_value)
         if node_left:
             stack.append(node_left)   # push the left into the stack
@@ -255,7 +255,7 @@ def to_preorder(node: dict, data: list=None):
     return data
 
 
-def to_preorder_iterative(root: dict) -> list:
+def to_preorder_iterative(root: dict, allow_none_value: bool = False) -> list:
     """
     Convert a binary tree node to depth-first pre-order list (iteratively).
     """
@@ -267,7 +267,7 @@ def to_preorder_iterative(root: dict) -> list:
         node_left = node.get('left')
         node_right = node.get('right')
         node_value = node.get('value')
-        if node_value is not None:
+        if node_value is not None or allow_none_value:
             node_list.append(node_value)
         if node_right:
             stack.append(node_right)  # push the right into the stack
