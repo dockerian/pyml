@@ -225,24 +225,29 @@ class ExtensionTests(unittest.TestCase):
         """
         test {{__PROJECT_FOLDER_AS_PYTHON_TOP_MODULE_NAME__}}.utils.extension.DictEncoder
         """
+        from dateutil.tz import UTC
+        from datetime import datetime
+
         class JsonEncoderTest(object):
             def __init__(self):
                 self.age = 33
                 self.name = "Test Name"
                 self.ns = set([3, 1, 4])
                 self.ss = set(["x", "y", "z"])
+                self.ts = datetime(2019, 7, 21, 5, 13, 46, 28790, tzinfo=UTC)
                 print("\n")
                 pass
+
+        s1 = '"age": 33, "name": "Test Name", "ns": [3, 1, 4], "ss": ["y", "x", "z"]'
+        s2 = '"ts": "2019-07-21 05:13:46.028790+00:00"'
 
         tests = [
             {
                 "obj": JsonEncoderTest(),
-                "out": """
-                {"age": 33, "name": "Test Name", "ns": [3, 1, 4], "ss": ["y", "x", "z"]}
-                       """.strip()
+                "out": "%s, %s" % (s1, s2),
             },
             {
-                "obj": {"x": "xyz", "a": "abc", "n": [3, 1, 4], "none": None},
+                "obj": {"x": "xyz", "a": "abc", "n": (3, 1, 4), "none": None},
                 "out": '{"a": "abc", "n": [3, 1, 4], "none": null, "x": "xyz"}',
             },
             {

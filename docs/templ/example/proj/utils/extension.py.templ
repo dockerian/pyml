@@ -34,7 +34,14 @@ class JsonEncoder(json.JSONEncoder):
     def default(self, o):  # pylint: disable=method-hidden
         if isinstance(o, set):
             return list(o)
-        return o.__dict__
+        try:
+            return super().default(o)
+        except TypeError:
+            pass
+        data = str(o)
+        if hasattr(o, '__dict__'):
+            data = o.__dict__
+        return data
 
 
 def check_duplicate_key(pairs):
