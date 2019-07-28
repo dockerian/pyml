@@ -4,6 +4,29 @@ ml/misc/string.py functions that are for interview practice
 import copy
 
 
+def check_longest_common(s1: str, s2: str) -> str:
+    """
+    Find the longest common substring from 2 input strings.
+    """
+    s1_size = len(s1)
+    s2_size = len(s2)
+    if s1_size == 0 or s2_size == 0:
+        return ''
+    matrix = [[0 for x in range(s2_size + 1)] for y in range(s1_size + 1)]
+    max_bound = None
+    max_count = 0
+    for i in range(s1_size):
+        for j in range(s2_size):
+            if s1[i] == s2[j]:
+                count = matrix[i+1][j+1] = 1 if i == 0 or j == 0 else matrix[i][j] + 1
+                max_count = max(count, max_count)
+                if count == max_count:
+                    max_bound = (i, j)
+    i, j = max_bound
+    idx_start, idx_end = (i+1) - max_count, (i+1)
+    return s1[idx_start:idx_end]
+
+
 def check_match_patterns(p: str, s: str, mapping={}):
     """
     Check if string, e.g. 'postmanpostman', matches a pattern, e.g. 'abab'.
@@ -31,8 +54,8 @@ def check_match_patterns(p: str, s: str, mapping={}):
     # begins with the value of this key. if not, then we can't
     # continue with this particular set of mapping
     if key in mapping:
-        mapped = mapping[key]
-        if s.startswith(mapped):
+        mapped = mapping.get(key)
+        if mapped and s.startswith(mapped):
             # print('key: %s, mapped: %s, mapping: %s' % (key, mapped, mapping))
             # print('---- checking (%s, %s) in mapping [%s]' % (p[1:], s[len(mapped):], mapping))
             return check_match_patterns(p[1:], s[len(mapped):], mapping)

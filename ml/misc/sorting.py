@@ -30,13 +30,15 @@ def heap_sort(arr: list):
 
     @see https://www.geeksforgeeks.org/heap-sort/
     """
-    def heapify(sub: list, siz: int, ndx: int):
+    def heapify(sub: list, rdx: int, siz: int):
         """
+        Heapifying range between rdx and size ([rdx:siz]).
+
         @param sub: a slice of list.
+        @param rdx: root/parent index to start.
         @param siz: size of heap.
-        @param ndx: root index.
         """
-        largest = ndx  # assuming the root is the largest
+        largest = ndx = rdx  # assuming the root is the largest
         while ndx < siz:
             l_index = 2 * ndx + 1  # child index at left = 2*i + 1
             r_index = 2 * ndx + 2  # child index at right = 2*i + 2
@@ -56,13 +58,14 @@ def heap_sort(arr: list):
 
     n = len(arr)
     # build a max heap.
-    for i in range(n, -1, -1):
-        heapify(arr, n, i)
+    parent = n // 2 - 1  # the last parent (that can have children)
+    for i in range(parent, -1, -1):
+        heapify(arr, i, n)
 
     # extract elements one by one.
     for i in range(n-1, 0, -1):
         arr[i], arr[0] = arr[0], arr[i]  # swap
-        heapify(arr, i, 0)
+        heapify(arr, 0, i)
 
     return arr
 

@@ -5,6 +5,7 @@
 import logging
 import unittest
 
+from ml.misc.str import check_longest_common
 from ml.misc.str import check_match_patterns
 from ml.utils.logger import get_logger
 
@@ -26,6 +27,33 @@ class MiscStrTests(unittest.TestCase):
     def tearDown(self):
         """tearing down at the end of the test"""
         pass
+
+    def test_check_longest_common(self):
+        """
+        test.ml.misc.str :: check_match_patterns
+        """
+        tests = [{
+            "s1": "", "s2": "testabcvxyzxdafjkew123",
+            "expected": "",
+        }, {
+            "s1": "fjkew123uvxyzxyzuriesabc", "s2": "testabcvxyzxdafjkew123",
+            "expected": "fjkew123",
+        }, {
+            "s1": "fjkewuvxyzxyzuriesabc", "s2": "testabcvxyzxdafjkew",
+            "expected": "vxyzx",
+        }, {
+            "s1": "fjkewuvxyzvxyzuriesabc", "s2": "testabcvxyzvxyzdafjk",
+            "expected": "vxyzvxyz",
+        }, {
+            "s1": "fjkewuvxyzvxyzuriesabc", "s2": "",
+            "expected": "",
+        }]
+        for test in tests:
+            s1 = test.get("s1")
+            s2 = test.get("s2")
+            expected = test.get("expected")
+            result = check_longest_common(s1, s2)
+            self.assertEqual(result, expected)
 
     def test_check_match_patterns(self):
         """
