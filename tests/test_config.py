@@ -16,6 +16,7 @@ from ml.config import check_encrypted_text
 from ml.config import get_boolean
 from ml.config import get_config_data
 from ml.config import get_integer, get_uint
+from ml.config import get_logger, LOGGING_LEVEL
 from ml.config import settings
 
 
@@ -100,6 +101,15 @@ class ConfigTester(unittest.TestCase):
         config_data = get_config_data()
         self.assertIsInstance(config_data, dict)
         pass
+
+    @patch('ml.config.get_default_logger')
+    def test_get_logger(self, mock_func):
+        l1 = get_logger(__name__)
+        mock_func.assert_called_with(__name__, LOGGING_LEVEL)
+        self.assertIsNotNone(l1)
+        l2 = get_logger(__name__, logging.ERROR)
+        mock_func.assert_called_with(__name__, logging.ERROR)
+        self.assertIsNotNone(l2)
 
     @patch('ml.config.settings')
     def test_get_integer(self, mock_settings):

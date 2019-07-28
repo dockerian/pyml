@@ -5,15 +5,17 @@
 @email: jason_zhuyx@hotmail.com
 
 """
+import logging
 import os
 import yaml
 
 from ml.utils.extension import get_json
-from ml.utils.logger import get_logger
+from ml.utils.logger import get_logger as get_default_logger
 
 CONFIG_DEFAULT = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), 'config.yaml')
-LOGGER = get_logger(__name__)
+LOGGER = get_default_logger(__name__)
+LOGGING_LEVEL = logging.INFO
 
 
 # TODO: https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Singleton.html
@@ -64,12 +66,17 @@ class Config(Singleton):  # pylint: disable=too-few-public-methods
             self.settings = {}
             return
 
+        global LOGGING_LEVEL
         with open(self.config_file, "rt") as conf:
             LOGGER.info("reading %s", self.config_file)
             self.__data__ = yaml.safe_load(conf)
             LOGGER.info('config data: \n%s', get_json(self.__data__))
             self.settings = flatten_object(self.__data__)
             LOGGER.info('settings: \n%s', get_json(self.settings))
+
+        if isinstance(self.settings, dict):
+            LOGGING_LEVEL = self.settings.get(
+                'debug.level', logging.INFO)
 
 
 def check_encrypted_text(setting_key, key_val):
@@ -156,6 +163,18 @@ def get_integer(key_name, default_value=0):
         return int(str(settings(str(key_name))))
     except ValueError:
         return default_value
+
+
+def get_logger(name, level=None):
+    """
+    Get a logger with level.
+
+    @param name: the logger name, normally from `__name__`.
+    @param level: the logger level.
+      - NOTE: default value from `DEBUG_LEVEL` (environment variable) or in config.yaml.
+    """
+    logger_level = level or LOGGING_LEVEL
+    return get_default_logger(name, logger_level)
 
 
 def get_uint(key_name, default_value=0):
