@@ -12,6 +12,9 @@
     - [Tree and Trie](#ds-tree)
     - [Graph](#ds-graph)
   * [Design questions](#design)
+    - [OOP](#oop)
+    - [System Design](#design-system)
+    - [Database](#design-db)
   * [Mathematics problems](#math)
   * [Sorting Algorithms](#sorting)
     - [Big O Notation](#sorting-big-o)
@@ -130,10 +133,28 @@
 <a name="ds-tree"></a>
 ### Tree and Trie
 
+  Binary Tree
+  - A binary tree is a tree data structure in which each parent node can have at most two children.
+
+  Full Binary Tree
+  - A full Binary tree is a special type of binary tree in which every parent node has either two or no children.
+
+  Complete Binary tree
+  - Every level must be completely filled
+  - All the leaf elements must lean towards the left.
+  - The last leaf element might not have a right sibling i.e. a complete binary tree doesn't have to be a full binary tree.
+
+  Heap
+  - A special tree-based data structure.
+  - A complete binary tree.
+  - All nodes in the tree follow the property that they are greater than their children i.e. the largest element is at the root and both its children and smaller than the root and so on. Such a heap is called a max-heap. If instead all nodes are smaller than their children, it is called a min-heap.
+
+  Problems:
   * Find if one B-tree contains another B-tree.
   * Perform in-order traversal without recursion.
   * Perform pos-torder traversal without recursion.
   * Perform pre-order traversal in a given binary tree.
+
 
 <a name="ds-graph"></a>
 ### Graph
@@ -145,12 +166,127 @@
 <br/><a name="design"></a>
 ## Design questions
 
+<a name="oop"></a>
 ### OOP
 
   * Designing a simple card game.
     - How to store the order of all the players (data structures)
     - How to break it up into classes (card, game, player, etc)
     - Create properties/fields and functions/methods.
+
+
+<a name="design-db"></a>
+### Database Design
+
+  * ACID
+    - **Atomicity**: Transactions are often composed of multiple statements. Atomicity guarantees that each transaction is treated as a single "unit", which either succeeds completely, or fails completely: if any of the statements constituting a transaction fails to complete, the entire transaction fails and the database is left unchanged. An atomic system must guarantee atomicity in each and every situation, including power failures, errors and crashes.
+
+    - **Consistency**: ensures that a transaction can only bring the database from one valid state to another, maintaining database invariants: any data written to the database must be valid according to all defined rules, including constraints, cascades, triggers, and any combination thereof. This prevents database corruption by an illegal transaction, but does not guarantee that a transaction is correct. Referential integrity guarantees the primary key - foreign key relationship.
+
+    - **Isolation**: Transactions are often executed concurrently (e.g., multiple transactions reading and writing to a table at the same time). Isolation ensures that concurrent execution of transactions leaves the database in the same state that would have been obtained if the transactions were executed sequentially. Isolation is the main goal of concurrency control; depending on the method used, the effects of an incomplete transaction might not even be visible to other transactions.
+
+    - **Durability**: guarantees that once a transaction has been committed, it will remain committed even in the case of a system failure (e.g., power outage or crash). This usually means that completed transactions (or their effects) are recorded in non-volatile memory.
+
+
+<a name="design-system"></a>
+### System Design
+
+  * A.B.C.D.
+    - **_A_**sk questions (what features? how much to scale? ...)
+    - Don't use **_b_**uzzword
+    - **_C_**lear and organized thinking
+    - **_D_**rive discussion `:_**)`
+
+  * Questions to ask
+    - Features (scope)
+    - Define APIs (who's calling the interface and how)
+    - Availability (host/site down)
+    - Latency performance (faster with cache for customer-facing service)
+    - Scalability (from hundreds of users to thousands, millions, ...)
+    - Durability (secured without data loss nor being compromised)
+    - Class diagram
+    - Security and privacy
+    - Cost effective
+    - Usability
+
+  * Design philosophy
+
+    * Scalability
+      - vertical (more cpu, mem, storage on the same host, has limitation)
+      - horizontal (adding more hosts)
+
+    * CAP theorem
+      A distributed database system can only have 2 of the 3:
+
+      - **Consistency**: every read receives a recent write or an error. (note difference in [ACID](https://en.wikipedia.org/wiki/ACID))
+      - **Availability**: every request receives a (non-error) response - without guarantee that it contains the most recent write.
+      - **Partition tolerance**: The system continues to operate despite an arbitrary number of messages being dropped (or delayed) by the network between nodes.
+        <br/><u>__2 options__</u> on partition failure:
+        * Cancel the operation to decrease the availability but ensure consistency.
+        * Proceed with the operation and thus provide availability but risk inconsistency.
+        * Note: such trade-off only apply on network partition or failure.
+
+    * ACID vs BASE
+      - BASE (Basically Available, Soft state, Eventual consistency), a consistency model used in distributed computing to achieve high availability, with (weak) guarantees that, if no new updates are made to a given data item, eventually all accesses to that item will return the last updated value.
+
+    * Strong vs eventual consistency
+      - Database systems designed with traditional ACID guarantees in mind such as RDBMS choose consistency over availability, whereas systems designed around the BASE philosophy, common in the NoSQL movement for example, choose availability over consistency.
+
+    * Relational database vs NoSQL
+      - RDMS
+      - NoSQL types:
+        * key/value pairs
+        * wide column
+        * document based
+        * graph based
+
+    * Partitioning/sharding data
+      - Partitioning performs division of a logical database or its constituent elements into distinct independent parts.
+      - Sharding, a horizontal partitioning, is the act of taking a data set and splitting it across multiple machines.
+      - Consitent Hashing is a method/algorithm to determine which machine any particular piece of data goes to.
+
+    * Optimistic vs passimistic locking
+
+    * Cache policy
+
+    * Datacenter, racks, hosts
+
+    * CPU, memory, hard drive, and network bandwidth (limited resources)
+
+    * Random vs sequential read/write on disk
+
+  * Concepts in IT
+
+    * http vs http2 vs websockets
+    * tcp/ip model (vs osi 7 layers), tcp (document) vs udp (stream/video)
+    * ipv4 (32-bit) vs ipv6 (128-bit)
+    * dns lookup
+    * https, TLS, public key infrastructure and certificate authority (CA)
+    * symmetric (e.g. AES) vs asymmetric (public/private key) encryption
+    * load balancer: L4 () or L7
+    * edges server (e.g. CDN)
+    * space-efficient probabilistic data structure
+      - [Bloom filters](https://en.wikipedia.org/wiki/Bloom_filter)
+      - [Count-Min sketch](https://bravenewgeek.com/tag/count-min-sketch/)
+      - [HyperLogLog](https://en.wikipedia.org/wiki/HyperLogLog) - [HLL](http://www.yoonper.com/post.php?id=79)
+      - see [Js code](https://github.com/Callidon/bloom-filters)
+    * consensus over distributed hosts ([Paxos](https://medium.com/coinmonks/paxos-made-simple-3b83c05aac37))
+    * design patterns and object oriented design
+    * virtual machine and containers
+    * publisher-subscriber over queue (pub-sub architecture)
+    * multithreading, locks, synchronization, CAS (compare and swap)
+    * map reduce
+
+  * Technologies
+
+    * Cassandra (wide column, high scalability)
+    * MongoDB / Couchbase
+    * Memcached, Redis (distributed cache)
+    * Zookeeper (centralized configuration management, all in mem, scale for reads, but not for writes)
+    * Kaffa (fault tolerant high available queue, deliver message once, keep in order)
+    * HAProxy
+
+
 
 ### Resources:
 
@@ -465,6 +601,7 @@
   * https://www.geeksforgeeks.org/
   * https://www.geeksforgeeks.org/must-do-coding-questions-for-companies-like-amazon-microsoft-adobe/
   * https://www.geeksforgeeks.org/top-10-algorithms-in-interview-questions/
+  * https://medium.com/basecs (basics of computer science)
   * https://medium.freecodecamp.org/the-ultimate-guide-to-preparing-for-the-coding-interview-183251ee36c9
   * https://www.interviewcake.com/google-interview-questions
   * http://overthewire.org/wargames/
