@@ -88,8 +88,10 @@ class GridTests(unittest.TestCase):
             expected = test.get("next")
             grid = Grid(init)
             result = grid.get_next_grid_states()
+            nextg2 = grid.get_next_grid()  # better solution
             msg = 'Test %2d |\nexpected: %s\n  result: %s' % (idx, expected, result)
             self.assertListEqual(result, expected, msg)
+            self.assertListEqual(nextg2, expected, msg)
 
             next_grid = Grid(result)
             next_result = next_grid.get_next_grid_states()

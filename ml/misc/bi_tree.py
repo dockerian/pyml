@@ -56,7 +56,7 @@ class BiTree:
             ndx -= ndx & (-ndx)
         return sum
 
-    def set(self, index: int, value: int):
+    def update(self, index: int, value: int):
         """
         Updates a note in Binary Index Tree (BiTree) at given list index, which
         will add given value to the data index position of BiTree and all of its

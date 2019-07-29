@@ -37,6 +37,39 @@ class Grid:
         self.size_row = len(grid)
         # print('grid [%d, %d]: %s' % (self.size_col, self.size_row, self.grid))
 
+    def _get_cells_sum(self, x, y):
+        sum = 0
+        if y >= 0 and y < self.size_col:
+            for i in [-1, 0, 1]:
+                dx = x + i
+                if dx >= 0 and dx < self.size_row:
+                    sum += self.grid[dx][y]
+        return sum
+
+    def _get_next_state(self, current_state, count):
+        new_state = current_state
+        if current_state == 1:
+            if not (count >= 2 and count <= 3):
+                new_state = 0
+        elif count == 3:
+            new_state = 1
+        return new_state
+
+    # solution 2
+    def get_next_grid(self):
+        """
+        Return the next grid (with less computation).
+        """
+        next = copy.deepcopy(self.grid)
+        for x in range(self.size_row):
+            lv, mv, rv = 0, 0, self._get_cells_sum(x, 0)
+            for y in range(self.size_col):
+                cv = self.grid[x][y]
+                lv, mv, rv = mv, rv, self._get_cells_sum(x, y+1)
+                count = lv + mv + rv - cv
+                next[x][y] = self._get_next_state(cv, count)
+        return next
+
     def _get_next_cell_state(self, row, col):
         """
         Return next state (0 or 1) for a cell.
@@ -52,16 +85,15 @@ class Grid:
                 if ranged and neighbor:
                     # print("grid[%d,%d], neighbor[%d,%d] = %d" % (row, col, dy, dx, self.grid[dy][dx]))
                     count += self.grid[dy][dx]
-        new_state = current_state
-        if current_state == 1:
-            if not (count >= 2 and count <= 3):
-                new_state = 0
-        elif count == 3:
-            new_state = 1
+        new_state = self._get_next_state(current_state, count)
         # print('> current: %d => new: %d, count [%d,%d] = %d' % (current_state, new_state, row, col, count))
         return new_state
 
+    # solution 1
     def get_next_grid_states(self):
+        """
+        Return the next grid by calculating next states of each cell.
+        """
         next = copy.deepcopy(self.grid)
         for i in range(self.size_row):
             for j in range(self.size_col):
