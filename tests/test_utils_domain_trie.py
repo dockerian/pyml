@@ -36,3 +36,17 @@ class DomainTrieTests(unittest.TestCase):
         domains.remove('test.google.com')
         result = ast.literal_eval(str(trie))
         self.assertEqual(result, domains)
+
+    def test_domain_trie_empty(self):
+        domains = [
+            '',
+            '',
+            None,
+            'test.google.com',
+            'example.stuff'
+        ]
+        expected = {
+            'com': {'google': {'test': {'.': None}}},
+            'stuff': {'example': {'.': None}}}
+        trie = DomainTrie(domains)
+        self.assertDictEqual(trie._trie, expected)

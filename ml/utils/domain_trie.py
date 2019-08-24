@@ -1,6 +1,9 @@
 """
 DomainTrie class, as a data structure example.
 """
+from ml.utils.logger import get_logger
+
+LOGGER = get_logger(__name__)
 
 
 class DomainTrie(object):
@@ -10,7 +13,7 @@ class DomainTrie(object):
     """
 
     def __init__(self, domains):
-        self._trie = DomainTrie._make_tree(domains)
+        self._trie = DomainTrie._build_tree(domains)
 
     def __contains__(self, domain):
         """
@@ -19,21 +22,19 @@ class DomainTrie(object):
         @param domain: A dot separated domain.
         @return boolean: True if domain is in the trie; otherwise, False.
         """
+        result = False
         parts = [part for part in domain.split('.')[::-1] if part != '']
-        res = False
-        ref = self._trie
+        node = self._trie  # start from the trie root
         for part in parts:
-            if part in ref:
-                ref = ref[part]
-                if '' in ref:
-                    res = True
-                    break
-            else:
+            if part not in node:
                 break
-        return res
+            node = node[part]
+            if '.' in node:
+                return True
+        return result
 
     def __iter__(self):
-        for result in DomainTrie._walk(self._trie, []):
+        for result in DomainTrie._list(self._trie, []):
             yield result
 
     def __str__(self):
@@ -43,37 +44,42 @@ class DomainTrie(object):
         return str(result)
 
     @staticmethod
-    def _add_branch(domain, tree, idx=0):
-        # BASE CASE: out of character to add to this branch
-        if idx == len(domain):
-            tree[''] = None
-        else:
-            if '' not in tree:
-                domain_piece = domain[idx]
-                if domain_piece in tree:
-                    branch = tree[domain_piece]
-                else:
-                    branch = {}
-                    tree[domain_piece] = branch
-                DomainTrie._add_branch(domain, branch, idx + 1)
+    def _add_node(domain_pieces, tree, idx=0):
+        """
+        add specific level of domain part to the tree.
+        """
+        if idx >= len(domain_pieces):
+            tree['.'] = None
+            return
+        # stop at "." because it is only building topper levels
+        if "." not in tree:
+            part = domain_pieces[idx]
+            node = tree.get(part, {})
+            if node == {}:
+                tree[part] = node  # adding a new node
+            DomainTrie._add_node(domain_pieces, node, idx + 1)
 
     @staticmethod
-    def _make_tree(domains):
+    def _build_tree(domains):
         tree = {}
         for domain in domains:
-            domain_pieces = [piece for piece in domain.split('.') if piece != '']
+            d = domain.strip() if isinstance(domain, str) else ''
+            domain_pieces = [piece for piece in d.split('.') if piece != '']
             if len(domain_pieces) > 1:
-                DomainTrie._add_branch(domain_pieces[::-1], tree)
+                DomainTrie._add_node(domain_pieces[::-1], tree)
+            else:
+                LOGGER.warn('Invalid domain: "%s"', domain)
         return tree
 
     @staticmethod
-    def _walk(tree, domain_pieces):
-        result = []
-        if '' in tree:
-            result.append('.'.join(domain_pieces[::-1]))
-        else:
-            for piece in tree.keys():
+    def _list(tree, domain_pieces=[]):
+        results = []
+        if '.' in tree and len(domain_pieces) > 0:
+            results.append('.'.join(domain_pieces[::-1]))
+            return results
+        for piece in tree.keys():
+            if not piece == '.':
                 domain_pieces.append(piece)
-                result.extend(DomainTrie._walk(tree[piece], domain_pieces))
+                results.extend(DomainTrie._list(tree[piece], domain_pieces))
                 domain_pieces.pop()
-        return result
+        return results
