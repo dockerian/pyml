@@ -51,13 +51,17 @@ class DomainTrie(object):
         if idx >= len(domain_pieces):
             tree['.'] = None
             return
-        # stop at "." because it is only building topper levels
+        part = domain_pieces[idx]
+        node = tree.get(part)
+        if node is None:
+            tree[part] = {}  # adding a new node
+        # NOTE: it is possible to have both "a.b.com" and "b.com" in the list,
+        #       and the order in domains list is not guaranteed.
         if "." not in tree:
-            part = domain_pieces[idx]
-            node = tree.get(part, {})
-            if node == {}:
-                tree[part] = node  # adding a new node
-            DomainTrie._add_node(domain_pieces, node, idx + 1)
+            DomainTrie._add_node(domain_pieces, tree[part], idx + 1)
+        else:
+            # only need to keep higher level domains
+            del tree[part]
 
     @staticmethod
     def _build_tree(domains):
@@ -68,7 +72,7 @@ class DomainTrie(object):
             if len(domain_pieces) > 1:
                 DomainTrie._add_node(domain_pieces[::-1], tree)
             else:
-                LOGGER.warn('Invalid domain: "%s"', domain)
+                LOGGER.warning('Invalid domain: "%s"', domain)
         return tree
 
     @staticmethod

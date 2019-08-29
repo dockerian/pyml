@@ -14,6 +14,15 @@ class DomainTrieTests(unittest.TestCase):
             'xn--2342390.cn',
             'google.com',
             'test.google.com',
+            'abc.def.ghi.xyz.com',
+            'xyz.com',
+            'example.stuff'
+        ]
+        expected = [
+            '132.22.21.47',
+            'xn--2342390.cn',
+            'google.com',
+            'xyz.com',
             'example.stuff'
         ]
 
@@ -26,16 +35,17 @@ class DomainTrieTests(unittest.TestCase):
         self.assertIn('goo.example.stuff', trie)
         self.assertIn('google.com', trie)
         self.assertIn('test.google.com', trie)
+        self.assertIn('test.xyz.com', trie)
 
         self.assertNotIn('133.22.21.47', trie)
         self.assertNotIn('googl.com', trie)
         self.assertNotIn('google.api.com', trie)
         self.assertNotIn('google.cn', trie)
+        self.assertNotIn('xyz.ghi.com', trie)
         self.assertNotIn('stuff', trie)
 
-        domains.remove('test.google.com')
         result = ast.literal_eval(str(trie))
-        self.assertEqual(result, domains)
+        self.assertEqual(result, expected)
 
     def test_domain_trie_empty(self):
         domains = [
