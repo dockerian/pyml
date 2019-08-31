@@ -37,7 +37,7 @@ class Grid:
         self.size_row = len(grid)
         # print('grid [%d, %d]: %s' % (self.size_col, self.size_row, self.grid))
 
-    def _get_cells_sum(self, x, y):
+    def _get_colum_sum(self, x, y):
         sum = 0
         if y >= 0 and y < self.size_col:
             for i in [-1, 0, 1]:
@@ -62,10 +62,10 @@ class Grid:
         """
         next = copy.deepcopy(self.grid)
         for x in range(self.size_row):
-            lv, mv, rv = 0, 0, self._get_cells_sum(x, 0)
+            lv, mv, rv = 0, 0, self._get_colum_sum(x, 0)
             for y in range(self.size_col):
                 cv = self.grid[x][y]
-                lv, mv, rv = mv, rv, self._get_cells_sum(x, y+1)
+                lv, mv, rv = mv, rv, self._get_colum_sum(x, y+1)
                 count = lv + mv + rv - cv
                 next[x][y] = self._get_next_state(cv, count)
         return next

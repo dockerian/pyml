@@ -8,7 +8,7 @@ import array
 LOGGER = get_logger(__name__)
 
 
-def get_2nd_largest(num_list):
+def get_2nd_largest(num_list: list):
     """
     Get the second largest number in a list of numbers
     @param num_list: list of numbers, list
@@ -16,8 +16,9 @@ def get_2nd_largest(num_list):
     """
     if not isinstance(num_list, list):
         return None
+    if len(num_list) < 2:
+        return None
     m1st, m2nd = None, None
-    counter = 0
     for item in num_list:
         if not isinstance(item, (int, float)):
             continue
@@ -26,9 +27,6 @@ def get_2nd_largest(num_list):
         if m1st is None or item > m1st:
             m2nd = m1st
             m1st = item
-        counter += 1
-    if counter < 2:
-        return None
     return m2nd
 
 
