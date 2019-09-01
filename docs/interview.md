@@ -178,6 +178,8 @@
 <a name="design-db"></a>
 ### Database Design
 
+#### Concepts
+
   * ACID
     - **Atomicity**: Transactions are often composed of multiple statements. Atomicity guarantees that each transaction is treated as a single "unit", which either succeeds completely, or fails completely: if any of the statements constituting a transaction fails to complete, the entire transaction fails and the database is left unchanged. An atomic system must guarantee atomicity in each and every situation, including power failures, errors and crashes.
 
@@ -187,9 +189,60 @@
 
     - **Durability**: guarantees that once a transaction has been committed, it will remain committed even in the case of a system failure (e.g., power outage or crash). This usually means that completed transactions (or their effects) are recorded in non-volatile memory.
 
+#### SQL Query
+
+  * For DB tables:
+
+    ```sql
+    -- containers(id, name);
+    CREATE TABLE IF NOT EXISTS containers (
+      `id` INT NOT NULL AUTO_INCREMENT COMMENT 'PK for containers',
+      `name` VARCHAR(45) NULL COMMENT 'container name',
+      PRIMARY KEY (`id`)
+    );
+
+    -- items(id, type);
+    CREATE TABLE IF NOT EXISTS items (
+      `id` INT NOT NULL AUTO_INCREMENT COMMENT 'PK for items',
+      `type` VARCHAR(45) NULL COMMENT 'Item type',
+      PRIMARY KEY (`id`)
+    );
+
+    -- containeritem(container_id, item_id);
+    CREATE TABLE IF NOT EXISTS containeritem (
+      `container_id` INT NOT NULL COMMENT 'Composite PK: FK to containers.id',
+      `item_id` INT NOT NULL COMMENT 'Composite PK: FK to items.id',
+      CONSTRAINT `FK__containeritem_container_id`
+        FOREIGN KEY (`container_id`)
+        REFERENCES `containers` (`id`),
+      CONSTRAINT `FK__containeritem_item_id`
+        FOREIGN KEY (`item_id`)
+        REFERENCES `items` (`id`)
+    );
+    ```
+    Write a SQL query to list all container names, item types, and count of types (including zero) for each container.
+
+    ```sql
+    SELECT d.name, d.type,
+      CASE WHEN ci.item_id IS NULL THEN 0 ELSE count(ci.item_id) END as 'count'
+      FROM (
+      SELECT c.id as 'c_id', c.name, i.id as 'i_id', i.type
+        FROM containers c
+       CROSS JOIN items i
+      ) d  -- optionally to use CTE
+     LEFT OUTER JOIN containeritem ci ON d.i_id = ci.item_id
+      AND d.c_id = ci.container_id
+     GROUP BY d.name, d.type
+     ORDER BY d.name, d.type
+    ;
+    ```
+    See http://sqlfiddle.com/#!9/20fa2b/52
+
 
 <a name="design-system"></a>
 ### System Design
+
+#### Checklist
 
   * A.B.C.D.
     - **_A_**sk questions (what features? how much to scale? ...)
@@ -286,6 +339,31 @@
     * Kaffa (fault tolerant high available queue, deliver message once, keep in order)
     * HAProxy
 
+
+#### Example: Find the peakest time
+
+  From a long list of trip time (with Start and End time, sorted by Started), e.g. within a whole month, find the peakest trip time.¶
+
+  ```go
+  type Trip struct {
+    Start time
+    End time
+  }
+
+  // assuming the list (e.g. a whole month/year) is sorted by start time
+  func countPeakTrips(a []Trip) int {
+
+  }
+  ```
+
+
+#### Example: Design a stock data system
+
+  * requirements
+    - get real time price
+    - get historic trend
+  * data schema and database
+  * misc consideration
 
 
 ### Resources:
@@ -575,7 +653,7 @@
 
 
 <br/><a name="non-tech"></a>
-### Non-technical
+## Non-technical
 
   * [Psychological Tricks](https://github.com/yangshun/tech-interview-handbook/blob/master/non-technical/psychological-tricks.md)
   * [Questions to ask](https://github.com/yangshun/tech-interview-handbook/blob/master/non-technical/questions-to-ask.md)
@@ -584,7 +662,7 @@
 
 
 <br/><a name="reading"></a>
-### Reading
+## Reading
 
 * Books/Collection:
   * [Computer Science in JavaScript](https://github.com/humanwhocodes/computer-science-in-javascript)

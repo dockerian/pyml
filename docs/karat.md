@@ -7,6 +7,7 @@
 
 * [Karat Technical Categories](#categories)
 * [Karat Coding Questions](#coding)
+* [Miscellaneous](#misc)
 
 
 <br /><a name="categories"></a>
@@ -41,6 +42,11 @@
 
 * Testing
   * What is race condition and how it happens?
+
+* Others
+  - Know Graph very well. Read a lot of graph problems from leet code and geek for geeks.
+
+
 
 
 <br /><a name="coding"></a>
@@ -140,3 +146,19 @@
   ranges = getMostBookedRanges(workers)
   # expecting [(2, 3), (4, 6)]
   ```
+
+
+<br /><a name="misc"></a>
+## Miscellaneous
+
+  * Open questions:
+    - How would you explain Google to your grandmother?
+    - How would you teach her to fix her Facebook if there was an error or malfunction?
+    - What's something your building? What's an ecommerce company you use?   
+
+  * Others
+    - Given an array of fruits and an other array weights of fruits, write a function to pick the fruits randomly with a probability distribution equal to its weights.
+    - Given a graph and a node in the graph, return a deep copy of the node.
+    - Given a frequency distribution of objects, write a random object generator which produces objects based on their probability distribution.
+    - Given a binary tree with parent pointers (pointers that direct from leaves to the root), design an O(1) space complexity algorithm to find the lowest common ancestor of any two nodes.
+    - Evaluate an arithmetic expression that only involves multiplication and addition.   
