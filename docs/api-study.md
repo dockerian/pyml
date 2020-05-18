@@ -9,6 +9,7 @@
 * [Intro](#intro)
 * [RESTful API Concepts](#rest)
   - [Definitions](#rest-def)
+  - [Resource types](#rest-res-types)
   - [Applications and Services](#rest-app)
   - [API Versions](#rest-ver)
   - [Resources & Collections](#rest-res)
@@ -59,6 +60,23 @@
     - resource/entity: "employees"
     - query: "?name=John"
   - State: application state that has the resources
+
+
+<a name="rest-res-types"></a>
+### Resource Types
+
+* **Document**: a singular concept that is akin to an object instance or database record. e.g.: http://api.soccer.restapi.org/leagues/seattle/teams/trebuchet
+
+* **Collection**: a server-managed directory of resources. Clients may propose new resources to be added to a collection. However, it is up to the collection to choose to create a new resource, or not. Example: http://api.soccer.restapi.org/leagues/seattle/teams
+
+* **Store**: a client-managed resource repository. A store resource lets an API client put resources in, get them back out, and decide when to delete them. On their own, stores do not create new resources; therefore a store never generates new URIs. Instead, each stored resource has a URI that was chosen by a client when it was initially put into the store. Example: `PUT /users/1234/favorites/alonso`.
+
+* **Controller**: models a procedural concept.
+  - Controller resources are like executable functions, with parameters and return values; inputs and outputs. Like a traditional web application's use of HTML forms, a REST API relies on controller resources to perform application-specific actions that cannot be logically mapped to one of the standard methods (create, retrieve, update, and delete, also known as CRUD).
+  - Controller names typically appear as the last segment in a URI path, with no child resources to follow them in the hierarchy.
+  - **Note**: Controller resource remains argument about "resource must be a noun, instead of a verb".
+  - Example: `POST /alerts/245743/resend`
+
 
 <a name="rest-app"></a>
 ### Applications and Services
@@ -146,6 +164,12 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
     - `GET`, `PUT`, `PATCH`, `POST`, `DELETE` (CRUD)
     - `HEAD`, `OPTIONS`, `CONNECT`, `TRACE`
 
+  * Usages:
+    - Checking whether a resource has changed. This is useful when maintaining a cached version of a resource (`HEAD`).
+    - Checking whether a resource exists and is accessible (`HEAD`, `OPTIONS`). For example, validating user-submitted links in an application.
+    - Retrieving metadata about the resource, e.g. its media type or its size, before making a possibly costly retrieval (`HEAD`).
+    - Identifying which HTTP methods a resource supports (`OPTIONS`).
+
   * RESPONSE: representation of resource, easy to read and implemented into applications, e.g. REST XML-RPC SOAP JSON Serialized PHP
 
   * API is like a bunch of useful methods or functions, parameters is like the parameters we can pass on to these methods
@@ -170,6 +194,7 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
 | Date             |RFC 5322 Date|GMT/UTC timestamp of the request.|
 | Accept           |Content type |(Hint of) the requested content type for the response, e.g. `application/json` or `text/javascript` (for JSONP).|
 | Accept-encoding  |gzip, deflate|REST endpoints SHOULD support GZIP and DEFLATE encoding, when applicable. For very large resources, services MAY ignore and return uncompressed data.|
+| Allow            ||List of allowed methods a resource supports, thru `OPTIONS` request, e.g. `Allow: GET,HEAD,POST,OPTIONS,TRACE`.|
 | If-Match         ||Only if the request matches one of listed `ETags`.|
 | If-Modified-Since||Response 304 w/o body if no change; otherwise 200 w/ latest.|
 | Prefer           ||return=minimal,<br/>return=representation|
@@ -196,9 +221,9 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
     * `200 OK` or `204 No Content` for `PUT` method success
     * `200 OK` for other methods success
     - `202 Accepted` (long-running operation, with `Location` in header)
-    - `203 Non-Authoritative Information`
-    - `204 No Content`
-    - `205 Reset Content`
+    - `203 Non-Authoritative Information` (enclosed payload has been modified from that of the origin server's 200 OK response by a transforming proxy)
+    - `204 No Content` (success but additional content in the response payload body)
+    - `205 Reset Content` (desires the user agent to reset the "document view")
     - `206 Partial Content`
   * `3xx` (Redirection)
     - `300 Multiple Choices`
@@ -228,7 +253,9 @@ A resource-oriented API is generally modeled as a resource hierarchy, where each
     - `503 Service Unavailable`
       (simply refuse, or may with `Retry-After` header on temporary overloaded or scheduled maintenance)
     - `504 Gateway Timeout`
-  * See [more](https://www.restapitutorial.com/httpstatuscodes.html)
+  * See
+    - [httpstatuses](https://httpstatuses.com/)
+    - [more](https://www.restapitutorial.com/httpstatuscodes.html)
 
 
 <br/><a name="design"></a>
