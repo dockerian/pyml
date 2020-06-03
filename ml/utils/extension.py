@@ -290,3 +290,14 @@ def pickle_to_str(obj, *rm_keys):
     json_obj = pickle_object(obj, *rm_keys)
 
     return json.dumps(json_obj)
+
+
+def str_matrix(v):
+    """
+    Get beautified string format of a matrix.
+    """
+    s = "[\n"
+    for rows in v:
+        s += "  " + str(rows) + ",\n"
+    s += "]"
+    return s
