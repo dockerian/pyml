@@ -21,12 +21,18 @@ script_path="$( cd "$( echo "${script_file%/*}" )" && pwd )"
 PS1='\n\[\033[0;36m\]\h\[\033[0m\]:\[\033[0;35m\]\u\[\033[0m\] \W [\#]:\n\$ '
 PS1='$(printf "%$((COLUMNS-1))s\r")'$PS1
 
-export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home)}"
-export JAVA_HOME="${JAVA_HOME:-$(type -p javac|xargs readlink -n 2>/dev/null|xargs dirname|xargs dirname)}"
+ unset JAVA_HOME
+export JAVA_HOME="$(/usr/libexec/java_home 2>/dev/null)"
+export JAVA_HOME="$(java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'|awk -F='[ .]' '{print $2}')"
+export JAVA_HOME="${JAVA_HOME:-$(type -p javac|xargs greadlink -f 2>/dev/null|xargs dirname|xargs dirname)}"
 export JAVA_HOME="${JAVA_HOME:-$(type -p javac|xargs dirname|xargs dirname)}"
-export GOROOT="${GOROOT:-$(type -p go|xargs readlink -n 2>/dev/null|xargs dirname|xargs dirname)}"
+export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home)}"
+
+ unset GOROOT
+export GOROOT="${GOROOT:-$(type -p go|xargs greadlink -f 2>/dev/null|xargs dirname|xargs dirname)}"
 export GOPATH="${HOME}/go"
-export HOMEBREW_GITHUB_API_TOKEN="d430484ccbfc32c58135b5a3e8e1bc92a5c5a1d8"
+
+ unset MAVEN_HOME
 export MAVEN_HOME="${MAVEN_HOME:-$(mvn -v 2>/dev/null|grep -i 'maven home:'|awk '{print substr($0, index($0,$3))}')}"
 export MAVEN_HOME="${MAVEN_HOME:-/opt/apache-maven-3.3.3}"
 
@@ -37,20 +43,24 @@ export PROMPT_COMMAND='echo -ne "\033]0;${PWD/#$HOME/~}\007"'
 # export PATH="/usr/local/bin:$PATH"
 export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
 export PATH="${JAVA_HOME}/bin:$PATH" # Add java
-export PATH="${GOPATH}/bin:$PATH" # Add golang
-
+export PATH="${GOROOT}/bin:$PATH" # Add golang root bin
+export PATH="${GOPATH}/bin:$PATH" # Add gopath
 
 echo "Loading bash aliases ..."
 alias a="alias|cut -d' ' -f 2- "
+alias airdrop='mdfind $HOME com.apple.AirDrop'
 alias bashrc='source ~/.bash_profile; title ${PWD##*/};'
 alias brewery='brew update && brew upgrade && brew cleanup'
 alias bu='brew upgrade; brew update --debug --verbose'
 alias cdp='cd -P .'
-alias clean='find . -name \*.pyc -o -name .DS_Store -delete'
+alias clean='find . -name \*.pyc -o -name .DS_Store -delete 2>/dev/null'
 alias cls='clear && printf "\e[3J"'
 alias dir='ls -al '
 alias dsclean='sudo find . -name *.DS_Store -type f -delete'
+alias dsf1='diskutil secureErase freespace 1'
 alias envi='env | grep -i '
+alias envs='env | sort'
+alias fixgrayedout='xattr -d com.apple.FinderInfo'
 alias fixmod='for f in *; do if [[ -d "$f" ]] || [[ "${f##*.}" == "sh" ]]; then chmod 755 "$f"; else chmod 644 "$f"; fi; done'
 alias hs='history | grep'
 alias ip='echo $(ipconfig getifaddr en0) $(dig +short myip.opendns.com @resolver1.opendns.com)'
@@ -66,6 +76,7 @@ alias lu='dscl . list /users | grep -v "_"'
 alias luv='dscacheutil -q user' # -a name $USER
 alias ml="make -qp|awk -F':' '/^[a-zA-Z0-9][^\$#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}'|sort"
 alias path='echo $PATH|tr ":" "\n"'
+
 alias setp='(set -o posix; set|grep -v _xspec)'
 alias showhidden='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 alias si='echo -e $(for k in ~/.ssh/*.pub;do echo -e "\\\n$(ssh-keygen -E md5 -lf $k) - $k";done)|sort -k 3; echo;echo "--- Added identities ---"; ssh-add -E md5 -l|sort -k 3'
@@ -108,19 +119,35 @@ alias mkdb='echo "# run inside debug: apk add curl --no-cache" && kubectl run -i
 alias mk="minikube"
 
 echo "Loading bash aliases for git ..."
+alias gfork='/Applications/Fork.app/Contents/MacOS/Fork . &'
+alias mygit='GIT_SSH_COMMAND="ssh -i ~/.ssh/github_jasonzhuyx_2048 -F ~/.ssh/config" git '
 alias gbc='git symbolic-ref --short -q HEAD'
 alias gbd='git branch -d '  # delete branch locally
 alias gbdo='git push origin --delete '  # delete branch on origin
 alias gbv="git branch -v "
 alias gco="git checkout "
+alias gcp='git cherry-pick '
 alias gcdev='git checkout master && git pull upstream master && git push && git checkout dev && git rebase master && git push --force && git fetch --v --all --prune ; git branch -v'
-alias gfv="git fetch -v --all --prune ; git branch -v"
-alias glg="git log --graph --pretty=format:'%C(magenta)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
+alias gcr='git clone --recurse-submodules'
+alias gfv="git fetch -v --all --prune ; git branch -v; git prune"
+# git log --pretty=format
+# * committer date:
+#   - %cr (relative)
+#   - %cd (respects --date= option)
+#   - %cD (RFC2822 style)
+#   - %cI (strict ISO 8601 format)
+#   - %ci (ISO 8601-like format)
+#   - %ct (UNIX timestamp)
+alias glg="git log --graph --pretty=format:'%C(magenta)%h%Creset -%C(yellow)%d%Creset %s %Cgreen[%cd] %C(bold blue)<%an>%Creset' --abbrev-commit --date=iso-strict"
+alias gpom='git checkout master && git pull origin master'
 alias gpum='git checkout master && git pull upstream master'
 alias gpumgp='git checkout master && git pull upstream master && git push'
+alias gfom='git checkout master && git fetch --all --prune && git reset --hard origin/master; git prune'
 alias grm='git rebase master'
 alias grmgp='git rebase master && git push'
 alias grmgpf='git rebase master && git push --force'
+alias grom='git rebase origin/master'
+alias grum='git checkout master && git featch --all --prune && git reset --hard upstream/master'
 alias grv='git remote -v'
 alias gst='git status'
 
@@ -128,7 +155,8 @@ echo "Loading bash aliases for dev ..."
 alias apache='httpd -v; sudo apachectl '
 alias exif='exiftool -sort -s'
 alias ipy='ipython -i --ext=autoreload -c "%autoreload 2"'
-alias ipy3='ipython3 -i --ext=autoreload -c "%autoreload 2"'
+alias ipy2='python2 -m IPython -i --ext=autoreload -c "%autoreload 2"'
+alias ipy3='python3 -m IPython -i --ext=autoreload -c "%autoreload 2"'
 alias goback='cd ${GOPATH}/$(cut -d/ -f2,3,4 <<< "${PWD/$GOPATH/}")'
 alias gopath='cd -P ${GOPATH} && pwd'
 alias pipf='pip freeze'
