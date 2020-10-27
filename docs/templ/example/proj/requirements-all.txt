@@ -13,7 +13,7 @@ Click==7.0
 clickclick==1.2.2
 connexion==2.2.0
 coverage==4.5.3
-cryptography==2.6.1
+cryptography==3.2
 cycler==0.10.0
 docutils==0.14
 execnet==1.5.0
