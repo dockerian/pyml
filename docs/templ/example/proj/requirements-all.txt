@@ -47,7 +47,7 @@ openapi-spec-validator==0.2.6
 pathlib==1.0.1
 pbr==5.1.1
 pep8==1.7.1
-Pillow==6.2.2
+Pillow==8.1.1
 pluggy==0.8.1
 py==1.7.0
 pycparser==2.19
