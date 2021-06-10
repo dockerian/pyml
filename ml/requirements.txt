@@ -30,7 +30,7 @@ clickclick==1.2.2
 connexion==2.2.0
 cryptography==2.6.1
 execnet==1.5.0
-fastapi==0.27.0
+fastapi==0.65.2
 Flask==1.0.3
 gunicorn==19.9.0
 idna==2.8
