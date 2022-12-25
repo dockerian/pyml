@@ -53,20 +53,26 @@ alias bashrc='source ~/.bash_profile; title ${PWD##*/};'
 alias brewery='brew update && brew upgrade && brew cleanup'
 alias bu='brew upgrade; brew update --debug --verbose'
 alias cdp='cd -P .'
-alias clean='find . -name \*.pyc -o -name .DS_Store -delete 2>/dev/null'
+alias clean='find . -name *.DS_Store -delete 2>/dev/null; find . -name Thumbs.db -delete 2>/dev/null'
 alias cls='clear && printf "\e[3J"'
+alias conv='iconv -f windows-1252 -t utf-8'
+alias dh='du -hs'
 alias dir='ls -al '
-alias dsclean='sudo find . -name *.DS_Store -type f -delete'
+alias dsclean='sudo find . -name Thumbs.db -delete -name *.DS_Store -type f -delete'
 alias dsf1='diskutil secureErase freespace 1'
 alias envi='env | grep -i '
 alias envs='env | sort'
+alias fixcr='perl -i -pe '"'"'s/\r//g'"'" # remove carriage return ('\r')
 alias fixgrayedout='xattr -d com.apple.FinderInfo'
 alias fixmod='for f in *; do if [[ -d "$f" ]] || [[ "${f##*.}" == "sh" ]]; then chmod 755 "$f"; else chmod 644 "$f"; fi; done'
+alias fixrar='/Applications/rar/rar r'
+alias fixunzip='ditto -V -x -k --sequesterRsrc ' # $1.zip $2/dir'
 alias hs='history | grep'
 alias ip='echo $(ipconfig getifaddr en0) $(dig +short myip.opendns.com @resolver1.opendns.com)'
 alias ll='ls -al'
 alias lll='ls -al -T | sort -f -k9,9'  # --time-style=full-iso
 alias lln='ls -al | sort -f -k9,9'
+alias llo='ls -l --time-style=long-iso'
 alias llt='ls -al -rt'
 alias lg='dscl . list /groups | grep -v "_"'
 alias lgv='dscacheutil -q group' # -a name staff
@@ -77,10 +83,13 @@ alias luv='dscacheutil -q user' # -a name $USER
 alias ml="make -qp|awk -F':' '/^[a-zA-Z0-9][^\$#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}'|sort"
 alias path='echo $PATH|tr ":" "\n"'
 
+alias rarx='unrar x -kb'
 alias setp='(set -o posix; set|grep -v _xspec)'
 alias showhidden='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 alias si='echo -e $(for k in ~/.ssh/*.pub;do echo -e "\\\n$(ssh-keygen -E md5 -lf $k) - $k";done)|sort -k 3; echo;echo "--- Added identities ---"; ssh-add -E md5 -l|sort -k 3'
 alias ver='echo -e "$(uname -a)"; echo ""; echo -e "$(bash --version)"'
+alias vlc='/Applications/VLC.app/Contents/MacOS/VLC --width 800 --height 600 --aspect-ratio 16x9 &'
+alias ydl='youtube-dl -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' # -o '%(playlist_index)s.%(ext)s'
 alias t='title ${PWD##*/}'
 
 # docker-machine
@@ -174,6 +183,10 @@ alias nr="npm run "
 # function: Main
 ############################################################
 function main() {
+
+  echo "Setting pyenv ..."
+  export PATH="$HOME/.pyenv/bin:$PATH"
+  eval "$(pyenv init -)"
 
   # echo `date +"%Y-%m-%d %H:%M:%S"` "Login to docker with ${DOCKER_USERNAME}..."
   # docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
@@ -582,6 +595,98 @@ function timeout() {
     fi
 }
 
+############################################################
+# function: Use youtube-dl or yt-dlp
+# see
+#   - https://github.com/lrvick/youtube-dl
+#   - https://github.com/yt-dlp/yt-dlp
+############################################################
+function ydlo() {
+  local _tool_=""
+
+  if [[ -x "$(which yt-dlp)" ]]; then
+    _tool_="yt-dlp"
+  elif [[ -x "$(which youtube-dl)" ]]; then
+    _tool_="youtube-dl"
+  else
+    echo ""
+    echo "Cannot find yt-dlp or youtube-dl. See"
+    echo "  - https://github.com/lrvick/youtube-dl"
+    echo "  - https://github.com/yt-dlp/yt-dlp"
+    echo ""
+    return
+  fi
+
+  local _args_=""
+  local _exec_=""
+  local _href_=""
+  local _name_=""
+  local _sarg_=""
+  local _earg_=""
+  local _snum_=""
+  local _enum_=""
+  local _rvpl_=""
+  # default sequence and extension for playlist
+  local _extn_='-%(playlist_index)s.%(ext)s'
+  local _ycmd_="${_tool_} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
+  # echo "---args: $@"
+  for p in "$@"; do
+    echo "# $p"
+    if [[ "$p" =~ ^https?:// ]]; then
+      _href_="$p"
+    elif [[ "$p" =~ ^[0-9]+$ ]]; then
+      if [[ "${_snum_}" == "" ]]; then _snum_="$p";
+    elif [[ "${_enum_}" == "" ]]; then
+      if [[ $p -gt ${_snum_} ]]; then _enum_="$p";
+      else
+        _enum_=$((${_snum_} + $p - 1)); fi; fi
+    elif [[ "$p" =~ ^[/-]{1,2}[rR] ]]; then
+      _rvpl_="--playlist-reverse"
+    else
+      _name_="$p"
+    fi
+  done
+
+  if [[ "${_href_}" == "" ]]; then return; fi
+
+  echo "----------"
+  echo " name: ${_name_}"
+  echo " href: ${_href_}"
+  if [[ "${_href_}" =~ playlist ]]; then
+    if [[ "${_name_}" =~ .*"-".* ]]; then
+      _extn_='%(playlist_index)s.%(ext)s'
+    fi
+    if [[ ! "${_snum_}" == "" ]]; then
+      _sarg_="--playlist-start ${_snum_}";
+      echo "start: ${_snum_}"
+    fi
+    if [[ ! "${_enum_}" == "" ]]; then
+      _earg_="--playlist-end ${_enum_}"
+      echo "  end: ${_enum_}"
+    fi
+    if [[ ! "${_rvpl_}" == "" ]]; then
+      _args_=$(echo "${_rvpl_} ${_args_}"|xargs)
+    fi
+  else # not from playlist, no need sequence
+    _extn_='.%(ext)s'
+  fi
+  echo "----------"
+
+  if [[ "${_name_}" == "" ]]; then
+    _exec_="${_ycmd_} ${_sarg_} ${_earg_} ${_href_}"
+    echo Downloading "${_href_}" ...
+    ${_exec_}
+    return
+  fi
+
+  # download with name
+  echo Downloading "${_name_}""${_extn_}" ...
+  ${_ycmd_} \
+  ${_sarg_} ${_earg_} ${_args_} \
+  -o "${_name_}""${_extn_}" \
+  ${_href_}
+}
+
 
 
 if [[ "$0" == "${BASH_SOURCE}" ]]; then
@@ -590,5 +695,6 @@ if [[ "$0" == "${BASH_SOURCE}" ]]; then
   echo '!! Please `source` this script in order to export envirnment variables !!'
   exit 9
 else
+  echo 'Executing main ...'
   main $@
 fi
