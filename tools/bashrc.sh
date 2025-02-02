@@ -53,13 +53,17 @@ alias bashrc='source ~/.bash_profile; title ${PWD##*/};'
 alias brewery='brew update && brew upgrade && brew cleanup'
 alias bu='brew upgrade; brew update --debug --verbose'
 alias cdp='cd -P .'
-alias clean='find . -name *.DS_Store -delete 2>/dev/null; find . -name Thumbs.db -delete 2>/dev/null'
+alias clean='find . -type f \( -name *.DS_Store -o -name Thumbs.db \) -delete 2>/dev/null'
 alias cls='clear && printf "\e[3J"'
 alias conv='iconv -f windows-1252 -t utf-8'
+alias convgbk='iconv -f gbk -t utf-8'
+alias dater='date +"%Y-%m-%d %H:%M:%S" -r'
+alias dated='date +"%Y-%m-%d %H:%M:%S" -d'
 alias dh='du -hs'
 alias dir='ls -al '
 alias dsclean='sudo find . -name Thumbs.db -delete -name *.DS_Store -type f -delete'
 alias dsf1='diskutil secureErase freespace 1'
+alias dswake='wakeonlan -i 192.168.1.218 00:11:32:aa:e3:5d'
 alias envi='env | grep -i '
 alias envs='env | sort'
 alias fixcr='perl -i -pe '"'"'s/\r//g'"'" # remove carriage return ('\r')
@@ -67,6 +71,7 @@ alias fixgrayedout='xattr -d com.apple.FinderInfo'
 alias fixmod='for f in *; do if [[ -d "$f" ]] || [[ "${f##*.}" == "sh" ]]; then chmod 755 "$f"; else chmod 644 "$f"; fi; done'
 alias fixrar='/Applications/rar/rar r'
 alias fixunzip='ditto -V -x -k --sequesterRsrc ' # $1.zip $2/dir'
+alias hide='chflags hidden'
 alias hs='history | grep'
 alias ip='echo $(ipconfig getifaddr en0) $(dig +short myip.opendns.com @resolver1.opendns.com)'
 alias ll='ls -al'
@@ -87,10 +92,12 @@ alias rarx='unrar x -kb'
 alias setp='(set -o posix; set|grep -v _xspec)'
 alias showhidden='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 alias si='echo -e $(for k in ~/.ssh/*.pub;do echo -e "\\\n$(ssh-keygen -E md5 -lf $k) - $k";done)|sort -k 3; echo;echo "--- Added identities ---"; ssh-add -E md5 -l|sort -k 3'
+alias sshv='ssh -v -o HostKeyAlgorithms=ssh-dss -o KexAlgorithms=diffie-hellman-group14-sha1'
 alias ver='echo -e "$(uname -a)"; echo ""; echo -e "$(bash --version)"'
 alias vlc='/Applications/VLC.app/Contents/MacOS/VLC --width 800 --height 600 --aspect-ratio 16x9 &'
 alias ydl='youtube-dl -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' # -o '%(playlist_index)s.%(ext)s'
 alias t='title ${PWD##*/}'
+
 
 # docker-machine
 export DOCKER_EMAIL=''
@@ -596,6 +603,234 @@ function timeout() {
 }
 
 ############################################################
+# function: Use `touch -d` to apply all sub-dirs recursively
+# Params: $1 a source dir path
+#         $2 optional depth
+#         $3 options
+############################################################
+function touchdbyfile() {
+  if [[ ! -d "$1" ]]; then return 1; fi
+  local _dir_=${1%/}
+  local _lvl_=$((${2:-0} - 1))
+  local _opt_=${3%/}
+  local _dig_="yes"
+  local _old_=$(date '+%Y-%m-%d %H:%M:%S' -r "$1" 2>/dev/null)
+  local _now_=$(date '+%Y-%m-%d %H:%M:%S')
+  local _old_sec_=`date --date="${_old_}" +%s`
+  local _now_sec_=`date --date="${_now_}" +%s`
+  local _sec_=$((${_now_sec_} - ${_old_sec_}))
+  local _num_=${_neardays_:-60}
+  local _ddf_=$((${_sec_#-}/86400 - ${_num_}))
+  local _dth_=$((${_lvl_} - ${_dirdepth_}))
+  local _act_=""
+  local _cur_=''
+  local _sub_=''
+  local _new_=''
+  local _ymd_=''
+
+  if [[ ${_lvl_} == 0 ]] || [[ ${_lvl_} == -255 ]]; then
+    # Do NOT echo. Should be handled by upper caller.
+    _dig_="no"
+  fi
+  if [[ "${_dth_#-}" -gt 1 ]]; then
+    if [[ ${_act_mode_} =~ --quick ]]; then
+      if [[ ${_ddf_} -gt 0 ]]; then
+        if [[ "${_day_skip_}" == "" ]]; then
+          echo ""
+        fi
+        _day_skip_="${_ddf_}"
+        echo "Skipping ${_old_} beyond ${_num_} days on ${_dir_}"
+        return ${_ddf_}
+      elif [[ ! "${_day_skip_}" == "" ]]; then
+        _day_skip_=""
+      fi
+    fi
+  fi
+
+  for f in "${_dir_}"/*; do
+    if [[ -d "$f" ]]; then
+      if [[ "${_dig_}" == "yes" ]]; then
+        touchdbyfile "$f" ${_lvl_} ${_opt_}
+      fi
+    fi
+    if [[ -d "$f" ]]; then
+      _ymd_=${_sub_}
+    else
+      _ymd_=${_cur_}
+    fi
+    _new_=$(date '+%Y-%m-%d %H:%M:%S' -r "$f" 2>/dev/null)
+    if [[ "${_opt_}" == "--asc-sort" ]]; then
+      if [[ "${_ymd_}" == "" ]] || \
+         [[ "${_new_}" < "${_ymd_}" ]] ; then
+        _ymd_=${_new_}
+      fi
+    else
+      if [[ "${_new_}" > "${_ymd_}" ]]; then
+        _ymd_=${_new_}
+      fi
+    fi
+    if [[ -d "$f" ]]; then
+      _sub_=${_ymd_}
+    else
+      _cur_=${_ymd_}
+    fi
+  done
+
+  _ymd_=${_cur_:-${_sub_:-${_new_:-${_old_}}}}
+
+  # echo "_dir_=${_dir_}"
+  # echo "_ymd_=${_ymd_}"
+  # echo "_old_=${_old_} ,_new_=${_new_}"
+  # echo "_cur_=${_cur_} ,_sub_=${_sub_}"
+  # echo "_opt_=${_opt_}"
+
+  if [[ "${_ymd_}" == "${_old_}" ]]; then
+    _act_="Matching ${_ymd_} on ${_dir_}"
+  fi
+  if [[ "${_ymd_}" > "${_old_}" ]] && \
+     [[ "${_opt_}" == "" ]]; then
+      _act_="Reserved ${_old_} on ${_dir_}"
+  fi
+  echo ""
+  if [[ "${_act_}" == "" ]]; then
+    echo Applying ${_ymd_} to ${_dir_} [${_old_}]
+    touch -d "${_ymd_}" "${_dir_}"
+  else
+    echo ${_act_}
+  fi
+}
+
+############################################################
+# function: Use `touch -d` to apply all basepath recursively
+# Params: $1 a source dir paths
+############################################################
+function touchdpath {
+  if [[ ! -d "$1" ]]; then return 1; fi
+  local _spath_="$( cd "$( echo "${1}" )" && pwd )"
+  local _sbase_="$( cd "${_spath_}/.." && pwd )"
+  local _upper_="$( cd "${_sbase_}/.." && pwd )"
+  local _slash_=${_spath_//[!\/]}
+  local _depth_=${#_slash_}
+  local _order_=$2
+
+  if [[ ${_depth_} -gt 2 ]]; then
+    touchdbyfile "${_spath_}" 1 ${_order_}
+    touchdpath "${_sbase_}" ${_order_}
+  fi
+}
+
+############################################################
+# function: Use `touch -d` on file/dir
+# Params: a file/dir, or FMT "%Y-%m-%d %H:%M"
+############################################################
+function touchd() {
+  local _awk_="awk '{print \$6,\$7}'"
+  local _arg_='-l --time-style=long-iso'
+  local _asc_sort_=''
+  local _act_mode_='--quick'
+  local _neardays_=${NEARDAYS:-60}
+  local _day_skip_=''
+  local _fmt_date_='%Y-%m-%d %H:%M'
+  local _fmt_regx_='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( [0-9][0-9]:[0-9][0-9])?'
+  local _iso_date_=''
+  local _dir_from_=''
+  local _dir_file_=''
+  local _dir_path_=''
+  local _dirdepth_=${DIRDEPTH:-3}
+  local _grp_dirs_=()
+  local _grp_file_=()
+
+  # echo "---args: $@"
+  for p in "$@"; do
+    if [[ "$p" =~ ^${_fmt_regx_}$ ]]; then
+      _iso_date_="$p"
+    elif [[ -e "$p" ]]; then
+      if [[ -d "$p" ]]; then
+        _grp_dirs_+=("${p%/}")
+        _dir_path_="${p%/}"
+      elif [[ "${_iso_date_}" == "" ]] && \
+         [[ "${_dir_from_}" == "" ]]; then
+        _iso_date_=`date +"${_fmt_date_}" -r "$p"`
+        _dir_from_="${p%/}"
+      else # non-directory
+        # echo "File: $p"
+        _grp_file_+=("${p%/}")
+        _dir_file_="${p%/}"
+      fi
+      # if [[ $p =~ (${_fmt_regx_}) ]] && \
+      #    [[ "${_iso_date_}" == "" ]]; then
+      #   _iso_date_="${BASH_REMATCH[1]} 00:00"
+      # fi
+    elif [[ "$p" =~ ([/-]{1,2}L?)([0-9]{1,3}) ]]; then
+      _dirdepth_=${BASH_REMATCH[2]}
+    elif [[ "$p" =~ ([/-]{1,2}N)([1-9][0-9]{0,3}) ]]; then
+      _neardays_=${BASH_REMATCH[2]}
+    elif [[ "$p" =~ [/-]{1,2}[vV] ]]; then
+      _asc_sort_='--asc-sort'
+    elif [[ "$p" =~ [/-]{1,2}[fF] ]]; then
+      _act_mode_='--always'
+    elif [[ "$p" =~ [/-]{1,2}[kK] ]]; then
+      _act_mode_='--quick'
+    fi
+  done
+
+  echo ""
+  # echo "Date: ${_iso_date_}"
+  if [[ "${_iso_date_}" =~ ${_fmt_regx_} ]]; then
+    echo "Fetched: '${_iso_date_}' from ${_dir_from_}"
+    if [[ ${#_grp_dirs_[@]} -gt 1 ]]; then
+      echo "Applying '${_iso_date_}' on dirs..."
+      for _dir_ in "${_grp_dirs_[@]}"; do
+        echo "Applying '${_iso_date_}' on ${_dir_}"
+        touch -d "${_iso_date_}" "${_dir_}"
+      done
+    elif [[ -d "${_dir_path_}" ]]; then
+      echo "Applying '${_iso_date_}' on ${_dir_path_}/*"
+      touch -d "${_iso_date_}" "${_dir_path_}"/* && echo OK
+    fi
+    if [[ ${#_grp_file_[@]} -gt 1 ]]; then
+      echo "Applying '${_iso_date_}' to files..."
+      for _file_ in "${_grp_file_[@]}"; do
+        echo "Applying '${_iso_date_}' to ${_file_}"
+        touch -d "${_iso_date_}" "${_file_}"
+      done
+    elif [[ -e "${_dir_file_}" ]]; then
+      echo "Applying '${_iso_date_}' to ${_dir_file_}"
+      touch -d "${_iso_date_}" "${_dir_file_}" && echo OK
+    fi
+  elif [[ -d "${_dir_path_}" ]]; then
+    if [[ ! "${_asc_sort_}" == "" ]]; then
+      echo "+-----------------+"
+      echo " Sorting by oldest "
+      echo "+-----------------+"
+    fi
+    if [[ ${_act_mode_} =~ --quick ]]; then
+      _act_mode_="${_act_mode_} near ${_neardays_} days, depth: ${_dirdepth_}"
+    fi
+    echo "Recuring on ${#_grp_dirs_[@]} dir(s) ... ${_act_mode_}"
+    for _dir_ in "${_grp_dirs_[@]}"; do
+      local _dir_base_="$( cd "${_dir_}/.." && pwd )"
+      if [[ ${_dirdepth_} -ne 0 ]]; then
+        touchdbyfile "${_dir_}" ${_dirdepth_} ${_asc_sort_}
+      else
+        touchdpath "${_dir_}" ${_asc_sort_}
+      fi
+    done
+  else
+    echo "\$ touchd $@ [args]"
+    echo ""
+    echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
+    echo "┃ Syntax:                                          ┃"
+    echo "┃  touchd <file>|'yyyy-mm-dd HH:MM' <dir>|<file>   ┃"
+    echo "┃     or:                                          ┃"
+    echo "┃  touchd <dir> [-L<depth>] [-v]                   ┃"
+    echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
+    echo ""
+  fi
+  echo ""
+}
+
+############################################################
 # function: Use youtube-dl or yt-dlp
 # see
 #   - https://github.com/lrvick/youtube-dl
@@ -624,11 +859,15 @@ function ydlo() {
   local _sarg_=""
   local _earg_=""
   local _snum_=""
+  local _bmkv_="--merge-output-format mkv"
+  local _bmp3_="-f bestaudio -x --audio-format mp3 --audio-quality 0"
+  local _bmp4_="-f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
+  local _subt_="--write-subs --sub-format srt"
   local _enum_=""
   local _rvpl_=""
   # default sequence and extension for playlist
   local _extn_='-%(playlist_index)s.%(ext)s'
-  local _ycmd_="${_tool_} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
+  local _ycmd_="${_tool_} ${_bmp4_}"
   # echo "---args: $@"
   for p in "$@"; do
     echo "# $p"
@@ -640,14 +879,32 @@ function ydlo() {
       if [[ $p -gt ${_snum_} ]]; then _enum_="$p";
       else
         _enum_=$((${_snum_} + $p - 1)); fi; fi
+    elif [[ "$p" =~ ^[/-]{1,2}mkv ]]; then
+      _ycmd_="${_tool_} ${_bmkv_}"
+    elif [[ "$p" =~ ^[/-]{1,2}mp3 ]]; then
+      _ycmd_="${_tool_} ${_bmp3_}"
+    elif [[ "$p" =~ ^[/-]{1,2}mp4 ]]; then
+      _ycmd_="${_tool_} ${_bmp4_}"
+    elif [[ "$p" =~ ^[/-]{1,2}best ]]; then
+      _ycmd_="${_tool_}"
+    elif [[ "$p" =~ ^[/-]{1,2}nosub ]]; then
+      _subt_=""
     elif [[ "$p" =~ ^[/-]{1,2}[rR] ]]; then
+      _extn_='-%(playlist_autonumber)02d.%(ext)s'
       _rvpl_="--playlist-reverse"
     else
       _name_="$p"
     fi
   done
 
-  if [[ "${_href_}" == "" ]]; then return; fi
+  if [[ "${_href_}" == "" ]]; then
+    echo "┏━━━━━━━━┓"
+    echo "┃ Syntax ┃"
+    echo "┗━━━━━━━━┛"
+    echo "  ${FUNCNAME[0]} [-r] [-best|mkv|mp4] <youtube_url> [<start#> [<end#>]]"
+    echo ""
+    return
+  fi
 
   echo "----------"
   echo " name: ${_name_}"
@@ -655,21 +912,36 @@ function ydlo() {
   if [[ "${_href_}" =~ playlist ]]; then
     if [[ "${_name_}" =~ .*"-".* ]]; then
       _extn_='%(playlist_index)s.%(ext)s'
+      if [[ ! "${_rvpl_}" == "" ]]; then
+        _extn_='%(playlist_autonumber)02d.%(ext)s'
+      fi
     fi
     if [[ ! "${_snum_}" == "" ]]; then
-      _sarg_="--playlist-start ${_snum_}";
+      _sarg_="--autonumber-start ${_snum_} ${_sarg_}"
+      _sarg_="--playlist-start ${_snum_} ${_sarg_}"
+      if [[ ! "${_enum_}" == "" ]]; then
+        local _xend_=$((${_enum_} - ${_snum_} + 1))
+        _sarg_="--autonumber-start ${_snum_} ${_sarg_}"
+        _sarg_="--autonumber-size ${_xend_} ${_sarg_}"
+        _sarg_="--playlist-end ${_xend_} ${_sarg_}"
+        _sarg_="--playlist-start ${_snum_} ${_sarg_}"
+      fi
       echo "start: ${_snum_}"
     fi
     if [[ ! "${_enum_}" == "" ]]; then
-      _earg_="--playlist-end ${_enum_}"
-      echo "  end: ${_enum_}"
+      if [[ "${_rvpl_}" == "" ]]; then
+        _earg_="--playlist-end ${_enum_}"
+        echo "  end: ${_enum_}"
+      fi
     fi
-    if [[ ! "${_rvpl_}" == "" ]]; then
-      _args_=$(echo "${_rvpl_} ${_args_}"|xargs)
-    fi
+    _args_=$(echo "${_args_} ${_subt_} ${_rvpl_}"|xargs)
   else # not from playlist, no need sequence
+    _args_=$(echo "${_args_} ${_subt_}"|xargs)
     _extn_='.%(ext)s'
   fi
+  echo " args: ${_ycmd_}"
+  echo "       ${_args_}"
+  echo "       ${_sarg_} ${_earg_}"
   echo "----------"
 
   if [[ "${_name_}" == "" ]]; then
@@ -681,6 +953,7 @@ function ydlo() {
 
   # download with name
   echo Downloading "${_name_}""${_extn_}" ...
+  echo ""
   ${_ycmd_} \
   ${_sarg_} ${_earg_} ${_args_} \
   -o "${_name_}""${_extn_}" \
