@@ -13,7 +13,7 @@ nose2==0.8.0
 pbr==5.1.1
 pep8==1.7.1
 pluggy==0.8.1
-py==1.7.0
+py==1.10.0
 pyflakes==2.0.0
 pylint==2.2.2
 pytest==4.1.1

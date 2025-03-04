@@ -50,7 +50,7 @@ pbr==5.1.1
 pep8==1.7.1
 Pillow==6.2.2
 pluggy==0.8.1
-py==1.7.0
+py==1.10.0
 pycparser==2.19
 pydantic==0.26
 pyflakes==2.0.0
