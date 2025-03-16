@@ -65,7 +65,7 @@ pytest-pep8==1.0.6
 pytest-pylint==0.14.0
 python-dateutil==2.7.5
 pytz==2018.9
-PyYAML==5.1
+PyYAML==5.4
 requests==2.22.0
 s3transfer==0.2.0
 scipy==1.2.0
