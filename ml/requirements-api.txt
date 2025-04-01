@@ -32,7 +32,7 @@ MarkupSafe==1.1.1
 openapi-spec-validator==0.2.6
 pathlib==1.0.1
 pycparser==2.19
-pydantic==0.26
+pydantic==1.6.2
 pyOpenSSL==19.0.0
 requests==2.22.0
 starlette==0.12.0
