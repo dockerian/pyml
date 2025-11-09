@@ -4,8 +4,112 @@
 
 ## Contents
 
+  * [Basic](#basic)
   * [Concurrency](#concurrency)
   * [Date/Time](#datetime)
+
+
+
+<br/><a name="basic"></a>
+## Basic
+
+### Function Categories
+
+#### Pure Function
+
+  ```python
+  def add(a, b):
+      return a+b
+  ```
+
+#### Lambda Function
+
+  ```python
+  add = lambda a, b: a + b
+  print(add(3, 8))
+  ```
+
+#### Higher-order Function
+
+  ```python
+  def double(x):
+      retrn x * 2;
+
+  def apply_to_all(alist, afunc):
+      return [afunc(i) for in in alist]
+
+  my_list = [100, 200, 300]
+  newlist = apply_to_all(my_list, double)
+  ```
+
+#### Decorator
+
+  ```python
+  def logger(afunc):
+      def wrapper(*args, **kwargs):
+        print("start: {afunc.__name__}")
+        result = afunc(*args, **kwargs)
+        print("end: {afunc.__name__}")
+        return result
+      return wrapper
+
+  @logger
+  def hello():
+      print("Hello!")
+  ```
+
+#### Recursive Function
+
+  ```python
+  def factorial(n):
+      if n == 1:
+          return 1
+      return n * factorial(n - 1)
+  ```
+
+#### Generator
+
+  ```python
+  def count_up_to(n):
+      i = 1
+      while i <= n:
+          yield i
+          i += 1
+
+  for num in count_up_to(5):
+      print(num)
+  ```
+
+#### Async & Coroutine
+
+  ```python
+  import asyncio
+
+  async def say_hi():
+      print("Hi ...")
+      await asyncio.sleep(1) # consuming some time
+      print("Hi again")
+
+  asyncio.run(say_hi())
+  ```
+
+#### Magic Method
+
+```python
+class Dog:
+    def __int__(self, age):
+        self.age = age
+
+    def __add__(self, n):
+        return Dog(self.age + n)
+
+    def __str__(self):
+        return f"Dog age: {self.age}"
+
+dog1 = Dog(3)
+dog2 = dog1 + 2
+print(dog2)
+```
 
 
 
@@ -202,7 +306,6 @@
     ]).get()
     pool.close()
     ```
-
 
 ### Reference
 
