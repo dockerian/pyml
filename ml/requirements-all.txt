@@ -43,7 +43,7 @@ mccabe==0.6.1
 mock==2.0.0
 more-itertools==5.0.0
 nose2==0.8.0
-numpy==1.16.0
+numpy==1.22.0
 openapi-spec-validator==0.2.6
 pathlib==1.0.1
 pbr==5.1.1
